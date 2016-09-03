@@ -1,0 +1,185 @@
+/*-----------------------------------------------------------------------------------------------------
+/	Name         : (RCRegistry) Ring Class for (Ring_WinCReg) Extension
+/	Purpose      : This Class simplify using (Ring_WinCReg) extension
+/                                         It imitates the way of using original CRegistry Class in C++
+/
+/	Author Name  : Majdi Sobain
+/	Author Email : MajdiSobain@Gmail.com
+/
+/					Copyright (c) 2016
+/-----------------------------------------------------------------------------------------------------*/
+
+
+/*----------------------------------------------------------------------------------------------------*/
+/*																									  */
+                                RCRegistry Class in Ring (WinCReg.ring)
+                        WINDOWS CREGISTRY CLASS EXTENSION FOR RING DOCUMENTATION                    
+/*																									  */
+/*----------------------------------------------------------------------------------------------------*/
+
+
+
+/*---------------------------------*/
+/*        Dealing with Keys        */
+/*---------------------------------*/
+
+If KeyExists(HKEY_CURRENT_USER, "Software) = True
+	See "Software keys is present in HKEY_CURRENT_USER"
+Ok
+
+Registry =  new RCRegistry {
+
+			/* This function is used to Open a registry key with the ability of passing parameters as a list ( allowed parameters 2-3 )
+			The parameters are :
+			1- The root key.
+			2- The sub key that we want to open
+			3- Flags that control how we want to use this library functions
+				These Flags are as follow:
+					1- CREG_READONLY : for just open the key. This flag cannot be used with others in the same time.
+					2- CREG_CREATE : this flag will make the function to create the key if its not exist.
+							( This Flag is Used by default when calling OpenKey function )
+					3- CREG_AUTOOPEN : activate the autoopen mechanism of CRegistry Class.
+					4- CREG_LOADING
+			4- The option to access Wow64 tree.
+			*/
+			OpenKey([HKEY_CURRENT_USER,"Software\Microsoft", CREG_READONLY, True])
+
+			// This function accepts the first two parameters
+			OpenKey2(HKEY_CURRENT_USER, "Software\Microsoft")
+
+			// This function accepts the first three parameters
+			OpenKey3(HKEY_CURRENT_USER, "Software\Microsoft", CREG_CREATE | CREG_AUTOOPEN )	# This example show how could we use more than one flag.
+
+			// This function accepts all the four parameters
+			OpenKey4(HKEY_CURRENT_USER, "Software\Microsoft", CREG_READONLY, True)
+
+			// This function will set the flags even after opening a key
+			SetFlags(CREG_CREATE | CREG_AUTOOPEN)
+
+			// This function will return the flags ( will return the summation of all flags as a number )
+			GetFlags()
+
+			// This function redirects the key to access 64 bit tree ( Wow64 )
+			Access64Tree(True)
+
+			// This function checks whether the opened key is virtualized or not
+			IsVirtualized()
+
+			// This function checks virtualization too but with detailed output ( 1 virtualized, 0 not virtualized, -1 uncertain)
+			IsVirtualized2(True)
+
+			// This function returns the number of entries within this opened key
+			EntryCount()
+
+			// This function checks whether the given subkey ("microsoft") is present within the current opened key ("software") or not
+			SubKeyExists("microsoft")
+
+			// This function will return the total number of subkeys of the opened key
+			SubKeysCount()
+			
+			// This function return a subkey of a specific index
+			GetSubKeyAt(1)
+			
+			// This function return a list of all subkeys of the currently opened key
+			GetSubKeys()
+			
+			// This function refresh the internal mechanism of CRegistry class for the current used object( I have never used it before )
+			Refresh()
+
+			// This function returns a handler of the entry that is present in a particular index
+			// this can be used in the time of iteration of entries within the opened key
+			GetEntryAt(1)
+
+			// This function returns a name of the give entry handler ( accepts entry handler only )
+			e = GetEntryAt(1)
+			GetEntryName(e)
+
+			// This function returns a list of all entries names that present in the current open key 
+			GetEntries()
+
+			//This function copies all entries of the current opened key into the given key
+			Reg = new CRegistry { OpenKey2(HKEY_CURRENT_USER, "Software\Microsoft") }
+			CopyAllTo(Reg.Key)
+			Reg.CloseKey()
+
+			// This function closes the current opened key
+			CloseKey()
+
+			// This function delete the currently opened key
+			DeleteKey()
+
+			}
+			
+			
+			
+/*-----------------------------------------------*/
+/*        Dealing with entries and values        */
+/*-----------------------------------------------*/
+
+
+// To create or set a value in an entry named "nEntry" you just need to do this simple thing
+Registry["nEntry"].Set("The Auther of this class")
+
+// To get a value of an entry named "nEntry" from the same opened key
+v = Registry["nEntry"].Get()
+See v
+
+// To check whether the entry named "nEntry" is present within this opened key
+If Registry["nEntry"].Exists() = true 
+	See "nEntry Value is present"
+Ok
+
+// To rename an entry named "nEntry" with new name such as "newnEntry"
+Registry["nEntry"].Rename("newnEntry")
+
+// To copy an entry named "nEntry" form the current opened key into another one 
+Reg = new CRegistry { OpenKey2(HKEY_CURRENT_USER, "Software\Microsoft\Windows") }
+Registry["nEntry"].CopyTo(Reg.Key)
+Reg.CloseKey()
+
+// To delete an entry named "nEntry" 
+Registry["nEntry"].Delete()
+
+// To create and set a value in an entry of MultiString with name "nEntry"
+// ( This function could write over already exist data so please be careful when using it)
+// ( Its better to set MultiString values using MultiAdd() function )
+Registry["nEntry"].SetMulti("This is the first line of the multistring")
+
+// To add or set a value to a MulitString entry named "nEntry"
+Registry["nEntry"].MultiAdd("New Value")
+
+// To set or reset the value of specific index (1) within an entry of MultiString named "nEntry"
+Registry["nEntry"].MultiSetAt(1 /*index*/ , "New value")
+
+// To get a value of specific index (1) in an entry of MultiString named "nEntry"
+v = Registry["nEntry"].MultiGetAt(1)
+
+// To remove a value of a specific index (1) in an entry of MultiString named "nEntry"
+Registry["nEntry"].MultiRemoveAt(1)
+
+// To return the number of all values present in an entry of MultiString named "nEntry"
+c = Registry["nEntry"].MutliCount()
+
+// To clear all the values of a MultiString entry named "nEntry"
+Registry["nEntry"].MultiClear()
+
+// To set a MultiString entry named "nEntry" with a list of values 
+aList = ["one", "two", "three", "four"]
+Registry["nEntry"].SetMultiList(aList)
+
+// To get all values of a MultiString entry named "nEntry" into a List 
+aList = Registry["nEntry"].GetMultiList()
+
+// To check the type of an entry named "nEntry"
+If Registry["nEntry"].IsString() = True 
+	See "Its a string"
+Ok
+If Registry["nEntry"].IsDWORD() = True 
+	See "Its a DWORD"
+Ok
+If Registry["nEntry"].IsMultiString() = True 
+	See "Its a multistring"
+Ok
+If Registry["nEntry"].IsBinary() = True 
+	See "Its a binary"
+Ok
