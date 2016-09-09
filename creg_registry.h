@@ -133,7 +133,7 @@ typedef	std::string tstring;
 
 // *** change _stprintf to _stprintf_s 
 #define REGENTRY_CONV_NUMERIC_STORAGETYPE(type, maxlen, form, from_sz, from_dw) \
-	REGENTRY_CONV_STORAGETYPE(type, _R_BUF(maxlen); _stprintf_s(buffer, (maxlen * sizeof(CHAR)) ,_T(#form), Value);, from_sz, from_dw, 0)
+	REGENTRY_CONV_STORAGETYPE(type, _R_BUF(maxlen); _stprintf_s(buffer, (maxlen * sizeof(TCHAR)) ,_T(#form), Value);, from_sz, from_dw, 0)
 
 // *** newly created Macro for safe usage of its unsafe alternative (_tcscpy)
 #define strcpy_safe(buf, srcval) (_tcsncpy_s(buf, _tcslen(buf) /2, srcval, _tcslen(buf)) == 0 ) ? buf : NULL 

@@ -51,7 +51,9 @@ public:
 	// data type, max string length + 1, format specification, from string, from DWORD
 	REGENTRY_CONV_NUMERIC_STORAGETYPE(__int64, 28, %I64d, _ttoi64(lpszStr), (__int64)dwDWORD)
 
-	REGENTRY_CONV_NUMERIC_STORAGETYPE(double, 18, %f, _tcstod(lpszStr, NULL), (double)dwDWORD)	
+	// *** REGENTRY_CONV_NUMERIC_STORAGETYPE(double, 18, %f, _tcstod(lpszStr, NULL), (double)dwDWORD)	
+	CRegEntry&	operator=( double Value );
+				operator double();
 
 	REGENTRY_CONV_NUMERIC_STORAGETYPE(bool, 2, %d, (_ttoi(lpszStr) != 0), (dwDWORD != 0))
 

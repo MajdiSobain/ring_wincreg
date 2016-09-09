@@ -324,6 +324,61 @@ CRegEntry::operator DWORD() {
 
 
 /* ===================================================
+ * *** newly added to substitute the automatically created one by 
+ *     REGENTRY_CONV_NUMERIC_STORAGETYPE MACRO
+ *
+ *  OPERATOR: Assigns a double to the open registry value.
+ *  The registry value type will be REG_SZ.
+ */
+
+CRegEntry& CRegEntry::operator=(double Value) {
+
+	_R_BUF(18); 
+	_stprintf_s(buffer, (18 * sizeof(TCHAR)) ,_T("%f"), Value);
+
+	for (int i = ( ( strlen(buffer) -1 ) * sizeof(TCHAR) ); i >= 0; i-- ) {
+		if ( !strcmp( &buffer[(i-1)] , (LPCTSTR) ".0" ) ) {
+			break;				// *** This peice of code made to save such 18.000000 number to be just 18.0
+		} 
+		if ( !strcmp( &buffer[i], (LPCTSTR) "0" ) ) { 
+			buffer[i] = 0;
+			buffer[i+1] = -2;
+		} else { 
+			/* if ( !strcmp( &buffer[i] , (LPCTSTR) "." ) ) {
+				buffer[i] = 0;
+				buffer[i+1] = -2;		// *** This peice of code made to save such 18.000000 number to be just 18
+			} */
+			break; 
+		}
+	}
+
+	return (*this = (LPCTSTR)(buffer)); 
+
+}
+
+
+
+/* ===================================================
+ * *** newly added to substitute the automatically created one by 
+ *     REGENTRY_CONV_NUMERIC_STORAGETYPE MACRO
+ *
+ *  CRegEntry::operator double()
+ *
+ *  OPERATOR: Converts (if required) and returns the open registry
+ *  value as a double.
+ */
+
+CRegEntry::operator double() {
+
+	REGENTRY_BINARYTOSTRING 
+		
+	return (REGENTRY_SZ_SAFE ? _tcstod(lpszStr, NULL) :(iType == REG_DWORD ? (double)dwDWORD : 0));
+
+}
+
+
+
+/* ===================================================
  *  CRegEntry::GetBinary(LPBYTE lpbValue, size_t nLen)
  *
  *	Sets the registry value to a binary value (REG_BINARY)

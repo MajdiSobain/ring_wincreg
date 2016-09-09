@@ -135,7 +135,11 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 		EntryName = passedentryName
 
 	Func Get
-		Return CRegGetValue(Key, EntryName)
+		value = CRegGetValue(Key, EntryName)
+		If IsNumber(value)			# It must be a DWORD value so 
+			value = floor(Value)	# it needs to be saved as int value
+		Ok
+		Return value
 
 	Func Set value
 		CRegSetValue(Key, EntryName, value)

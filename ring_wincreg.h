@@ -76,7 +76,6 @@ void ring_vm_creg_cregisbinary( void *pPointer ) ;
 void ring_vm_creg_cregexists( void *pPointer ) ;
 
 
-unsigned char isnum(LPCTSTR str) ;
 LPTSTR GetFormattedMessage(LONG ErrId) ;
 LPTSTR GetErrorMsg(LONG ErrorId , LPSTR pMsg, size_t pMsgsize) ;
 
