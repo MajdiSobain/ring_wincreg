@@ -43,6 +43,7 @@ RING_API void ringlib_init ( RingState *pRingState )
 	ring_vm_funcregister("cregismultistring",ring_vm_creg_cregismultistring);
 	ring_vm_funcregister("cregisbinary",ring_vm_creg_cregisbinary);
 	ring_vm_funcregister("cregexists",ring_vm_creg_cregexists);
+	ring_vm_funcregister("cregtype",ring_vm_creg_cregtype);
 	
 }
 
@@ -442,7 +443,7 @@ void ring_vm_creg_cregrename( void *pPointer ) {
 		CRegistry *p = (CRegistry *) RING_API_GETCPOINTER(1, "CRegistry") ;
 		if ( (p) && (p->hKey) ) { 
 			if (RING_API_GETSTRINGSIZE(2) > 0 && RING_API_GETSTRINGSIZE(3) > 0 ) { 
-				if ( p[0][RING_API_GETSTRING(2)].Exists() ) {
+				if ( EntryExists(p, RING_API_GETSTRING(2)) ) {
 					p[0][RING_API_GETSTRING(2)].SetName(RING_API_GETSTRING(3));
 				} else { RING_API_ERROR("Error : Couldn't find the entry"); }
 			} else { RING_API_ERROR("Error : Entry name could not be empty. Empty names reserved for default keys"); }
@@ -525,9 +526,7 @@ void ring_vm_creg_cregsetmulti( void *pPointer ) {
 	if ( RING_API_ISPOINTER(1) && RING_API_ISSTRING(2) && RING_API_ISSTRING(3) ) {
 		CRegistry *p = (CRegistry *) RING_API_GETCPOINTER(1, "CRegistry") ;
 		if ( (p) && ( p->hKey ) ) {
-			if ( RING_API_GETSTRINGSIZE(2) > 0 ) {
-				p[0][RING_API_GETSTRING(2)].SetMulti(RING_API_GETSTRING(3), RING_API_GETSTRINGSIZE(3) +1); 
-			} else RING_API_ERROR("Error : Cannot set the default entry as MultiString"); 
+			p[0][RING_API_GETSTRING(2)].SetMulti(RING_API_GETSTRING(3), RING_API_GETSTRINGSIZE(3) + 2 ); 
 		} else RING_API_ERROR("Error : Bad CRegistry Key handler"); 
 	} else {
 		RING_API_ERROR(RING_API_BADPARATYPE);
@@ -543,13 +542,11 @@ void ring_vm_creg_cregmultiremoveat( void *pPointer ) {
 	if ( RING_API_ISPOINTER(1) && RING_API_ISSTRING(2) && RING_API_ISNUMBER(3) ) {
 		CRegistry *p = (CRegistry *) RING_API_GETCPOINTER(1, "CRegistry") ;
 		if ( (p) && (p->hKey) ) {
-			if ( RING_API_GETSTRINGSIZE(2) > 0 ) {
-				if ( p[0][RING_API_GETSTRING(2)].Exists() && p[0][RING_API_GETSTRING(2)].IsMultiString() ) {
-					if ( RING_API_GETNUMBER(3) > 0 && RING_API_GETNUMBER(3) < p[0][RING_API_GETSTRING(2)].MultiCount() +1 ) {
-						p[0][RING_API_GETSTRING(2)].MultiRemoveAt((int) RING_API_GETNUMBER(3) -1); 
-					} else RING_API_ERROR("Error : invalid index of this MultiString"); 
-				} else RING_API_ERROR("Error : Not found any MultiString entry with this name!!"); 
-			} else RING_API_ERROR("Error : The default entry is not a MultiString"); 
+			if ( EntryExists(p, RING_API_GETSTRING(2)) && p[0][RING_API_GETSTRING(2)].IsMultiString() ) {
+				if ( RING_API_GETNUMBER(3) > 0 && RING_API_GETNUMBER(3) < p[0][RING_API_GETSTRING(2)].MultiCount() +1 ) {
+					p[0][RING_API_GETSTRING(2)].MultiRemoveAt((int) RING_API_GETNUMBER(3) -1); 
+				} else RING_API_ERROR("Error : invalid index of this MultiString"); 
+			} else RING_API_ERROR("Error : Not found any MultiString entry with this name!!"); 
 		} else RING_API_ERROR("Error : Bad CRegistry Key handler"); 
 	} else {
 		RING_API_ERROR(RING_API_BADPARATYPE);
@@ -565,13 +562,11 @@ void ring_vm_creg_cregmultisetat( void *pPointer ) {
 	if ( RING_API_ISPOINTER(1) && RING_API_ISSTRING(2) && RING_API_ISNUMBER(3) && RING_API_ISSTRING(4) ) {
 		CRegistry *p = (CRegistry *) RING_API_GETCPOINTER(1, "CRegistry") ;
 		if ( (p) && (p->hKey) ) {
-			if ( RING_API_GETSTRINGSIZE(2) > 0 ) {
-				if ( p[0][RING_API_GETSTRING(2)].Exists() && p[0][RING_API_GETSTRING(2)].IsMultiString() ) {
-					if ( RING_API_GETNUMBER(3) > 0 && RING_API_GETNUMBER(3) < p[0][RING_API_GETSTRING(2)].MultiCount() +2 ) {
-						p[0][RING_API_GETSTRING(2)].MultiSetAt((int) RING_API_GETNUMBER(3) -1 , RING_API_GETSTRING(4));
-					} else RING_API_ERROR("Error : invalid index of this MultiString"); 
-				} else RING_API_ERROR("Error : Not found any MultiString entry with this name!!"); 
-			} else RING_API_ERROR("Error : Cannot set the default entry as MultiString"); 
+			if ( EntryExists(p, RING_API_GETSTRING(2)) && p[0][RING_API_GETSTRING(2)].IsMultiString() ) {
+				if ( RING_API_GETNUMBER(3) > 0 && RING_API_GETNUMBER(3) < p[0][RING_API_GETSTRING(2)].MultiCount() +2 ) {
+					p[0][RING_API_GETSTRING(2)].MultiSetAt((int) RING_API_GETNUMBER(3) -1 , RING_API_GETSTRING(4));
+				} else RING_API_ERROR("Error : invalid index of this MultiString"); 
+			} else RING_API_ERROR("Error : Not found any MultiString entry with this name!!"); 
 		} else RING_API_ERROR("Error : Bad CRegistry Key handler");  
 	} else {
 		RING_API_ERROR(RING_API_BADPARATYPE);
@@ -587,11 +582,9 @@ void ring_vm_creg_cregmultiadd( void *pPointer ) {
 	if ( RING_API_ISPOINTER(1) && RING_API_ISSTRING(2) && RING_API_ISSTRING(3) ) {
 		CRegistry *p = (CRegistry *) RING_API_GETCPOINTER(1, "CRegistry") ;
 		if ( (p) && (p->hKey) ) {
-			if ( RING_API_GETSTRINGSIZE(2) > 0 ) {
-				if ( p[0][RING_API_GETSTRING(2)].Exists() && p[0][RING_API_GETSTRING(2)].IsMultiString() ) {
-					p[0][RING_API_GETSTRING(2)].MultiAdd(RING_API_GETSTRING(3)); 
-				} else RING_API_ERROR("Error : Not found any MultiString entry with this name!!"); 
-			} else RING_API_ERROR("Error : Cannot set the default entry as MultiString"); 
+			if ( EntryExists(p, RING_API_GETSTRING(2)) && p[0][RING_API_GETSTRING(2)].IsMultiString() ) {
+				p[0][RING_API_GETSTRING(2)].MultiAdd(RING_API_GETSTRING(3)); 
+			} else RING_API_ERROR("Error : Not found any MultiString entry with this name!!"); 
 		} else RING_API_ERROR("Error : Bad CRegistry Key handler");  
 	} else {
 		RING_API_ERROR(RING_API_BADPARATYPE);
@@ -607,13 +600,11 @@ void ring_vm_creg_cregmultigetat( void *pPointer ) {
 	if ( RING_API_ISPOINTER(1) && RING_API_ISSTRING(2) && RING_API_ISNUMBER(3) ) {
 		CRegistry *p = (CRegistry *) RING_API_GETCPOINTER(1, "CRegistry") ;
 		if ( (p) && (p->hKey) ) {
-			if ( RING_API_GETSTRINGSIZE(2) > 0 ) {
-				if ( p[0][RING_API_GETSTRING(2)].Exists() && p[0][RING_API_GETSTRING(2)].IsMultiString() ) {
-					if ( RING_API_GETNUMBER(3) > 0 && RING_API_GETNUMBER(3) < p[0][RING_API_GETSTRING(2)].MultiCount() +1 ) {
-						RING_API_RETSTRING(p[0][RING_API_GETSTRING(2)].MultiGetAt((int) RING_API_GETNUMBER(3) -1)); 
-					} else RING_API_ERROR("Error : invalid index of this MultiString"); 
-				} else RING_API_ERROR("Error : Not found any MultiString entry with this name!!"); 
-			} else RING_API_ERROR("Error : The default entry is not a MultiString"); 
+			if ( EntryExists(p, RING_API_GETSTRING(2)) && p[0][RING_API_GETSTRING(2)].IsMultiString() ) {
+				if ( RING_API_GETNUMBER(3) > 0 && RING_API_GETNUMBER(3) < p[0][RING_API_GETSTRING(2)].MultiCount() +1 ) {
+					RING_API_RETSTRING(p[0][RING_API_GETSTRING(2)].MultiGetAt((int) RING_API_GETNUMBER(3) -1)); 
+				} else RING_API_ERROR("Error : invalid index of this MultiString"); 
+			} else RING_API_ERROR("Error : Not found any MultiString entry with this name!!"); 
 		} else RING_API_ERROR("Error : Bad CRegistry Key handler"); 
 	} else {
 		RING_API_ERROR(RING_API_BADPARATYPE);
@@ -629,11 +620,9 @@ void ring_vm_creg_cregmulticount( void *pPointer ) {
 	if ( RING_API_ISPOINTER(1) && RING_API_ISSTRING(2) ) {
 		CRegistry *p = (CRegistry *) RING_API_GETCPOINTER(1, "CRegistry") ;
 		if ( (p) && (p->hKey) ) {
-			if ( RING_API_GETSTRINGSIZE(2) > 0 ) {
-				if ( p[0][RING_API_GETSTRING(2)].Exists() && p[0][RING_API_GETSTRING(2)].IsMultiString() ) {
-					RING_API_RETNUMBER(p[0][RING_API_GETSTRING(2)].MultiCount());
-				} else RING_API_ERROR("Error : Not found any MultiString entry with this name!!"); 
-			} else RING_API_ERROR("Error : The default entry is not a MultiString"); 
+			if ( EntryExists(p, RING_API_GETSTRING(2)) && p[0][RING_API_GETSTRING(2)].IsMultiString() ) {
+				RING_API_RETNUMBER(p[0][RING_API_GETSTRING(2)].MultiCount());
+			} else RING_API_ERROR("Error : Not found any MultiString entry with this name!!"); 
 		} else RING_API_ERROR("Error : Bad CRegistry Key handler"); 
 	} else {
 		RING_API_ERROR(RING_API_BADPARATYPE);
@@ -649,11 +638,9 @@ void ring_vm_creg_cregmulticlear( void *pPointer ) {
 	if ( RING_API_ISPOINTER(1) && RING_API_ISSTRING(2) ) {
 		CRegistry *p = (CRegistry *) RING_API_GETCPOINTER(1, "CRegistry") ;
 		if ( (p) && (p->hKey) ) {
-			if ( RING_API_GETSTRINGSIZE(2) > 0 ) {
-				if ( p[0][RING_API_GETSTRING(2)].Exists() && p[0][RING_API_GETSTRING(2)].IsMultiString() ) {
-					p[0][RING_API_GETSTRING(2)].MultiClear();
-				} else RING_API_ERROR("Error : Not found any MultiString entry with this name!!"); 
-			} else RING_API_ERROR("Error : The default entry is not a MultiString"); 
+			if ( EntryExists(p, RING_API_GETSTRING(2)) && p[0][RING_API_GETSTRING(2)].IsMultiString() ) {
+				p[0][RING_API_GETSTRING(2)].MultiClear();
+			} else RING_API_ERROR("Error : Not found any MultiString entry with this name!!"); 
 		} else RING_API_ERROR("Error : Bad CRegistry Key handler"); 
 	} else {
 		RING_API_ERROR(RING_API_BADPARATYPE);
@@ -733,7 +720,42 @@ void ring_vm_creg_cregexists( void *pPointer ) {
 	if ( RING_API_ISPOINTER(1) && RING_API_ISSTRING(2) ) {
 		CRegistry *p = (CRegistry *) RING_API_GETCPOINTER(1, "CRegistry") ;
 		if ( (p) && (p->hKey) ) {
-			RING_API_RETNUMBER(p[0][RING_API_GETSTRING(2)].Exists());
+			DWORD lResult= p[0][RING_API_GETSTRING(2)].Exists();
+			switch (lResult) {
+				case ERROR_SUCCESS:
+					RING_API_RETNUMBER(1);
+					break;
+				case ERROR_FILE_NOT_FOUND:
+					RING_API_RETNUMBER(0);
+					break;
+				default:
+					TCHAR msgBuf[200];
+					RING_API_ERROR(GetErrorMsg(lResult, msgBuf, 200));
+			}
+			return ;
+		} else RING_API_ERROR("Error : Bad CRegistry Key handler");
+	} else {
+		RING_API_ERROR(RING_API_BADPARATYPE);
+	}
+}
+
+// int cregtype ( CRegistry keyhandler , string valuename )
+void ring_vm_creg_cregtype( void *pPointer ) {
+	if ( RING_API_PARACOUNT != 2 ) {
+		RING_API_ERROR(RING_API_MISS2PARA);
+		return ;
+	}
+	if ( RING_API_ISPOINTER(1) && RING_API_ISSTRING(2) ) {
+		CRegistry *p = (CRegistry *) RING_API_GETCPOINTER(1, "CRegistry") ;
+		if ( (p) && (p->hKey) ) {
+			DWORD lResult= p[0][RING_API_GETSTRING(2)].Type();
+			if ( lResult < 12 ) {
+				RING_API_RETNUMBER(lResult);
+			} else {
+				TCHAR msgBuf[200];
+				RING_API_ERROR(GetErrorMsg(lResult - 12, msgBuf, 200));
+			}
+			return ;
 		} else RING_API_ERROR("Error : Bad CRegistry Key handler");
 	} else {
 		RING_API_ERROR(RING_API_BADPARATYPE);
@@ -741,21 +763,38 @@ void ring_vm_creg_cregexists( void *pPointer ) {
 }
 
 
-LPSTR GetFormattedMessage(LONG ErrId){
-    LPSTR pBuffer = NULL;
+
+BOOL EntryExists(CRegistry* key, LPTSTR entry) {
+	DWORD lResult= key[0][entry].Exists();
+			switch (lResult) {
+				case ERROR_SUCCESS:
+					return true;
+					break;
+				case ERROR_FILE_NOT_FOUND:
+					return false;
+					break;
+				default:
+					TCHAR msgBuf[200];
+					printf("%s\n", GetErrorMsg(lResult, msgBuf, 200));
+					return false;
+			}
+}
+
+LPTSTR GetFormattedMessage(LONG ErrId){
+    LPTSTR pBuffer = NULL;
     FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
                   NULL, 
                   ErrId,
 				  // if next para set to zero the msg will be according to system language
                   MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US),
-                  (LPSTR)&pBuffer, 
+                  (LPTSTR)&pBuffer, 
                   0, 
                   NULL);
     return pBuffer;
 }
 
-LPSTR GetErrorMsg(LONG ErrorId , LPSTR pMsg, size_t pMsgsize){
-    LPSTR pBuffer = NULL;
+LPTSTR GetErrorMsg(LONG ErrorId , LPTSTR pMsg, size_t pMsgsize){
+    LPTSTR pBuffer = NULL;
 	pBuffer = GetFormattedMessage(ErrorId);
     if (pBuffer)
     {

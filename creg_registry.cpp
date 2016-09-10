@@ -179,7 +179,9 @@ void CRegEntry::SetName(LPCSTR name) {
 CRegEntry& CRegEntry::operator=(LPCTSTR lpszValue) {
 
 	size_t	nValueLen = (_tcslen(lpszValue) + 1)*sizeof(CHAR);
-	assert(nValueLen <= _MAX_REG_VALUE); 
+	
+	// *** assert(nValueLen <= _MAX_REG_VALUE); 
+	if (nValueLen <= _MAX_REG_VALUE) assert(nValueLen <= _MAX_REG_VALUE); 
 
 	ForceStr();	iType = REG_SZ;	
 
@@ -412,6 +414,52 @@ void CRegEntry::SetBinary(LPBYTE lpbValue, size_t nLen) {
 
 
 /* ===================================================
+ * *** updated Exists function to query even those values of unkown
+ *     types to this class
+ *
+ *  bool CRegEntry::Exists()
+ *
+ *  Checks whether the value entry exists or not.
+ *
+ * Note: This function updated to return the result of RegQueryValueEx
+ */
+
+DWORD CRegEntry::Exists () {
+	/* This piece of code used if we want to return ONLY (True) or (False)
+	if ( RegQueryValueEx(__cregOwner->hKey, lpszName, NULL, NULL, NULL, NULL); == ERROR_SUCCESS ) {
+		return true;
+	} else { 
+		return false; 
+	} */
+
+	return RegQueryValueEx(__cregOwner->hKey, lpszName, NULL, NULL, NULL, NULL);
+}
+
+
+
+/* ===================================================
+ * *** unsigned char CRegEntry::Type()
+ *
+ *  newly added function that returns the type of the entry as a number.
+ *
+ * Note: This function if succeed will return the type but if not it will return the error code Summated to 12
+ */
+
+DWORD CRegEntry::Type() {
+	LONG res;
+	DWORD type;
+	res = RegQueryValueEx(__cregOwner->hKey, lpszName, NULL, &type, NULL, NULL);
+	if ( res == ERROR_SUCCESS ) {
+		return type;
+	} else { 
+		return res + 12; 
+	}
+
+}
+
+
+
+/* ===================================================
  *  CRegEntry::GetBinary(LPBYTE lpbDest, size_t nMaxLen)
  *
  *	Gets the binary value of a value stored as REG_BINARY
@@ -552,7 +600,9 @@ void CRegEntry::MultiRemoveAt(size_t nIndex) {
 	// Ensure correct values with no cache
 	REGENTRY_REFRESH_IF_NOCACHE
 
-	assert(nIndex < vMultiString.size());
+	// *** assert(nIndex < vMultiString.size());
+	if (nIndex < vMultiString.size()) assert(nIndex < vMultiString.size());
+	
 	vMultiString.erase(vMultiString.begin()+nIndex);
 
 	// Update the registry
@@ -578,7 +628,9 @@ void CRegEntry::MultiSetAt(size_t nIndex, LPCTSTR lpszVal) {
 	// Ensure correct values with no cache
 	REGENTRY_REFRESH_IF_NOCACHE
 
-	assert(nIndex > vMultiString.size()) ; 
+	// *** assert(nIndex > vMultiString.size()) ; 
+	if (nIndex > vMultiString.size()) assert(nIndex > vMultiString.size()) ; 
+	
 	iType = REG_MULTI_SZ;
 
 	// Add a new string element if == elements+1
@@ -606,7 +658,7 @@ LPCTSTR CRegEntry::MultiGetAt(size_t nIndex) {
 	// Ensure correct values with no cache
 	REGENTRY_REFRESH_IF_NOCACHE	
 
-	assert(nIndex < vMultiString.size() && IsMultiString());
+	if (nIndex < vMultiString.size() && IsMultiString()) assert(nIndex < vMultiString.size() && IsMultiString());
 	return vMultiString[nIndex].c_str();
 }
 
@@ -727,7 +779,9 @@ void CRegistry::InitData() {
 CRegEntry& CRegistry::operator []( LPCTSTR lpszVName) {
 
 	size_t nValueNameLen = _tcslen(lpszVName) + 1;
-	assert(nValueNameLen <= _MAX_REG_VALUE);
+	
+	// *** assert(nValueNameLen <= _MAX_REG_VALUE);
+	if (nValueNameLen <= _MAX_REG_VALUE) assert(nValueNameLen <= _MAX_REG_VALUE);
 
 	for (int i = _reEntries.size()-1; i >=0; i--) {
 		if (!_tcsicmp(lpszVName, _reEntries[i]->lpszName))
@@ -915,7 +969,7 @@ LONG CRegistry::Open(LPCTSTR lpszRegPath, HKEY hRootKey, DWORD dwAccess, bool bA
 
 bool CRegistry::AutoOpen(DWORD dwAccess) {
 
-	assert(_lpszSubKey != NULL);	/****	Adding conditional check with ERROR_SUCCESS	*/
+	assert(_lpszSubKey != NULL);	/* ***	Adding conditional check with ERROR_SUCCESS	*/
 	return (hKey == NULL && __dwFlags & CREG_AUTOOPEN ? (Open(_lpszSubKey, _hRootKey, dwAccess, true) == ERROR_SUCCESS) : true);
 }
 

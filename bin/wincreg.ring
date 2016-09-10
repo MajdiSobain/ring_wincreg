@@ -18,6 +18,10 @@ Load "wincreg.rh"
 Func KeyExists HKEY, SubKey
 	Return CRegKeyExists(HKEY, SubKey)
 
+/* this function is used to avoid Type() functions conflicts from within RCRegEntry Class */
+Func cTypeForRCRegEntry para
+	Return Type(para)
+
 	
 Class RCRegistry		# Short for Ring CRegistry Class
 
@@ -124,6 +128,7 @@ Class RCRegistry		# Short for Ring CRegistry Class
 		CRegDeleteKey(Key)
 		
 		
+		
 	
 Class RCRegEntry			# Short for Ring CRegistry Entry Class
 
@@ -160,10 +165,10 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 		CRegSetMulti(Key, EntryName, value)
 
 	Func MultiAdd newValue
-		If Exists() = True And MultiCount() > 0
+		If Exists() = True And IsMultiString() = True And MultiCount() > 0
 			CRegMultiAdd(Key, EntryName, newValue)
 		Else
-			SetMutli(newValue)
+			SetMulti(newValue)
 		Ok
 
 	Func MultiSetAt index, newValue
@@ -183,14 +188,15 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 
 	Func SetMultiList valuesList
 		If Len(valuesList) > 0 
-			For i = 1 To Len(valuesList)
-				If IsString(valueList[i]) = True
-					MultiAdd(valueList[i]) 
-				But IsNumber(valueList[i]) = True
-					MultiAdd(String(valueList[i])) 
-				Else 
+			For v in valuesList
+				switch cTypeForRCRegEntry(v)
+				On "STRING"
+					MultiAdd(v) 
+				ON "NUMBER"
+					MultiAdd(String(v)) 
+				Other
 					Raise ("Error : MultiString could just accept strings")
-				Ok
+				Off
 			Next
 		Ok
 
@@ -214,6 +220,12 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 
 	Func IsBinary
 		Return CRegIsBinary(Key, EntryName)
+		
+	Func TypeIndex
+		Return CRegType(Key, EntryName)
 
-
+	Func Type
+		aList = ["REG_NONE", "REG_SZ", "REG_EXPAND_SZ", "REG_BINARY", "REG_DWORD", "REG_DWORD_BIG_ENDIAN", "REG_LINK", "REG_MULTI_SZ",
+				 "REG_RESOURCE_LIST", "REG_FULL_RESOURCE_DESCRIPTOR", "REG_RESOURCE_REQUIREMENTS_LIST", "REG_QWORD"]
+		return aList[TypeIndex() + 1]   # increment by 1 is due to list index that starts with one
 

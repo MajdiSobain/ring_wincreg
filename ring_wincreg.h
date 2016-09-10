@@ -75,9 +75,11 @@ void ring_vm_creg_cregisbinary( void *pPointer ) ;
 
 void ring_vm_creg_cregexists( void *pPointer ) ;
 
+void ring_vm_creg_cregtype( void *pPointer ) ;
 
+BOOL EntryExists(CRegistry* key, LPTSTR entry) ;
 LPTSTR GetFormattedMessage(LONG ErrId) ;
-LPTSTR GetErrorMsg(LONG ErrorId , LPSTR pMsg, size_t pMsgsize) ;
+LPTSTR GetErrorMsg(LONG ErrorId , LPTSTR pMsg, size_t pMsgsize) ;
 
 #ifdef __cplusplus
 }

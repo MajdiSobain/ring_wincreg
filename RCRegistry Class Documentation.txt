@@ -208,3 +208,9 @@ Ok
 If Registry["nEntry"].IsBinary() = True 
 	See "Its a binary"
 Ok
+
+// To get the type index of an entry
+TypeIndex = Registry["nEntry"].TypeIndex()
+
+// To get the type name as string
+TypeName = Registry["nEntry"].Type()

@@ -108,9 +108,12 @@ public:
 	__inline	bool IsDWORD()		{ return (iType == REG_DWORD); }					// ***
 	__inline	bool IsBinary()		{ return (iType == REG_BINARY); }					// ***	
 	__inline	bool IsMultiString() { return (iType == REG_MULTI_SZ); }				// ***
+	/* *** newly added function that returns the type of the entry as number   */
+	DWORD		Type();
 	
 	__inline	bool IsStored()		{ return __bStored; }								// ***
-	__inline	bool Exists()		{ return __bStored; }								// ***
+	/* *** This function updated to return the result of RegQueryValueEx   */
+	DWORD		Exists();	// *** { return __bStored; }								// ***
 
 	__inline	void MultiClear()	{ SetMulti( _T("\0"), 2); }							// ***
 

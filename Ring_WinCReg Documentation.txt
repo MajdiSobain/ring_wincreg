@@ -95,3 +95,4 @@ boolean cregisbinary ( CRegistry keyhandler , string valuename )
 
 boolean cregexists ( CRegistry keyhandler , string valuename )
 
+int cregtype ( CRegistry keyhandler , string valuename )
