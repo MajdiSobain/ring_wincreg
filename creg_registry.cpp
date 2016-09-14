@@ -37,7 +37,7 @@
 
 CRegEntry::CRegEntry(CRegistry *Owner) {
 
-	// *** assert(Owner); 
+	// *** assert(Owner);                 // To help ignore creating an object without owner (Owner = NULL)
 	InitData(Owner);
 }
 
@@ -180,9 +180,8 @@ CRegEntry& CRegEntry::operator=(LPCTSTR lpszValue) {
 
 	size_t	nValueLen = (_tcslen(lpszValue) + 1)*sizeof(CHAR);
 	
-	// *** assert(nValueLen <= _MAX_REG_VALUE); 
-	if (nValueLen <= _MAX_REG_VALUE) assert(nValueLen <= _MAX_REG_VALUE); 
-
+	assert(nValueLen <= _MAX_REG_VALUE); 
+	
 	ForceStr();	iType = REG_SZ;	
 
 	_tcsncpy(lpszStr, lpszValue, nValueLen > _MAX_REG_VALUE ? _MAX_REG_VALUE : nValueLen);
@@ -336,6 +335,7 @@ CRegEntry::operator DWORD() {
 CRegEntry& CRegEntry::operator=(double Value) {
 
 	_R_BUF(18); 
+
 	_stprintf_s(buffer, (18 * sizeof(TCHAR)) ,_T("%f"), Value);
 
 	for (int i = ( ( strlen(buffer) -1 ) * sizeof(TCHAR) ); i >= 0; i-- ) {
@@ -351,7 +351,7 @@ CRegEntry& CRegEntry::operator=(double Value) {
 				buffer[i+1] = -2;		// *** This peice of code made to save such 18.000000 number to be just 18
 			} */
 			break; 
-		}
+		} 
 	}
 
 	return (*this = (LPCTSTR)(buffer)); 
@@ -600,9 +600,8 @@ void CRegEntry::MultiRemoveAt(size_t nIndex) {
 	// Ensure correct values with no cache
 	REGENTRY_REFRESH_IF_NOCACHE
 
-	// *** assert(nIndex < vMultiString.size());
-	if (nIndex < vMultiString.size()) assert(nIndex < vMultiString.size());
-	
+	assert(nIndex < vMultiString.size());
+		
 	vMultiString.erase(vMultiString.begin()+nIndex);
 
 	// Update the registry
@@ -629,7 +628,7 @@ void CRegEntry::MultiSetAt(size_t nIndex, LPCTSTR lpszVal) {
 	REGENTRY_REFRESH_IF_NOCACHE
 
 	// *** assert(nIndex > vMultiString.size()) ; 
-	if (nIndex > vMultiString.size()) assert(nIndex > vMultiString.size()) ; 
+	assert(nIndex <= vMultiString.size()) ; 
 	
 	iType = REG_MULTI_SZ;
 
@@ -658,7 +657,8 @@ LPCTSTR CRegEntry::MultiGetAt(size_t nIndex) {
 	// Ensure correct values with no cache
 	REGENTRY_REFRESH_IF_NOCACHE	
 
-	if (nIndex < vMultiString.size() && IsMultiString()) assert(nIndex < vMultiString.size() && IsMultiString());
+	assert(nIndex < vMultiString.size() && IsMultiString());
+
 	return vMultiString[nIndex].c_str();
 }
 
@@ -687,7 +687,7 @@ LPTSTR CRegEntry::GetMulti(LPTSTR lpszDest, size_t nMax) {
 	if (!lpszDest) lpszDest = new TCHAR[_MAX_REG_VALUE]; // *** added to help call this function without params
 
 	assert(IsMultiString());
-	if (!IsMultiString()) return &(lpszDest[0] = 0);
+	// *** if (!IsMultiString()) return &(lpszDest[0] = 0);
 
 	/* If caching is disabled, refresh the entries */
 	REGENTRY_REFRESH_IF_NOCACHE	
@@ -780,9 +780,8 @@ CRegEntry& CRegistry::operator []( LPCTSTR lpszVName) {
 
 	size_t nValueNameLen = _tcslen(lpszVName) + 1;
 	
-	// *** assert(nValueNameLen <= _MAX_REG_VALUE);
-	if (nValueNameLen <= _MAX_REG_VALUE) assert(nValueNameLen <= _MAX_REG_VALUE);
-
+	assert(nValueNameLen <= _MAX_REG_VALUE);
+	
 	for (int i = _reEntries.size()-1; i >=0; i--) {
 		if (!_tcsicmp(lpszVName, _reEntries[i]->lpszName))
 			return *_reEntries[i];
@@ -969,7 +968,9 @@ LONG CRegistry::Open(LPCTSTR lpszRegPath, HKEY hRootKey, DWORD dwAccess, bool bA
 
 bool CRegistry::AutoOpen(DWORD dwAccess) {
 
-	assert(_lpszSubKey != NULL);	/* ***	Adding conditional check with ERROR_SUCCESS	*/
+	assert(_lpszSubKey != NULL);	
+	
+	/* ***	Adding conditional check with ERROR_SUCCESS	*/
 	return (hKey == NULL && __dwFlags & CREG_AUTOOPEN ? (Open(_lpszSubKey, _hRootKey, dwAccess, true) == ERROR_SUCCESS) : true);
 }
 
@@ -1073,7 +1074,7 @@ bool CRegistry::Refresh() {
  */
 
 void CRegistry::DeleteKey() {
-	assert(_hRootKey && _tcslen(_lpszSubKey));		// *** This check has been added in case of HKEY just handled
+	assert(_hRootKey && _tcslen(_lpszSubKey));		// *** This check has been added to query HKEY handler
 	OSVERSIONINFO osvi;
 	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
 	

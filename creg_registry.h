@@ -159,9 +159,11 @@ public:
 	CRegistry	(DWORD flags = CREG_CREATE, bool Acc64Tree = false);	
 	virtual		~CRegistry() { Close(); for (int i=0; i < (int) _reEntries.size(); ++i) delete _reEntries[i]; delete [] _lpszSubKey; }
 
-	CRegEntry&	operator[](LPCTSTR lpszVName); //*** n from size_t into int , and check wether the key is empty or not
+	CRegEntry&	operator[](LPCTSTR lpszVName); 
+
 	// *** added code that will clear the entries list from non saved entries
-	CRegEntry*	GetAt(size_t n) { ClearUnsaved(); return ((Count() > 0) ? ( ((int) n < Count()) ? ( _reEntries.at(n) ) : NULL ) : NULL);  /*** assert(Count() > 0 && (int) n < Count());*/  }
+	// *** n from size_t into int
+	CRegEntry*	GetAt(size_t n) { ClearUnsaved(); assert(Count() > 0 && (int) n < Count()); return _reEntries.at(n); }
 
 	/***	Change the type of Open function to be able to return the result of
 	 ***	RegCreateKeyEx and RegOpenKeyEx	*/ 
@@ -173,7 +175,7 @@ public:
 	void		Close();
 	bool		Refresh();	
 
-	// *** remove static from decleration of KeyExis
+	// *** remove static from decleration of KeyExists
 	LONG		KeyExists(LPCTSTR lpszRegPath, HKEY hRootKey = HKEY_LOCAL_MACHINE);
 	LONG		SubKeyExists(LPCTSTR lpszSub);	
 	
@@ -186,7 +188,7 @@ public:
 	__inline	int Count()		{ ClearUnsaved(); return _reEntries.size(); }		//***
 
 	// *** Newly added function to clear _reEntries from unsaved entries
-	void		ClearUnsaved() { for (int x =_reEntries.size() -1; x >= 0; x--) { if(!_reEntries.at(x)->Exists()) _reEntries.erase(_reEntries.begin()+x); } }
+	void		ClearUnsaved() { for (int x =_reEntries.size() -1; x >= 0; x--) { if(!_reEntries.at(x)->IsStored()) _reEntries.erase(_reEntries.begin()+x); } }
 
 	/*	***	This method has been added to be able to reset flags even after object definition	*/
 	__inline	void SetFlags(DWORD flags)	 {	__dwFlags = flags; if(hKey) Open(_lpszSubKey,_hRootKey); }	
