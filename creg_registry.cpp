@@ -334,9 +334,10 @@ CRegEntry::operator DWORD() {
 
 CRegEntry& CRegEntry::operator=(double Value) {
 
-	_R_BUF(18); 
+	_R_BUF(23);    // *** 23 is because the upper limit of numbers in ring is 15 digit or point {pluse} .000000 of
+	               // *** _stprintf_s in case all of 15 are numbers {plus} terminal 0 (Numeric Overflow! Error)
 
-	_stprintf_s(buffer, (18 * sizeof(TCHAR)) ,_T("%f"), Value);
+	_stprintf_s(buffer, (23 * sizeof(TCHAR)) ,_T("%f"), Value);
 
 	for (int i = ( ( strlen(buffer) -1 ) * sizeof(TCHAR) ); i >= 0; i-- ) {
 		if ( !strcmp( &buffer[(i-1)] , (LPCTSTR) ".0" ) ) {
