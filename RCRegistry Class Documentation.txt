@@ -188,6 +188,12 @@ c = Registry["nEntry"].MutliCount()
 // To clear all the values of a MultiString entry named "nEntry"
 Registry["nEntry"].MultiClear()
 
+// To get a value of REG_EXPAND_SZ named "nEntry"
+v = Registry["nEntry"].GetExpandSZ()
+
+// To set a value of REG_EXPAND_SZ named "nEntry"
+Registry["nEntry"].SetExpandSZ("Expandable value")
+
 // To set a MultiString entry named "nEntry" with a list of values 
 aList = ["one", "two", "three", "four"]
 Registry["nEntry"].SetMultiList(aList)
@@ -207,6 +213,9 @@ If Registry["nEntry"].IsMultiString() = True
 Ok
 If Registry["nEntry"].IsBinary() = True 
 	See "Its a binary"
+Ok
+If Registry["nEntry"].IsExpandSZ() = True 
+	See "Its an Expandable SZ"
 Ok
 
 // To get the type index of an entry

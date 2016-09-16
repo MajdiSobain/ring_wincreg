@@ -104,6 +104,14 @@ void CRegEntry::SetOwner(CRegistry* Owner) {
 				__cregOwner[0][lpszName].SetBinary(pbvalue, n);
 				break;		
 							 }
+			case REG_EXPAND_SZ: {
+				LPTSTR eszvalue = new _TCHAR[_MAX_REG_VALUE];
+				eszvalue = __cregOwner[0][lpszName].GetExpandSZ();
+				assert(Owner);
+				__cregOwner = Owner;
+				__cregOwner[0][lpszName].SetExpandSZ(eszvalue);
+				break;
+								}
 		} 
 }
 
@@ -165,6 +173,14 @@ void CRegEntry::SetName(LPCSTR name) {
 				__cregOwner[0][lpszName].SetBinary(pbvalue, n);
 				break;		
 							 }
+			case REG_EXPAND_SZ: {
+				LPTSTR eszvalue = new _TCHAR[_MAX_REG_VALUE];
+				eszvalue = __cregOwner[0][lpszName].GetExpandSZ();
+				this->Delete();
+				this->lpszName = (LPTSTR) name;
+				__cregOwner[0][lpszName].SetExpandSZ(eszvalue);
+				break;
+								}
 		} 
 }
 
@@ -178,7 +194,7 @@ void CRegEntry::SetName(LPCSTR name) {
 
 CRegEntry& CRegEntry::operator=(LPCTSTR lpszValue) {
 
-	size_t	nValueLen = (_tcslen(lpszValue) + 1)*sizeof(CHAR);
+	size_t	nValueLen = (_tcslen(lpszValue) + 1)*sizeof(TCHAR);
 	
 	assert(nValueLen <= _MAX_REG_VALUE); 
 	
@@ -260,6 +276,11 @@ CRegEntry& CRegEntry::operator=(CRegEntry& cregValue) {
 			delete [] buf; return *this;
 			}
 			break;
+		case REG_EXPAND_SZ: {
+			SetExpandSZ(cregValue.GetExpandSZ());
+			return *this;
+							}
+			break;
 		default:
 			return (*this = cregValue.dwDWORD);
 	}
@@ -296,7 +317,10 @@ CRegEntry::operator LPTSTR() {
 			lpszStr[vBytes.size()] = 0;
 			}
 			break;
-
+		case REG_EXPAND_SZ:
+			lpszStr = new TCHAR[_MAX_REG_VALUE * 16];
+			_stprintf(lpszStr, _T("%s"), GetExpandSZ(true));
+			break;
 	}
 	return lpszStr;
 }
@@ -339,7 +363,7 @@ CRegEntry& CRegEntry::operator=(double Value) {
 
 	_stprintf_s(buffer, (23 * sizeof(TCHAR)) ,_T("%f"), Value);
 
-	for (int i = ( ( strlen(buffer) -1 ) * sizeof(TCHAR) ); i >= 0; i-- ) {
+	for (int i = ( ( _tcslen(buffer) -1 ) * sizeof(TCHAR) ); i >= 0; i-- ) {
 		if ( !strcmp( &buffer[(i-1)] , (LPCTSTR) ".0" ) ) {
 			break;				// *** This peice of code made to save such 18.000000 number to be just 18.0
 		} 
@@ -433,7 +457,11 @@ DWORD CRegEntry::Exists () {
 		return false; 
 	} */
 
-	return RegQueryValueEx(__cregOwner->hKey, lpszName, NULL, NULL, NULL, NULL);
+	if ( IsStored() ) {
+		return ERROR_SUCCESS;
+	} else {
+		return RegQueryValueEx(__cregOwner->hKey, lpszName, NULL, NULL, NULL, NULL);
+	}
 }
 
 
@@ -711,6 +739,71 @@ LPTSTR CRegEntry::GetMulti(LPTSTR lpszDest, size_t nMax) {
 
 
 /* ===================================================
+ *  *** newly added function 
+ *
+ *  CRegEntry::GetExpandSZ(bool Expandable)
+ *
+ *	retrive the value (NULL terminated string) of REG_EXPAND_SZ type directly from registry
+ *	
+ */
+
+LPTSTR CRegEntry::GetExpandSZ(bool Expandable) {
+	DWORD vSize;
+	DWORD dwflags = RRF_RT_REG_EXPAND_SZ | RRF_RT_REG_SZ | RRF_ZEROONFAILURE;
+	
+	assert(IsExpandSZ());
+	
+	if (!Expandable) {
+		lpszStr = new TCHAR[_MAX_REG_VALUE];	// lpszStr is used in this type (REG_EXPAND_SZ) as a reservoir for returned value
+		vSize = _MAX_REG_VALUE;
+		dwflags |= RRF_NOEXPAND ;
+	} else {
+		lpszStr = new TCHAR[_MAX_REG_VALUE * 16];
+		vSize = _MAX_REG_VALUE * 16; 
+	}
+
+	if (RegGetValue(__cregOwner[0].hKey, NULL, lpszName, dwflags, NULL, lpszStr, &vSize) == ERROR_MORE_DATA) 
+		lpszStr = "!!! ERROR_MORE_DATA !!!";		// This Error will mostly occur if the data of the Environment varaibles is large 
+
+
+		return lpszStr;
+}
+
+
+
+/* ===================================================
+ *  *** newly added function 
+ *
+ *  CRegEntry::SetExpandSZ(LPTSTR value)
+ *
+ *	set a value (NULL terminated string) of REG_EXPAND_SZ type directly to registry
+ * 
+ *	Note : this function also retreive the important information about the value in the time of loading
+ */
+
+DWORD CRegEntry::SetExpandSZ(LPTSTR value) {
+	DWORD svalue = ( _tcslen(value) + 1 ) * sizeof(TCHAR);
+
+	assert(svalue <= _MAX_REG_VALUE);
+
+	iType = REG_EXPAND_SZ;
+
+	if (REGENTRY_NOTLOADING && REGENTRY_KEYVALID( KEY_SET_VALUE )) {
+
+		svalue = RegSetValueEx(__cregOwner->hKey, lpszName, NULL, REG_EXPAND_SZ, (LPBYTE) value, svalue);		
+
+	}
+
+	__bStored = true;
+
+	REGENTRY_TRYCLOSE;
+	
+	return svalue;
+}
+
+
+
+/* ===================================================
  *  CRegEntry::Delete()
  *
  *	Removes the value from the open registry key, returns
@@ -971,7 +1064,7 @@ bool CRegistry::AutoOpen(DWORD dwAccess) {
 
 	assert(_lpszSubKey != NULL);	
 	
-	/* ***	Adding conditional check with ERROR_SUCCESS	*/
+	/* ***	Adding conditional check with ERROR_SUCCESS	because Open() return changed to lResult */
 	return (hKey == NULL && __dwFlags & CREG_AUTOOPEN ? (Open(_lpszSubKey, _hRootKey, dwAccess, true) == ERROR_SUCCESS) : true);
 }
 
@@ -1054,6 +1147,9 @@ bool CRegistry::Refresh() {
 			case REG_BINARY:
 				this[0][cValueName].SetBinary(lpbBuffer, (size_t)dwBufferSize);
 				break;				
+			case REG_EXPAND_SZ:
+				this[0][cValueName].SetExpandSZ((LPTSTR) lpbBuffer);
+				break;
 		}
 	}
 
@@ -1253,14 +1349,14 @@ LPTSTR CRegistry::GetSubKeyAt(int index, LPTSTR Subkey, int sksize) {
 	SetFlags(__dwFlags); // Reopen the key with normal falgs
 
 	if ( ERROR_SUCCESS == res ) {
-		sprintf_s(Subkey, sksize, "%s", Skey);
+		sprintf_s(Subkey, sksize, _T("%s"), Skey);
 		return Subkey;
 	} else {
 		LPTSTR err = new TCHAR[50];
 		TCHAR errnum[5];
-		strcpy(err, "ERROR IN RETRIVING THE SUBKEY NAME (");
-		strcat(err, _ultot(res, errnum, 10));
-		strcat(err, ")");
+		_tcscpy(err, _T("ERROR IN RETRIVING THE SUBKEY NAME ("));
+		_tcscat(err, _ultot(res, errnum, 10));
+		_tcscat(err, _T(")"));
 		return err;
 	}
 }

@@ -85,6 +85,10 @@ int cregmulticount ( CRegistry keyhandler , string valuename )
 
 void cregmulticlear ( cpointer , string valuename )
 
+string creggetexpandsz( CRegistry keyhandler , string valuename )
+
+void cregsetexpandsz( CRegistry keyhandler , string valuename , string value )
+
 boolean cregisstring ( CRegistry keyhandler , string valuename )
 
 boolean cregisdword ( CRegistry keyhandler , string valuename )
@@ -92,6 +96,8 @@ boolean cregisdword ( CRegistry keyhandler , string valuename )
 boolean cregismultistring ( CRegistry keyhandler , string valuename )
 
 boolean cregisbinary ( CRegistry keyhandler , string valuename )
+
+boolean cregisexpandsz ( CRegistry keyhandler , string valuename )
 
 boolean cregexists ( CRegistry keyhandler , string valuename )
 

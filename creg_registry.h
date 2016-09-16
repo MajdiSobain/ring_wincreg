@@ -193,9 +193,9 @@ public:
 	/*	***	This method has been added to be able to reset flags even after object definition	*/
 	__inline	void SetFlags(DWORD flags)	 {	__dwFlags = flags; if(hKey) Open(_lpszSubKey,_hRootKey); }	
 
-	// *** used to get Root Hkey from out side the class
+	// *** used to get Root hKey from out side the class
 	__inline	HKEY GetHRoot() { return _hRootKey; }
-	// *** used to get Root Hkey from out side the class
+	// *** used to get the Subkey from out side the class
 	__inline	LPTSTR GetSubKey() { return _lpszSubKey; }
 
 	/*	***	This method has been added to be able to access 64 bit windows registry tree even after object definition	*/

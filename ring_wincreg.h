@@ -65,6 +65,10 @@ void ring_vm_creg_cregmulticount( void *pPointer ) ;
 
 void ring_vm_creg_cregmulticlear( void *pPointer ) ;
 
+void ring_vm_creg_creggetexpandsz( void *pPointer ) ;
+
+void ring_vm_creg_cregsetexpandsz( void *pPointer ) ;
+
 void ring_vm_creg_cregisstring( void *pPointer ) ;
 
 void ring_vm_creg_cregisdword( void *pPointer ) ;
@@ -72,6 +76,8 @@ void ring_vm_creg_cregisdword( void *pPointer ) ;
 void ring_vm_creg_cregismultistring( void *pPointer ) ;
 
 void ring_vm_creg_cregisbinary( void *pPointer ) ;
+
+void ring_vm_creg_cregisexpandsz( void *pPointer ) ;
 
 void ring_vm_creg_cregexists( void *pPointer ) ;
 

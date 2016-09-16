@@ -31,6 +31,9 @@ Class RCRegistry		# Short for Ring CRegistry Class
 	Func operator cOperator,Para
 		Switch cOperator
 		On "[]"
+			If IsString(Para) = False
+				Raise("Error : The name of the entry must be string")
+			Ok
 			RegEntry.Init(Key, Para)
 			Return RegEntry
 		Off
@@ -208,6 +211,12 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 			Next
 		Ok
 		Return MultiList
+		
+	Func GetExpandSZ
+		Return CRegGetExpandSZ(Key, EntryName)
+		
+	Func SetExpandSZ value
+		Return CRegSetExpandSZ(Key, EntryName, value)
 
 	Func IsString
 		Return CRegIsString(Key, EntryName)
@@ -220,6 +229,9 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 
 	Func IsBinary
 		Return CRegIsBinary(Key, EntryName)
+		
+	Func IsExpandSZ
+		Return CRegIsExpandSZ(Key, EntryName)
 		
 	Func TypeIndex
 		Return CRegType(Key, EntryName)

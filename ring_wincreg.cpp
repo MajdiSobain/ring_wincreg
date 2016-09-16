@@ -38,10 +38,13 @@ RING_API void ringlib_init ( RingState *pRingState )
 	ring_vm_funcregister("cregmultigetat",ring_vm_creg_cregmultigetat);
 	ring_vm_funcregister("cregmulticount",ring_vm_creg_cregmulticount);
 	ring_vm_funcregister("cregmulticlear",ring_vm_creg_cregmulticlear);
+	ring_vm_funcregister("creggetexpandsz",ring_vm_creg_creggetexpandsz);
+	ring_vm_funcregister("cregsetexpandsz",ring_vm_creg_cregsetexpandsz);
 	ring_vm_funcregister("cregisstring",ring_vm_creg_cregisstring);
 	ring_vm_funcregister("cregisdword",ring_vm_creg_cregisdword);
 	ring_vm_funcregister("cregismultistring",ring_vm_creg_cregismultistring);
 	ring_vm_funcregister("cregisbinary",ring_vm_creg_cregisbinary);
+	ring_vm_funcregister("cregisexpandsz",ring_vm_creg_cregisexpandsz);
 	ring_vm_funcregister("cregexists",ring_vm_creg_cregexists);
 	ring_vm_funcregister("cregtype",ring_vm_creg_cregtype);
 	
@@ -492,6 +495,8 @@ void ring_vm_creg_creggetvalue( void *pPointer ) {
 				RING_API_RETNUMBER(p[0][RING_API_GETSTRING(2)]);
 			} else if ( p[0][RING_API_GETSTRING(2)].IsString() ) {
 				RING_API_RETSTRING(p[0][RING_API_GETSTRING(2)]);
+			} else if ( p[0][RING_API_GETSTRING(2)].IsExpandSZ() ) {
+				RING_API_RETSTRING((LPTSTR) p[0][RING_API_GETSTRING(2)]);
 			} else {
 				RING_API_ERROR("Error : This function can return DWORD and REG_SZ values only");
 			}
@@ -647,6 +652,44 @@ void ring_vm_creg_cregmulticlear( void *pPointer ) {
 	}
 }
 
+// string creggetexpandsz( CRegistry keyhandler , string valuename )
+void ring_vm_creg_creggetexpandsz( void *pPointer ) {
+	if ( RING_API_PARACOUNT != 2 ) {
+		RING_API_ERROR(RING_API_MISS2PARA);
+		return ;
+	}
+	if ( RING_API_ISPOINTER(1) && RING_API_ISSTRING(2) ) {
+		CRegistry *p = (CRegistry *) RING_API_GETCPOINTER(1, "CRegistry") ;
+		if ( (p) && (p->hKey) ) {
+			if ( EntryExists(p, RING_API_GETSTRING(2)) && p[0][RING_API_GETSTRING(2)].IsExpandSZ() ) {
+				RING_API_RETSTRING(p[0][RING_API_GETSTRING(2)].GetExpandSZ());
+			} else RING_API_ERROR("Error : Not found any REG_EXPAND_SZ entry with this name!!"); 
+		} else RING_API_ERROR("Error : Bad CRegistry Key handler"); 
+	} else {
+		RING_API_ERROR(RING_API_BADPARATYPE);
+	}
+}
+
+// void cregsetexpandsz( CRegistry keyhandler , string valuename , string value )
+void ring_vm_creg_cregsetexpandsz( void *pPointer ) {
+	if ( RING_API_PARACOUNT != 3 ) {
+		RING_API_ERROR(RING_API_MISS3PARA);
+		return ;
+	}
+	if ( RING_API_ISPOINTER(1) && RING_API_ISSTRING(2) && RING_API_ISSTRING(3) ) {
+		CRegistry *p = (CRegistry *) RING_API_GETCPOINTER(1, "CRegistry") ;
+		if ( (p) && (p->hKey) ) {
+			DWORD lResult = p[0][RING_API_GETSTRING(2)].SetExpandSZ(RING_API_GETSTRING(3));
+			if ( lResult != ERROR_SUCCESS ) {
+				TCHAR msgBuf[200];
+				RING_API_ERROR(GetErrorMsg(lResult, msgBuf, 200));
+			}
+		} else RING_API_ERROR("Error : Bad CRegistry Key handler"); 
+	} else {
+		RING_API_ERROR(RING_API_BADPARATYPE);
+	}
+}
+
 // boolean cregisstring ( CRegistry keyhandler , string valuename )
 void ring_vm_creg_cregisstring( void *pPointer ) {
 	if ( RING_API_PARACOUNT != 2 ) {
@@ -705,6 +748,22 @@ void ring_vm_creg_cregisbinary( void *pPointer ) {
 		CRegistry *p = (CRegistry *) RING_API_GETCPOINTER(1, "CRegistry") ;
 		if ( (p) && (p->hKey) ) {
 			RING_API_RETNUMBER(p[0][RING_API_GETSTRING(2)].IsBinary());
+		} else RING_API_ERROR("Error : Bad CRegistry Key handler");
+	} else {
+		RING_API_ERROR(RING_API_BADPARATYPE);
+	}
+}
+
+// boolean cregisexpandsz ( CRegistry keyhandler , string valuename )
+void ring_vm_creg_cregisexpandsz( void *pPointer ) {
+	if ( RING_API_PARACOUNT != 2 ) {
+		RING_API_ERROR(RING_API_MISS2PARA);
+		return ;
+	}
+	if ( RING_API_ISPOINTER(1) && RING_API_ISSTRING(2) ) {
+		CRegistry *p = (CRegistry *) RING_API_GETCPOINTER(1, "CRegistry") ;
+		if ( (p) && (p->hKey) ) {
+			RING_API_RETNUMBER(p[0][RING_API_GETSTRING(2)].IsExpandSZ());
 		} else RING_API_ERROR("Error : Bad CRegistry Key handler");
 	} else {
 		RING_API_ERROR(RING_API_BADPARATYPE);
