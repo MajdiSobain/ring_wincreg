@@ -40,11 +40,14 @@ RING_API void ringlib_init ( RingState *pRingState )
 	ring_vm_funcregister("cregmulticlear",ring_vm_creg_cregmulticlear);
 	ring_vm_funcregister("creggetexpandsz",ring_vm_creg_creggetexpandsz);
 	ring_vm_funcregister("cregsetexpandsz",ring_vm_creg_cregsetexpandsz);
+	ring_vm_funcregister("cregsetqword",ring_vm_creg_cregsetqword);
+	ring_vm_funcregister("creggetqword",ring_vm_creg_creggetqword);
 	ring_vm_funcregister("cregisstring",ring_vm_creg_cregisstring);
 	ring_vm_funcregister("cregisdword",ring_vm_creg_cregisdword);
 	ring_vm_funcregister("cregismultistring",ring_vm_creg_cregismultistring);
 	ring_vm_funcregister("cregisbinary",ring_vm_creg_cregisbinary);
 	ring_vm_funcregister("cregisexpandsz",ring_vm_creg_cregisexpandsz);
+	ring_vm_funcregister("cregisqword",ring_vm_creg_cregisqword);
 	ring_vm_funcregister("cregexists",ring_vm_creg_cregexists);
 	ring_vm_funcregister("cregtype",ring_vm_creg_cregtype);
 	
@@ -498,7 +501,7 @@ void ring_vm_creg_creggetvalue( void *pPointer ) {
 			} else if ( p[0][RING_API_GETSTRING(2)].IsExpandSZ() ) {
 				RING_API_RETSTRING((LPTSTR) p[0][RING_API_GETSTRING(2)]);
 			} else {
-				RING_API_ERROR("Error : This function can return DWORD and REG_SZ values only");
+				RING_API_ERROR("Error : This function can return DWORD, REG_SZ, and REG_EXPAND_SZ values only");
 			}
 		} else RING_API_ERROR("Error : Bad CRegistry Key handler");
 	} else {
@@ -690,6 +693,56 @@ void ring_vm_creg_cregsetexpandsz( void *pPointer ) {
 	}
 }
 
+// void cregsetqword( CRegistry keyhandler , string valuename , number\string value )
+void ring_vm_creg_cregsetqword( void *pPointer ) {
+	if ( RING_API_PARACOUNT != 3 ) {
+		RING_API_ERROR(RING_API_MISS3PARA);
+		return ;
+	}
+	if ( RING_API_ISPOINTER(1) && RING_API_ISSTRING(2) && (RING_API_ISSTRING(3) || RING_API_ISNUMBER(3)) ) {
+		CRegistry *p = (CRegistry *) RING_API_GETCPOINTER(1, "CRegistry") ;
+		if ( (p) && (p->hKey) ) {
+			DWORD lResult = 0; 
+			if (RING_API_ISNUMBER(3)) {
+				lResult = p[0][RING_API_GETSTRING(2)].SetQWORD((UINT64) RING_API_GETNUMBER(3));
+			} else {
+				if (isnum(RING_API_GETSTRING(3))) {
+					lResult = p[0][RING_API_GETSTRING(2)].SetQWORD((UINT64) RING_API_GETNUMBER(3));
+				} else RING_API_ERROR("Error : invalid entered QWORD string value"); 
+			}
+			if ( lResult != ERROR_SUCCESS ) {
+				TCHAR msgBuf[200];
+				RING_API_ERROR(GetErrorMsg(lResult, msgBuf, 200));
+			}
+		} else RING_API_ERROR("Error : Bad CRegistry Key handler"); 
+	} else {
+		RING_API_ERROR(RING_API_BADPARATYPE);
+	}
+}
+
+// string creggetqword( CRegistry keyhandler , string valuename )
+void ring_vm_creg_creggetqword( void *pPointer ) {
+	if ( RING_API_PARACOUNT != 2 ) {
+		RING_API_ERROR(RING_API_MISS2PARA);
+		return ;
+	}
+	if ( RING_API_ISPOINTER(1) && RING_API_ISSTRING(2) ) {
+		CRegistry *p = (CRegistry *) RING_API_GETCPOINTER(1, "CRegistry") ;
+		if ( (p) && (p->hKey) ) {
+			if ( EntryExists(p, RING_API_GETSTRING(2)) && p[0][RING_API_GETSTRING(2)].IsQWORD() ) {
+				UINT64 value = p[0][RING_API_GETSTRING(2)].GetQWORD();
+				if ( value < 9999999999999910 ) {
+					RING_API_RETNUMBER(value);
+				} else {
+					RING_API_RETSTRING((LPTSTR) p[0][RING_API_GETSTRING(2)]);
+				}
+			} else RING_API_ERROR("Error : Not found any REG_QWORD entry with this name!!"); 
+		} else RING_API_ERROR("Error : Bad CRegistry Key handler"); 
+	} else {
+		RING_API_ERROR(RING_API_BADPARATYPE);
+	}
+}
+
 // boolean cregisstring ( CRegistry keyhandler , string valuename )
 void ring_vm_creg_cregisstring( void *pPointer ) {
 	if ( RING_API_PARACOUNT != 2 ) {
@@ -770,6 +823,22 @@ void ring_vm_creg_cregisexpandsz( void *pPointer ) {
 	}
 }
 
+// boolean cregisqword ( CRegistry keyhandler , string valuename )
+void ring_vm_creg_cregisqword( void *pPointer ) {
+	if ( RING_API_PARACOUNT != 2 ) {
+		RING_API_ERROR(RING_API_MISS2PARA);
+		return ;
+	}
+	if ( RING_API_ISPOINTER(1) && RING_API_ISSTRING(2) ) {
+		CRegistry *p = (CRegistry *) RING_API_GETCPOINTER(1, "CRegistry") ;
+		if ( (p) && (p->hKey) ) {
+			RING_API_RETNUMBER(p[0][RING_API_GETSTRING(2)].IsQWORD());
+		} else RING_API_ERROR("Error : Bad CRegistry Key handler");
+	} else {
+		RING_API_ERROR(RING_API_BADPARATYPE);
+	}
+}
+
 // boolean cregexists ( CRegistry keyhandler , string valuename )
 void ring_vm_creg_cregexists( void *pPointer ) {
 	if ( RING_API_PARACOUNT != 2 ) {
@@ -839,6 +908,16 @@ BOOL EntryExists(CRegistry* key, LPTSTR entry) {
 			}
 }
 
+unsigned char isnum(LPCSTR str) {
+	bool n = true;
+	for (int i=0;i< strlen(str);i++) {
+		if ( (isdigit(str[i])) || (str[i] == '.' &&  n == true)) {
+			if (str[i] == '.') n = false;
+		} else return 0;
+	}
+	return 1;
+}
+
 LPTSTR GetFormattedMessage(LONG ErrId){
     LPTSTR pBuffer = NULL;
     FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
@@ -883,7 +962,7 @@ LPTSTR GetErrorMsg(LONG ErrorId , LPTSTR pMsg, size_t pMsgsize){
 ------------------------------------------------------------------------
 Functions Names : CRegGetMulti, CRegMultiLength
 
-There job : Get value, and the whole length of MultiString values
+Their job : Get value, and the whole length of MultiString values
 
 Cause of deactivation : There're some problems arose when trying to deal with them remotely from RING
 						Because we can not deal with all string length including null terminates so that
@@ -944,29 +1023,19 @@ void ring_vm_creg_cregmultilength( void *pPointer ) {
 
 
 -------------------------------------------------------------------------
-Functions Name : isnum         #  locally used function  #
+Functions Name : 
 
-There job : Check whether the passed string is a number or not
+It's job : 
 
-Cause of deactivation : Not need for it after updating CRegistry Class to deal well with double values 
+Cause of deactivation : 
 
-Idea for reactivation : ---
+Idea for reactivation : 
 						
 
 -------------------------------------------------------------------------
 -------------------------------- THE CODE -------------------------------
 -------------------------------------------------------------------------
 
-
-unsigned char isnum(LPCSTR str) {
-	bool n = true;
-	for (int i=0;i< strlen(str);i++) {
-		if ( (isdigit(str[i])) || (str[i] == '.' &&  n == true)) {
-			if (str[i] == '.') n = false;
-		} else return 0;
-	}
-	return 1;
-}
 
 */
 

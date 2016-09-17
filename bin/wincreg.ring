@@ -217,6 +217,19 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 		
 	Func SetExpandSZ value
 		Return CRegSetExpandSZ(Key, EntryName, value)
+		
+	Func GetQWORD
+		Return CRegGetQWORD(Key, EntryName)
+		
+	Func GetQWORDs
+		v = CRegGetQWORD(Key, EntryName)
+		If IsNumber(v)
+			v = String(v)
+		Ok
+		Return v
+		
+	Func SetQWORD value
+		Return CRegSetQWORD(Key, EntryName, value)
 
 	Func IsString
 		Return CRegIsString(Key, EntryName)
@@ -232,6 +245,9 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 		
 	Func IsExpandSZ
 		Return CRegIsExpandSZ(Key, EntryName)
+		
+	Func IsQWORD
+		Return CRegIsQWORD(Key, EntryName)
 		
 	Func TypeIndex
 		Return CRegType(Key, EntryName)

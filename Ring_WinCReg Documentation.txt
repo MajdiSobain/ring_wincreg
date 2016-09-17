@@ -89,6 +89,10 @@ string creggetexpandsz( CRegistry keyhandler , string valuename )
 
 void cregsetexpandsz( CRegistry keyhandler , string valuename , string value )
 
+void cregsetqword( CRegistry keyhandler , string valuename , number\string value )
+
+string creggetqword( CRegistry keyhandler , string valuename )
+
 boolean cregisstring ( CRegistry keyhandler , string valuename )
 
 boolean cregisdword ( CRegistry keyhandler , string valuename )
@@ -98,6 +102,8 @@ boolean cregismultistring ( CRegistry keyhandler , string valuename )
 boolean cregisbinary ( CRegistry keyhandler , string valuename )
 
 boolean cregisexpandsz ( CRegistry keyhandler , string valuename )
+
+boolean cregisqword ( CRegistry keyhandler , string valuename )
 
 boolean cregexists ( CRegistry keyhandler , string valuename )
 

@@ -145,7 +145,8 @@ Registry =  new RCRegistry {
 Registry["nEntry"].Set("500 S.R.")
 
 // To get a value of an entry named "nEntry" from the same opened key
-// This function will return "just" a REG_DWORD as numerical value and REG_SZ as string
+// This function will return "just" a REG_DWORD as numerical value and REG_SZ 
+// or REG_EXPAND_SZ (expanded form) as string
 v = Registry["nEntry"].Get()
 See v
 
@@ -188,18 +189,30 @@ c = Registry["nEntry"].MutliCount()
 // To clear all the values of a MultiString entry named "nEntry"
 Registry["nEntry"].MultiClear()
 
-// To get a value of REG_EXPAND_SZ named "nEntry"
-v = Registry["nEntry"].GetExpandSZ()
-
-// To set a value of REG_EXPAND_SZ named "nEntry"
-Registry["nEntry"].SetExpandSZ("Expandable value")
-
 // To set a MultiString entry named "nEntry" with a list of values 
 aList = ["one", "two", "three", "four"]
 Registry["nEntry"].SetMultiList(aList)
 
 // To get all values of a MultiString entry named "nEntry" into a List 
 aList = Registry["nEntry"].GetMultiList()
+
+// To get a value of REG_EXPAND_SZ named "nEntry"
+v = Registry["nEntry"].GetExpandSZ()
+
+// To set a value of REG_EXPAND_SZ named "nEntry"
+Registry["nEntry"].SetExpandSZ("Expandable value")
+
+// To get a value of REG_QWORD named "nEntry"
+// returned value could be number if it is the ring limit of numbers or 
+// string if it is large
+v = Registry["nEntry"].GetQWORD()
+
+// To get a string value of any REG_QWORD entry use this function
+v = Registry["nEntry"].GetQWORDs()
+
+// To set a value of REG_QWORD named "nEntry"
+// the value could be number or string
+Registry["nEntry"].SetQWORD( value )
 
 // To check the type of an entry named "nEntry"
 If Registry["nEntry"].IsString() = True 

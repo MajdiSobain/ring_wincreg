@@ -112,6 +112,14 @@ void CRegEntry::SetOwner(CRegistry* Owner) {
 				__cregOwner[0][lpszName].SetExpandSZ(eszvalue);
 				break;
 								}
+			case REG_QWORD: {
+				UINT64 value;
+				value = __cregOwner[0][lpszName].GetQWORD();
+				assert(Owner);
+				__cregOwner = Owner;
+				__cregOwner[0][lpszName].SetQWORD(value);
+				break;
+							}
 		} 
 }
 
@@ -181,6 +189,14 @@ void CRegEntry::SetName(LPCSTR name) {
 				__cregOwner[0][lpszName].SetExpandSZ(eszvalue);
 				break;
 								}
+			case REG_QWORD: {
+				UINT64 value;
+				value = __cregOwner[0][lpszName].GetQWORD();
+				this->Delete();
+				this->lpszName = (LPTSTR) name;
+				__cregOwner[0][lpszName].SetQWORD(value);
+				break;
+							}
 		} 
 }
 
@@ -281,6 +297,11 @@ CRegEntry& CRegEntry::operator=(CRegEntry& cregValue) {
 			return *this;
 							}
 			break;
+		case REG_QWORD: {
+			SetQWORD(cregValue.GetQWORD());
+			return *this;
+							}
+			break;
 		default:
 			return (*this = cregValue.dwDWORD);
 	}
@@ -315,11 +336,15 @@ CRegEntry::operator LPTSTR() {
 		case REG_BINARY: {
 			_tcsncpy(lpszStr, (const _TCHAR*)&vBytes[0], vBytes.size());
 			lpszStr[vBytes.size()] = 0;
-			}
+						 }
 			break;
 		case REG_EXPAND_SZ:
 			lpszStr = new TCHAR[_MAX_REG_VALUE * 16];
 			_stprintf(lpszStr, _T("%s"), GetExpandSZ(true));
+			break;
+		case REG_QWORD:
+			lpszStr = new TCHAR[20];
+			_stprintf(lpszStr, _T("%llu"), GetQWORD());
 			break;
 	}
 	return lpszStr;
@@ -752,6 +777,8 @@ LPTSTR CRegEntry::GetExpandSZ(bool Expandable) {
 	DWORD dwflags = RRF_RT_REG_EXPAND_SZ | RRF_RT_REG_SZ | RRF_ZEROONFAILURE;
 	
 	assert(IsExpandSZ());
+
+	REGENTRY_REFRESH_IF_NOCACHE
 	
 	if (!Expandable) {
 		lpszStr = new TCHAR[_MAX_REG_VALUE];	// lpszStr is used in this type (REG_EXPAND_SZ) as a reservoir for returned value
@@ -800,6 +827,60 @@ DWORD CRegEntry::SetExpandSZ(LPTSTR value) {
 	
 	return svalue;
 }
+
+
+
+/* ===================================================
+ *  *** newly added function 
+ *
+ *  CRegEntry::SetQWORD(bool Expandable)
+ *
+ *	set a value of REG_QWORD (unsigned long long) type directly to registry
+ *	
+ */
+
+DWORD CRegEntry::SetQWORD(UINT64 value) {
+	DWORD lRes = 0;
+
+	iType = REG_QWORD;
+
+	if (REGENTRY_NOTLOADING && REGENTRY_KEYVALID( KEY_SET_VALUE )) {
+
+		lRes = RegSetValueEx(__cregOwner->hKey, lpszName, NULL, REG_QWORD, (LPBYTE) &value, sizeof ( UINT64 ));		
+
+	}
+
+	__bStored = true;
+
+	REGENTRY_TRYCLOSE;
+	
+	return lRes;
+}
+
+
+
+/* ===================================================
+ *  *** newly added function 
+ *
+ *  UINT64 CRegEntry::GetQWORD() 
+ *
+ *	retrive the value of REG_QWORD type directly from registry
+ *	
+ */
+
+UINT64 CRegEntry::GetQWORD() {
+	UINT64 value = 0;
+	DWORD size = sizeof(UINT64);
+
+	assert(IsQWORD());
+
+	REGENTRY_REFRESH_IF_NOCACHE
+	
+	RegGetValue(__cregOwner[0].hKey, NULL, lpszName, RRF_RT_REG_QWORD, NULL, (LPBYTE) &value, &size ) ;
+
+	return value;
+}
+
 
 
 
@@ -1149,6 +1230,9 @@ bool CRegistry::Refresh() {
 				break;				
 			case REG_EXPAND_SZ:
 				this[0][cValueName].SetExpandSZ((LPTSTR) lpbBuffer);
+				break;
+			case REG_QWORD:
+				this[0][cValueName].SetQWORD((UINT64) *lpbBuffer);
 				break;
 		}
 	}

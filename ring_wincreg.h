@@ -69,6 +69,10 @@ void ring_vm_creg_creggetexpandsz( void *pPointer ) ;
 
 void ring_vm_creg_cregsetexpandsz( void *pPointer ) ;
 
+void ring_vm_creg_cregsetqword( void *pPointer ) ;
+
+void ring_vm_creg_creggetqword( void *pPointer ) ;
+
 void ring_vm_creg_cregisstring( void *pPointer ) ;
 
 void ring_vm_creg_cregisdword( void *pPointer ) ;
@@ -79,11 +83,14 @@ void ring_vm_creg_cregisbinary( void *pPointer ) ;
 
 void ring_vm_creg_cregisexpandsz( void *pPointer ) ;
 
+void ring_vm_creg_cregisqword( void *pPointer ) ;
+
 void ring_vm_creg_cregexists( void *pPointer ) ;
 
 void ring_vm_creg_cregtype( void *pPointer ) ;
 
 BOOL EntryExists(CRegistry* key, LPTSTR entry) ;
+unsigned char isnum(LPCSTR str) ;
 LPTSTR GetFormattedMessage(LONG ErrId) ;
 LPTSTR GetErrorMsg(LONG ErrorId , LPTSTR pMsg, size_t pMsgsize) ;
 

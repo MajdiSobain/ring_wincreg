@@ -110,6 +110,7 @@ public:
 	__inline	bool IsMultiString() { return (iType == REG_MULTI_SZ); }				// ***
 	/* newly added due to adding their types */
 	__inline	bool IsExpandSZ()	{ return (iType == REG_EXPAND_SZ); }
+	__inline	bool IsQWORD()		{ return (iType == REG_QWORD); }
 
 	/* *** newly added function that returns the type of the entry as number   */
 	DWORD		Type();
@@ -117,6 +118,10 @@ public:
 	/* *** New functions for REG_EXTAND_SZ */
 	DWORD  SetExpandSZ(LPTSTR value);
 	LPTSTR GetExpandSZ(bool Expandable = false);
+
+	/* *** New functions for REG_QWORD  */
+	DWORD		SetQWORD(UINT64 value);
+	UINT64		GetQWORD();
 
 	__inline	bool IsStored()		{ return __bStored; }								// ***
 	/* *** This function updated to return the result of RegQueryValueEx   */
