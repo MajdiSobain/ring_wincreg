@@ -42,6 +42,9 @@ RING_API void ringlib_init ( RingState *pRingState )
 	ring_vm_funcregister("cregsetexpandsz",ring_vm_creg_cregsetexpandsz);
 	ring_vm_funcregister("cregsetqword",ring_vm_creg_cregsetqword);
 	ring_vm_funcregister("creggetqword",ring_vm_creg_creggetqword);
+	ring_vm_funcregister("creggetbinary",ring_vm_creg_creggetbinary);
+	ring_vm_funcregister("cregsetbinary",ring_vm_creg_cregsetbinary);
+	ring_vm_funcregister("cregbinarylength",ring_vm_creg_cregbinarylength);
 	ring_vm_funcregister("cregisstring",ring_vm_creg_cregisstring);
 	ring_vm_funcregister("cregisdword",ring_vm_creg_cregisdword);
 	ring_vm_funcregister("cregismultistring",ring_vm_creg_cregismultistring);
@@ -307,7 +310,15 @@ void ring_vm_creg_cregisvirtualized( void *pPointer ) {
 		if ( RING_API_ISPOINTER(1) &&  RING_API_ISNUMBER(2)) {
 			CRegistry *p = (CRegistry *) RING_API_GETCPOINTER(1, "CRegistry") ;
 			if ( (p) && (p->hKey) ) {
-				RING_API_RETNUMBER((int) p[0].IsVirtualized()); 
+				if ( (int) RING_API_GETNUMBER(2) != 0 ) {
+					RING_API_RETNUMBER((int) p[0].IsVirtualized()); 
+				} else {
+					if ((int) p[0].IsVirtualized() == 1) {
+						RING_API_RETNUMBER((int) p[0].IsVirtualized());
+					} else {
+						RING_API_RETNUMBER(((int) p[0].IsVirtualized()) * 0);
+					} 
+				}
 			} else RING_API_ERROR("Error : Bad CRegistry Key handler");
 		} else {
 			RING_API_ERROR(RING_API_BADPARATYPE);
@@ -743,6 +754,84 @@ void ring_vm_creg_creggetqword( void *pPointer ) {
 	}
 }
 
+// string creggetbinary( CRegistry keyhandler , string valuename )
+void ring_vm_creg_creggetbinary( void *pPointer ) {
+	if ( RING_API_PARACOUNT != 2 ) {
+		RING_API_ERROR(RING_API_MISS2PARA);
+		return ;
+	}
+	if ( RING_API_ISPOINTER(1) && RING_API_ISSTRING(2) ) {
+		CRegistry *p = (CRegistry *) RING_API_GETCPOINTER(1, "CRegistry") ;
+		if ( (p) && (p->hKey) ) {
+			if ( EntryExists(p, RING_API_GETSTRING(2)) && p[0][RING_API_GETSTRING(2)].IsBinary() ) {
+				LPTSTR value = new TCHAR[( p[0][RING_API_GETSTRING(2)].GetBinaryLength() *3 )];
+				value[0] = 0;
+				for (size_t i = 0; i < p[0][RING_API_GETSTRING(2)].GetBinaryLength(); i++) {
+					LPTSTR tmp = new TCHAR[3];
+					_stprintf_s(tmp, 3, "%02x", p[0][RING_API_GETSTRING(2)].GetBinaryAt(i));
+					_tcscat(value, tmp);
+					if ( i+1 != p[0][RING_API_GETSTRING(2)].GetBinaryLength() ) 
+						_tcscat(value, _T(","));
+				}
+				RING_API_RETSTRING(value);
+			} else RING_API_ERROR("Error : Not found any REG_QWORD entry with this name!!"); 
+		} else RING_API_ERROR("Error : Bad CRegistry Key handler"); 
+	} else {
+		RING_API_ERROR(RING_API_BADPARATYPE);
+	}
+}
+
+// void cregsetbinary( CRegistry keyhandler , string valuename , string value )
+void ring_vm_creg_cregsetbinary( void *pPointer ) {
+	if ( RING_API_PARACOUNT != 3 ) {
+		RING_API_ERROR(RING_API_MISS3PARA);
+		return ;
+	}
+	if ( RING_API_ISPOINTER(1) && RING_API_ISSTRING(2) && RING_API_ISSTRING(3) ) {
+		CRegistry *p = (CRegistry *) RING_API_GETCPOINTER(1, "CRegistry") ;
+		if ( (p) && (p->hKey) ) {
+			LPTSTR value = RING_API_GETSTRING(3);
+			size_t sbsize ;
+			LPBYTE lpbvalue;
+			if (_tcslen(value) == 0) { sbsize = 0; }
+			else if (_tcslen(value)%3 == 2) { sbsize = (_tcslen(value) +1)/3; } 
+			else { RING_API_ERROR("Error : Unexpected binary string length"); }
+			lpbvalue= new BYTE[sbsize]; 
+			for (size_t i = 0; i < sbsize ; i++) {
+				LPTSTR tmp = new TCHAR[3];
+				_tcsncpy(tmp, value + (i*3) , 2);
+				for (size_t c = 0; c < (_tcslen(tmp) < 3 ? _tcslen(tmp) : 2); c++) { 
+					if ( _tcslen(tmp) == 1 ) RING_API_ERROR("Error : Unexpected binary string length");
+					if ( !isxdigit((int) tmp[c]) ) RING_API_ERROR("Error : Invalid binary string character");
+				}
+				lpbvalue[i] = (BYTE) _tcstol(tmp, NULL, 16);
+				delete[] tmp;
+			}
+			p[0][RING_API_GETSTRING(2)].SetBinary(lpbvalue, sbsize);
+		} else RING_API_ERROR("Error : Bad CRegistry Key handler"); 
+	} else {
+		RING_API_ERROR(RING_API_BADPARATYPE);
+	}
+}
+
+// int cregbinarylength( CRegistry keyhandler , string valuename )
+void ring_vm_creg_cregbinarylength( void *pPointer ) {
+	if ( RING_API_PARACOUNT != 2 ) {
+		RING_API_ERROR(RING_API_MISS2PARA);
+		return ;
+	}
+	if ( RING_API_ISPOINTER(1) && RING_API_ISSTRING(2) ) {
+		CRegistry *p = (CRegistry *) RING_API_GETCPOINTER(1, "CRegistry") ;
+		if ( (p) && (p->hKey) ) {
+			if ( EntryExists(p, RING_API_GETSTRING(2)) && p[0][RING_API_GETSTRING(2)].IsBinary() ) {
+				RING_API_RETNUMBER(p[0][RING_API_GETSTRING(2)].GetBinaryLength());
+			} else RING_API_ERROR("Error : Not found any REG_QWORD entry with this name!!"); 
+		} else RING_API_ERROR("Error : Bad CRegistry Key handler"); 
+	} else {
+		RING_API_ERROR(RING_API_BADPARATYPE);
+	}
+}
+
 // boolean cregisstring ( CRegistry keyhandler , string valuename )
 void ring_vm_creg_cregisstring( void *pPointer ) {
 	if ( RING_API_PARACOUNT != 2 ) {
@@ -910,7 +999,7 @@ BOOL EntryExists(CRegistry* key, LPTSTR entry) {
 
 unsigned char isnum(LPCSTR str) {
 	bool n = true;
-	for (int i=0;i< strlen(str);i++) {
+	for (int i=0;i< _tcslen(str);i++) {
 		if ( (isdigit(str[i])) || (str[i] == '.' &&  n == true)) {
 			if (str[i] == '.') n = false;
 		} else return 0;

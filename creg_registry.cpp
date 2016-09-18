@@ -343,7 +343,7 @@ CRegEntry::operator LPTSTR() {
 			_stprintf(lpszStr, _T("%s"), GetExpandSZ(true));
 			break;
 		case REG_QWORD:
-			lpszStr = new TCHAR[20];
+			lpszStr = new TCHAR[21];
 			_stprintf(lpszStr, _T("%llu"), GetQWORD());
 			break;
 	}
@@ -443,7 +443,7 @@ CRegEntry::operator double() {
 
 void CRegEntry::SetBinary(LPBYTE lpbValue, size_t nLen) {
 	
-	if (!nLen) { assert(nLen); return; }
+	// *** if (!nLen) { assert(nLen); return; }  // needed to be deactivated to create empty binary value
 	
 	iType = REG_BINARY;	
 
@@ -457,8 +457,9 @@ void CRegEntry::SetBinary(LPBYTE lpbValue, size_t nLen) {
 	if (vBytes.size() < nLen) vBytes.reserve(nLen);
 	vBytes.clear();
 		
-	do { vBytes.push_back(lpbValue[vBytes.size()]); }
-	while (vBytes.size() < nLen);
+	// *** change vBytes check to avoid fill the bytes list if there is no value in reality
+	while (vBytes.size() < nLen) { vBytes.push_back(lpbValue[vBytes.size()]); }
+	
 }
 
 

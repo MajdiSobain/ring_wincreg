@@ -92,6 +92,8 @@ public:
 	void		SetBinary(LPBYTE lpbValue, size_t nLen);	
 	void		GetBinary(LPBYTE lpbDest, size_t nMaxLen); 
 	size_t		GetBinaryLength(); 
+	/* *** newly added function to get specific byte item in vBytes */
+	BYTE		GetBinaryAt(size_t index) { assert(IsBinary()); return vBytes.at(index); }
 	bool		Convertible() { return __bConvertable; }
 
 	// *** updated this method to help adding this entry to the new owner

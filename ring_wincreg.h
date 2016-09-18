@@ -73,6 +73,12 @@ void ring_vm_creg_cregsetqword( void *pPointer ) ;
 
 void ring_vm_creg_creggetqword( void *pPointer ) ;
 
+void ring_vm_creg_creggetbinary( void *pPointer ) ;
+
+void ring_vm_creg_cregsetbinary( void *pPointer ) ;
+
+void ring_vm_creg_cregbinarylength( void *pPointer ) ;
+
 void ring_vm_creg_cregisstring( void *pPointer ) ;
 
 void ring_vm_creg_cregisdword( void *pPointer ) ;

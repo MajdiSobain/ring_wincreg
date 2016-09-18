@@ -230,6 +230,15 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 		
 	Func SetQWORD value
 		Return CRegSetQWORD(Key, EntryName, value)
+		
+	Func GetBinary
+		Return CRegGetBinary(Key, EntryName)
+		
+	Func SetBinary value
+		Return CRegSetBinary(Key, EntryName, value)
+		
+	Func BinaryLength
+		Return CRegBinaryLength(Key, EntryName)
 
 	Func IsString
 		Return CRegIsString(Key, EntryName)

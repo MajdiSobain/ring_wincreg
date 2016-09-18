@@ -214,6 +214,16 @@ v = Registry["nEntry"].GetQWORDs()
 // the value could be number or string
 Registry["nEntry"].SetQWORD( value )
 
+// To get a value of REG_BINARY entry named "nEntry"
+// Binary value will be represented as hex numbers string
+v = Registry["nEntry"].GetBinary()
+
+// To set a value(hex filled string separated by comma) of REG_BINARY named "nEntry"
+Registry["nEntry"].SetBinary(value)
+
+// To get a length of the REG_BINARY value 
+n = Registry["nEntry"].BinaryLength()
+
 // To check the type of an entry named "nEntry"
 If Registry["nEntry"].IsString() = True 
 	See "Its a string"

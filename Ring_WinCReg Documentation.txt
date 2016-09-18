@@ -93,6 +93,12 @@ void cregsetqword( CRegistry keyhandler , string valuename , number\string value
 
 string creggetqword( CRegistry keyhandler , string valuename )
 
+string creggetbinary( CRegistry keyhandler , string valuename )
+
+void cregsetbinary( CRegistry keyhandler , string valuename , string value )
+
+int cregbinarylength( CRegistry keyhandler , string valuename )
+
 boolean cregisstring ( CRegistry keyhandler , string valuename )
 
 boolean cregisdword ( CRegistry keyhandler , string valuename )
