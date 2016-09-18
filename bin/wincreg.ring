@@ -152,17 +152,39 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 	Func Set value
 		CRegSetValue(Key, EntryName, value)
 
-	Func Exists
-		Return CRegExists(Key, EntryName)
-
-	Func Rename newName
-		CRegRename(Key, EntryName, newName)
-
-	Func CopyTo newKeyHandler
-		CRegCopy(Key, EntryName, newKeyHandler)
-
-	Func Delete
-		CRegDelete(Key, EntryName)
+	Func SetString value
+		If cTypeForRCRegEntry(value) != "STRING"
+			Raise ("Error : SetString could just accept strings")
+		Ok
+		Set(value)
+		
+	Func GetString
+		value = Get()
+		If cTypeForRCRegEntry(value) != "STRING"
+			Raise ("Error : GetString could just return strings (REG_SZ)")
+		Ok
+		Return value
+		
+	Func SetDWORD value
+		If IsNumber(value) = False
+			Raise ("Error : SetDWORD could just accept numbers")
+		Else
+			If IsDigit(String(value)) = False
+				Raise ("Error : SetDWORD could just accept real numbers(not floated)")
+			Else
+				If value < 0 Or value > 4294967295
+					Raise ("Error : SetDWORD : the value is out of range (0 - 4294967295)")
+				Ok
+			Ok
+		Ok
+		Set(value)
+				
+	Func GetDWORD
+		value = Get()
+		If IsNumber(value) = False
+			Raise ("Error : GetDWORD could just return numbers")
+		Ok
+		Return value
 
 	Func SetMulti value
 		CRegSetMulti(Key, EntryName, value)
@@ -239,6 +261,18 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 		
 	Func BinaryLength
 		Return CRegBinaryLength(Key, EntryName)
+		
+	Func Exists
+		Return CRegExists(Key, EntryName)
+
+	Func Rename newName
+		CRegRename(Key, EntryName, newName)
+
+	Func CopyTo newKeyHandler
+		CRegCopy(Key, EntryName, newKeyHandler)
+
+	Func Delete
+		CRegDelete(Key, EntryName)
 
 	Func IsString
 		Return CRegIsString(Key, EntryName)
@@ -258,10 +292,10 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 	Func IsQWORD
 		Return CRegIsQWORD(Key, EntryName)
 		
-	Func TypeIndex
+	Func Type
 		Return CRegType(Key, EntryName)
 
-	Func Type
+	Func TypeName
 		aList = ["REG_NONE", "REG_SZ", "REG_EXPAND_SZ", "REG_BINARY", "REG_DWORD", "REG_DWORD_BIG_ENDIAN", "REG_LINK", "REG_MULTI_SZ",
 				 "REG_RESOURCE_LIST", "REG_FULL_RESOURCE_DESCRIPTOR", "REG_RESOURCE_REQUIREMENTS_LIST", "REG_QWORD"]
 		return aList[TypeIndex() + 1]   # increment by 1 is due to list index that starts with one

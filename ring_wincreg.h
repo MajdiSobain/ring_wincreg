@@ -95,7 +95,7 @@ void ring_vm_creg_cregexists( void *pPointer ) ;
 
 void ring_vm_creg_cregtype( void *pPointer ) ;
 
-BOOL EntryExists(CRegistry* key, LPTSTR entry) ;
+BOOL EntryExists(void *pPointer, CRegistry* key, LPTSTR entry) ;
 unsigned char isnum(LPCSTR str) ;
 LPTSTR GetFormattedMessage(LONG ErrId) ;
 LPTSTR GetErrorMsg(LONG ErrorId , LPTSTR pMsg, size_t pMsgsize) ;

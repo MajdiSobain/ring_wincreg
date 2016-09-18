@@ -150,21 +150,17 @@ Registry["nEntry"].Set("500 S.R.")
 v = Registry["nEntry"].Get()
 See v
 
-// To check whether the entry named "nEntry" is present within this opened key
-If Registry["nEntry"].Exists() = true 
-	See "nEntry Value is present"
-Ok
+// To Set only string values (REG_SZ) to an entry named "nEntry"
+Registry["nEntry"].SetString(value)
 
-// To rename an entry named "nEntry" with new name such as "newnEntry"
-Registry["nEntry"].Rename("newnEntry")
+// To Get only string values (REG_SZ) from an entry named "nEntry"
+v = Registry["nEntry"].GetString() 
 
-// To copy an entry named "nEntry" form the current opened key into another one 
-Reg = new CRegistry { OpenKey2(HKEY_CURRENT_USER, "Software\Microsoft\Windows") }
-Registry["nEntry"].CopyTo(Reg.Key)
-Reg.CloseKey()
+// To Set only (REG_DWORD) numerical value named "nEntry"
+Registry["nEntry"].SetDWORD(value)
 
-// To delete an entry named "nEntry" 
-Registry["nEntry"].Delete()
+// To Get only (REG_DWORD) numerical value named "nEntry"
+n = Registry["nEntry"].GetDWORD()
 
 // To create and set a value in an entry of MultiString with name "nEntry"
 // ( This function could write over already exist data so please be careful when using it)
@@ -224,6 +220,22 @@ Registry["nEntry"].SetBinary(value)
 // To get a length of the REG_BINARY value 
 n = Registry["nEntry"].BinaryLength()
 
+// To check whether the entry named "nEntry" is present within this opened key
+If Registry["nEntry"].Exists() = true 
+	See "nEntry Value is present"
+Ok
+
+// To rename an entry named "nEntry" with new name such as "newnEntry"
+Registry["nEntry"].Rename("newnEntry")
+
+// To copy an entry named "nEntry" form the current opened key into another one 
+Reg = new CRegistry { OpenKey2(HKEY_CURRENT_USER, "Software\Microsoft\Windows") }
+Registry["nEntry"].CopyTo(Reg.Key)
+Reg.CloseKey()
+
+// To delete an entry named "nEntry" 
+Registry["nEntry"].Delete()
+
 // To check the type of an entry named "nEntry"
 If Registry["nEntry"].IsString() = True 
 	See "Its a string"
@@ -242,7 +254,9 @@ If Registry["nEntry"].IsExpandSZ() = True
 Ok
 
 // To get the type index of an entry
-TypeIndex = Registry["nEntry"].TypeIndex()
+If Registry["nEntry"].Type() = REG_SZ 
+	See "This is a string value"
+Ok
 
 // To get the type name as string
-TypeName = Registry["nEntry"].Type()
+TypeName = Registry["nEntry"].TypeName()
