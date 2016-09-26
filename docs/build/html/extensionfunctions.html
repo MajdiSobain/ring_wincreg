@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Extension functions list &#8212; Ring_WinCReg 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Ring_WinCReg 1.0 documentation" href="index.html" />
+    <link rel="prev" title="Dealing with Values" href="values.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="extension-functions-list">
+<span id="index-0"></span><h1>Extension functions list<a class="headerlink" href="#extension-functions-list" title="Permalink to this headline">¶</a></h1>
+<p>As we read before (<a class="reference internal" href="implementation&amp;usage.html#use-extension-functions-directly"><span class="std std-ref">Direct extension&#8217;s functions usage</span></a>) we can use this extension directly without depending on the functions of RCRegistry class.</p>
+<div class="section" id="functions-list">
+<span id="index-1"></span><h2>Functions List<a class="headerlink" href="#functions-list" title="Permalink to this headline">¶</a></h2>
+<p>Here we are going to know the whole list of functions that could be called directly. We have to know that, they are not written in Ring, C++ or any other language syntax. They have been written in this way to clarify their actual components.</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>CRegistry* cregopenkey ( RootHkey index /*like HKEY_CURRENT_USER*/ , string keyname , \optional int flags, \optional boolean access64tree )
+
+void cregclosekey ( CRegistry* keyhandle )
+
+void cregdeletekey ( CRegistry* keyhandle )
+
+boolean cregkeyexist ( RootHkey index , string keyname )
+
+boolean cregsubkeyexist ( CRegistry* keyhandle , string subkeyname )
+
+void cregsetflags ( CRegistry* keyhandle , int flags )
+
+int cregentrycount ( CRegistry* keyhandle )
+
+int creggetflags ( CRegistry* keyhandle )
+
+void cregaccess64tree ( CRegistry* keyhandle , boolean access)
+
+boolean cregisvirtualized (CRegistry* keyhandle)
+int cregisvirtualized (CRegistry* key, bool detailed)
+
+int cregsubkeyscount ( CRegistry* keyhandle , int valueindex )
+
+String creggetsubkeyat ( CRegistry* keyhandle , int valueindex )
+
+boolean cregrefresh ( CRegistry *keyhandle )
+
+CRegEntry* creggetat ( CRegistry* keyhandle , int valueindex )
+
+string creggetname ( CRegEntry* entryhandle )
+
+void cregcopy ( CRegEntry* Entry , CRegistry* Dest )
+void cregcopy ( CRegistry* Source , String valuename, CRegistry* Dist )
+
+void cregrename ( CRegistry* keyhandle , string valuename , string newname)
+
+void cregsetvalue ( CRegistry* keyhandle , string valuename , string\int value )
+
+string creggetvalue ( CRegistry* keyhandle , string valuename )
+
+void cregdelete ( CRegistry* keyhandle , string valuename )
+
+void cregsetmulti ( CRegistry* keyhandle , string valuename , string value )
+
+void cregmultiremoveat ( CRegistry* keyhandle , string valuename , int index )
+
+void cregmultisetat ( CRegistry* keyhandle , string valuename , int index , string value)
+
+void cregmultiadd ( CRegistry* keyhandle , string valuename , string value)
+
+string cregmultigetat ( CRegistry* keyhandle , string valuename , int index )
+
+int cregmulticount ( CRegistry* keyhandle , string valuename )
+
+void cregmulticlear ( CRegistry* keyhandle  , string valuename )
+
+string creggetexpandsz( CRegistry* keyhandle , string valuename )
+
+void cregsetexpandsz( CRegistry* keyhandle , string valuename , string value )
+
+void cregsetqword( CRegistry* keyhandle , string valuename , number\string value )
+
+string creggetqword( CRegistry* keyhandle , string valuename )
+
+string creggetbinary( CRegistry* keyhandle , string valuename )
+
+void cregsetbinary( CRegistry* keyhandle , string valuename , string value )
+
+int cregbinarylength( CRegistry* keyhandle , string valuename )
+
+boolean cregisstring ( CRegistry* keyhandle , string valuename )
+
+boolean cregisdword ( CRegistry* keyhandle , string valuename )
+
+boolean cregismultistring ( CRegistry* keyhandle , string valuename )
+
+boolean cregisbinary ( CRegistry* keyhandle , string valuename )
+
+boolean cregisexpandsz ( CRegistry* keyhandle , string valuename )
+
+boolean cregisqword ( CRegistry* keyhandle , string valuename )
+
+boolean cregexists ( CRegistry* keyhandle , string valuename )
+
+int cregtype ( CRegistry* keyhandle , string valuename )
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ol class="last arabic simple">
+<li>Each function or parameter preceded by star in its definition ito denote that it is a handle/pointer.</li>
+<li>Each function has &#8220;CReg&#8221; prefix to show that these functions are a normal extension of their Original C++ class &#8220;CRegistry&#8221;, and to preserve enough space for any one who could develop other extension which will deal directly with WIN APIs of Wndows Registry.</li>
+</ol>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Extension functions list</a><ul>
+<li><a class="reference internal" href="#functions-list">Functions List</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="values.html" title="previous chapter">Dealing with Values</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/extensionfunctions.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Majdi Sobain.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/extensionfunctions.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
