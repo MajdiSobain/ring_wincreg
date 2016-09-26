@@ -40,20 +40,19 @@ This is a simple ring code that use this extension:
 
 	cd c:
 	
-2- Clone the ring source from GitHub into the opened location (c:)
+2- Clone the ring source from GitHub into the opened location (c:\)
   
 	git clone https://github.com/ring-lang/ring.git
 	
 3- Optionally, You can create another branch in local repo of ring to use it for extensions development. This will prevent any changes in the master branch of ring if you plan to make some changes in ring away from newly added extensions. This can be done by:
-
-	cd ring  
+  
 	git checkout -b extensions
 
 *This will create a new branch called extensions and will switch to it.
 
 4- Navigate to the extensions folder 
 
-	cd extensions
+	cd ring\extensions
 	
 5- Clone the ring_wincreg extension source from GitHub into extensions folder
 

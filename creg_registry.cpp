@@ -476,18 +476,20 @@ void CRegEntry::SetBinary(LPBYTE lpbValue, size_t nLen) {
  */
 
 DWORD CRegEntry::Exists () {
+
+	assert( REGENTRY_KEYVALID ( KEY_QUERY_VALUE ) );
+
 	/* This piece of code used if we want to return ONLY (True) or (False)
 	if ( RegQueryValueEx(__cregOwner->hKey, lpszName, NULL, NULL, NULL, NULL); == ERROR_SUCCESS ) {
+		REGENTRY_TRYCLOSE ;
 		return true;
 	} else { 
+		REGENTRY_TRYCLOSE ;
 		return false; 
 	} */
-
-	if ( IsStored() ) {
-		return ERROR_SUCCESS;
-	} else {
-		return RegQueryValueEx(__cregOwner->hKey, lpszName, NULL, NULL, NULL, NULL);
-	}
+	
+	return (__cregOwner->AutoClose(), RegQueryValueEx(__cregOwner->hKey, lpszName, NULL, NULL, NULL, NULL));
+	
 }
 
 
@@ -503,7 +505,13 @@ DWORD CRegEntry::Exists () {
 DWORD CRegEntry::Type() {
 	LONG res;
 	DWORD type;
+
+	assert( REGENTRY_KEYVALID ( KEY_QUERY_VALUE ) );
+
 	res = RegQueryValueEx(__cregOwner->hKey, lpszName, NULL, &type, NULL, NULL);
+
+	REGENTRY_TRYCLOSE ;
+
 	if ( res == ERROR_SUCCESS ) {
 		return type;
 	} else { 
@@ -779,7 +787,7 @@ LPTSTR CRegEntry::GetExpandSZ(bool Expandable) {
 	
 	assert(IsExpandSZ());
 
-	REGENTRY_REFRESH_IF_NOCACHE
+	// REGENTRY_REFRESH_IF_NOCACHE
 	
 	if (!Expandable) {
 		lpszStr = new TCHAR[_MAX_REG_VALUE];	// lpszStr is used in this type (REG_EXPAND_SZ) as a reservoir for returned value
@@ -790,9 +798,12 @@ LPTSTR CRegEntry::GetExpandSZ(bool Expandable) {
 		vSize = _MAX_REG_VALUE * 16; 
 	}
 
+	assert( REGENTRY_KEYVALID ( KEY_QUERY_VALUE ) );
+
 	if (RegGetValue(__cregOwner[0].hKey, NULL, lpszName, dwflags, NULL, lpszStr, &vSize) == ERROR_MORE_DATA) 
 		lpszStr = "!!! ERROR_MORE_DATA !!!";		// This Error will mostly occur if the data of the Environment varaibles is large 
 
+	REGENTRY_TRYCLOSE ;
 
 		return lpszStr;
 }
@@ -875,9 +886,13 @@ UINT64 CRegEntry::GetQWORD() {
 
 	assert(IsQWORD());
 
-	REGENTRY_REFRESH_IF_NOCACHE
+	// REGENTRY_REFRESH_IF_NOCACHE
+
+	assert( REGENTRY_KEYVALID ( KEY_QUERY_VALUE ) );
 	
 	RegGetValue(__cregOwner[0].hKey, NULL, lpszName, RRF_RT_REG_QWORD, NULL, (LPBYTE) &value, &size ) ;
+
+	REGENTRY_TRYCLOSE ;
 
 	return value;
 }
@@ -1256,7 +1271,7 @@ bool CRegistry::Refresh() {
  */
 
 void CRegistry::DeleteKey() {
-	assert(_hRootKey && _tcslen(_lpszSubKey));		// *** This check has been added to query HKEY handler
+	assert(_hRootKey && _tcslen(_lpszSubKey));		// *** This check has been added to query HKEY handle
 	OSVERSIONINFO osvi;
 	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
 	
@@ -1353,7 +1368,7 @@ void CRegistry::Close() {
 signed char CRegistry::IsVirtualized() {
 	tstring lpszsubk = _lpszSubKey;
 	TCHAR subkey[_MAX_REG_VALUE];
-	if ( (hKey) && (_hRootKey) && (_lpszSubKey) ) {
+	if ( (_hRootKey) && (_lpszSubKey) ) {
 		if (_hRootKey == HKEY_LOCAL_MACHINE){
 			tstring lwsoftware = lpszsubk.substr(0,8).c_str();
 			std::transform(lwsoftware.begin(), lwsoftware.end(), lwsoftware.begin(), ::tolower);
@@ -1406,9 +1421,16 @@ signed char CRegistry::IsVirtualized() {
 
 int CRegistry::SubKeysCount(){
 	DWORD Subkeys;
+
+	if ( __dwFlags & CREG_AUTOOPEN ) AutoOpen(KEY_QUERY_VALUE);
+
+	assert(hKey);
+
 	if ( ERROR_SUCCESS == RegQueryInfoKey(hKey,NULL,NULL,NULL, &Subkeys, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ) {
+		AutoClose();
 		return Subkeys;
 	} else {
+		AutoClose();
 		return -1;
 	}
 }
@@ -1426,12 +1448,14 @@ LPTSTR CRegistry::GetSubKeyAt(int index, LPTSTR Subkey, int sksize) {
 	TCHAR Skey[MAX_REG_KEY];
 	DWORD SKlength = sizeof(Skey);
 	DWORD res = 0;
+
+	assert(SubKeysCount());
 	
-	Open(_lpszSubKey, _hRootKey, KEY_READ);
+	Open(_lpszSubKey, _hRootKey, KEY_READ, true /*similar to call AutoOpen()*/); 
 
 	res = RegEnumKeyEx(hKey, index, Skey, &SKlength, NULL, NULL, NULL, NULL);
 
-	SetFlags(__dwFlags); // Reopen the key with normal falgs
+	SetFlags(__dwFlags); // Reopen the key with normal flags
 
 	if ( ERROR_SUCCESS == res ) {
 		sprintf_s(Subkey, sksize, _T("%s"), Skey);
@@ -1439,9 +1463,9 @@ LPTSTR CRegistry::GetSubKeyAt(int index, LPTSTR Subkey, int sksize) {
 	} else {
 		LPTSTR err = new TCHAR[50];
 		TCHAR errnum[5];
-		_tcscpy(err, _T("ERROR IN RETRIVING THE SUBKEY NAME ("));
+		_tcscpy(err, _T("ERROR (ID "));
 		_tcscat(err, _ultot(res, errnum, 10));
-		_tcscat(err, _T(")"));
+		_tcscat(err, _T(") : INABILITY TO RETRIEVE THE SUBKEY NAME"));
 		return err;
 	}
 }

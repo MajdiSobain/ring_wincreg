@@ -17,6 +17,12 @@ Load "wincreg.rh"
 
 Func KeyExists HKEY, SubKey
 	Return CRegKeyExists(HKEY, SubKey)
+	
+Func DeleteKey2 HKEY, SubKey
+	New RCRegistry {
+		OpenKey([HKEY, SubKey])
+		DeleteKey()
+	}
 
 /* this function is used to avoid Type() functions conflicts from within RCRegEntry Class */
 Func cTypeForRCRegEntry para
@@ -25,7 +31,7 @@ Func cTypeForRCRegEntry para
 	
 Class RCRegistry		# Short for Ring CRegistry Class
 
-	Key = 0		# This is the Key Handler
+	Key = 0		# This is the Key Handle
 	RegEntry = New RCRegEntry(0,"")
 
 	Func operator cOperator,Para
@@ -106,10 +112,10 @@ Class RCRegistry		# Short for Ring CRegistry Class
 	Func Refresh
 		CRegRefresh(Key)
 
-	Func GetEntryAt index		# Return Entry Handler
+	Func GetEntryAt index		# Return Entry Handle
 		Return CRegGetAt(Key, index)
 
-	Func GetEntryName entry		# Accepts Entry Handler
+	Func GetEntryName entry		# Accepts Entry Handle
 		Return CRegGetName(entry)
 
 	Func GetEntries
@@ -118,9 +124,12 @@ Class RCRegistry		# Short for Ring CRegistry Class
 			Add(NamesList, GetEntryName(GetEntryAt(i)))
 		Next
 		Return NamesList
+		
+	Func CopyTo entryhandle,DestKey
+		CRegCopy(entryhandle, DestKey)
 
 	Func CopyAllTo DestKey
-		For i = 1 to EntryCount
+		For i = 1 to EntryCount()
 			CRegCopy(GetEntryAt(i), DestKey)
 		Next
 
@@ -268,8 +277,8 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 	Func Rename newName
 		CRegRename(Key, EntryName, newName)
 
-	Func CopyTo newKeyHandler
-		CRegCopy(Key, EntryName, newKeyHandler)
+	Func CopyTo newKeyHandle
+		CRegCopy(Key, EntryName, newKeyHandle)
 
 	Func Delete
 		CRegDelete(Key, EntryName)
@@ -298,5 +307,5 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 	Func TypeName
 		aList = ["REG_NONE", "REG_SZ", "REG_EXPAND_SZ", "REG_BINARY", "REG_DWORD", "REG_DWORD_BIG_ENDIAN", "REG_LINK", "REG_MULTI_SZ",
 				 "REG_RESOURCE_LIST", "REG_FULL_RESOURCE_DESCRIPTOR", "REG_RESOURCE_REQUIREMENTS_LIST", "REG_QWORD"]
-		return aList[TypeIndex() + 1]   # increment by 1 is due to list index that starts with one
+		return aList[Type() + 1]   # increment by 1 is due to list index that starts with one
 

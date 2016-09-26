@@ -101,13 +101,13 @@ Registry =  new RCRegistry {
 			// This function refresh the internal mechanism of CRegistry class for the current used object( I have never used it before )
 			Refresh()
 
-			// This function returns a handler of the entry that is present in a particular index
+			// This function returns a handle of the entry that is present in a particular index
 			// this can be used in the time of iteration of entries within the opened key
 			// GetEntryAt(index)
 			FirstEntry = GetEntryAt(1)
 
-			// This function returns a name of the give entry handler ( accepts entry handler only )
-			// GetEntryName(entryHandler)
+			// This function returns a name of the give entry handle ( accepts entry handle only )
+			// GetEntryName(entryHandle)
 			e = GetEntryAt(1)
 			GetEntryName(e)
 
@@ -116,7 +116,7 @@ Registry =  new RCRegistry {
 			aList = GetEntries()
 
 			// This function copies all entries of the current opened key into the given key
-			// CopyAllTo(keyHandler)
+			// CopyAllTo(keyHandle)
 			Reg = new CRegistry { OpenKey2(HKEY_CURRENT_USER, "Software\Microsoft") }
 			CopyAllTo(Reg.Key)
 			Reg.CloseKey()
@@ -165,7 +165,7 @@ n = Registry["nEntry"].GetDWORD()
 // To create and set a value in an entry of MultiString with name "nEntry"
 // ( This function could write over already exist data so please be careful when using it)
 // ( Its better to set MultiString values using MultiAdd() function )
-Registry["nEntry"].SetMulti("This is the first line of the multistring")
+Registry["nEntry"].SetMulti("This is the first line of the multi string")
 
 // To add or set a value to a MulitString entry named "nEntry"
 Registry["nEntry"].MultiAdd("New Value")

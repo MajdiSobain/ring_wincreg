@@ -51,6 +51,6 @@ CREG_READONLY = 0
 CREG_CREATE	= 1			# this is the default flag
 CREG_AUTOOPEN = 2
 CREG_NOCACHE = 4
-CREG_LOADING = 8
+
 
 

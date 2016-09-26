@@ -31,86 +31,86 @@ Note: This documentation of (Ring_WinCReg) functions has no any language specifi
 
 CRegistry cregopenkey ( RootHkey index /*like HKEY_CURRENT_USER*/ , string keyname , \optional int flags, \optional boolean access64tree )
 
-void cregclosekey ( CRegistry keyhandler )
+void cregclosekey ( CRegistry keyhandle )
 
-void cregdeletekey ( CRegistry keyhandler )
+void cregdeletekey ( CRegistry keyhandle )
 
 boolean cregkeyexist ( RootHkey index , string keyname ) 
 
-boolean cregsubkeyexist ( CRegistry keyhandler , string subkeyname )
+boolean cregsubkeyexist ( CRegistry keyhandle , string subkeyname )
 
-void cregsetflags ( CRegistry keyhandler , int flags )
+void cregsetflags ( CRegistry keyhandle , int flags )
 
-int cregentrycount ( CRegistry keyhandler )
+int cregentrycount ( CRegistry keyhandle )
 
-int creggetflags ( CRegistry keyhandler )
+int creggetflags ( CRegistry keyhandle )
 
-void cregaccess64tree ( CRegistry keyhandler , boolean access)
+void cregaccess64tree ( CRegistry keyhandle , boolean access)
 
 boolean cregisvirtualized (CRegistry key)
 int cregisvirtualized (CRegistry key, bool detailed)
 
-int cregsubkeyscount ( CRegistry keyhandler , int valueindex )
+int cregsubkeyscount ( CRegistry keyhandle , int valueindex )
 
-String creggetsubkeyat ( CRegistry keyhandler , int valueindex )
+String creggetsubkeyat ( CRegistry keyhandle , int valueindex )
 
-boolean cregrefresh ( CRegistry keyhandler )
+boolean cregrefresh ( CRegistry keyhandle )
 
-CRegEntry* creggetat ( CRegistry keyhandler , int valueindex )
+CRegEntry* creggetat ( CRegistry keyhandle , int valueindex )
 
 string creggetname ( CRegEntry entry )
 
 void cregcopy ( CRegEntry Entry , CRegistry Dest )
 void cregcopy ( CRegistry Source , String valuename, CRegistry Dist )
 
-void cregrename ( CRegistry keyhandler , string valuename , string newname)
+void cregrename ( CRegistry keyhandle , string valuename , string newname)
 
-void cregsetvalue ( CRegistry keyhandler , string valuename , string\int value )
+void cregsetvalue ( CRegistry keyhandle , string valuename , string\int value )
 
-string creggetvalue ( CRegistry keyhandler , string valuename )
+string creggetvalue ( CRegistry keyhandle , string valuename )
 
-void cregdelete ( CRegistry keyhandler , string valuename )
+void cregdelete ( CRegistry keyhandle , string valuename )
 
 void cregsetmulti ( cpointer , string valuename , string value )
 
-void cregmultiremoveat ( CRegistry keyhandler , string valuename , int index )
+void cregmultiremoveat ( CRegistry keyhandle , string valuename , int index )
 
-void cregmultisetat ( CRegistry keyhandler , string valuename , int index , string value)
+void cregmultisetat ( CRegistry keyhandle , string valuename , int index , string value)
 
-void cregmultiadd ( CRegistry keyhandler , string valuename , string value)
+void cregmultiadd ( CRegistry keyhandle , string valuename , string value)
 
-string cregmultigetat ( CRegistry keyhandler , string valuename , int index )
+string cregmultigetat ( CRegistry keyhandle , string valuename , int index )
 
-int cregmulticount ( CRegistry keyhandler , string valuename )
+int cregmulticount ( CRegistry keyhandle , string valuename )
 
 void cregmulticlear ( cpointer , string valuename )
 
-string creggetexpandsz( CRegistry keyhandler , string valuename )
+string creggetexpandsz( CRegistry keyhandle , string valuename )
 
-void cregsetexpandsz( CRegistry keyhandler , string valuename , string value )
+void cregsetexpandsz( CRegistry keyhandle , string valuename , string value )
 
-void cregsetqword( CRegistry keyhandler , string valuename , number\string value )
+void cregsetqword( CRegistry keyhandle , string valuename , number\string value )
 
-string creggetqword( CRegistry keyhandler , string valuename )
+string creggetqword( CRegistry keyhandle , string valuename )
 
-string creggetbinary( CRegistry keyhandler , string valuename )
+string creggetbinary( CRegistry keyhandle , string valuename )
 
-void cregsetbinary( CRegistry keyhandler , string valuename , string value )
+void cregsetbinary( CRegistry keyhandle , string valuename , string value )
 
-int cregbinarylength( CRegistry keyhandler , string valuename )
+int cregbinarylength( CRegistry keyhandle , string valuename )
 
-boolean cregisstring ( CRegistry keyhandler , string valuename )
+boolean cregisstring ( CRegistry keyhandle , string valuename )
 
-boolean cregisdword ( CRegistry keyhandler , string valuename )
+boolean cregisdword ( CRegistry keyhandle , string valuename )
 
-boolean cregismultistring ( CRegistry keyhandler , string valuename )
+boolean cregismultistring ( CRegistry keyhandle , string valuename )
 
-boolean cregisbinary ( CRegistry keyhandler , string valuename )
+boolean cregisbinary ( CRegistry keyhandle , string valuename )
 
-boolean cregisexpandsz ( CRegistry keyhandler , string valuename )
+boolean cregisexpandsz ( CRegistry keyhandle , string valuename )
 
-boolean cregisqword ( CRegistry keyhandler , string valuename )
+boolean cregisqword ( CRegistry keyhandle , string valuename )
 
-boolean cregexists ( CRegistry keyhandler , string valuename )
+boolean cregexists ( CRegistry keyhandle , string valuename )
 
-int cregtype ( CRegistry keyhandler , string valuename )
+int cregtype ( CRegistry keyhandle , string valuename )
