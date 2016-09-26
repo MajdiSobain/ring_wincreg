@@ -27,7 +27,29 @@ Func DeleteKey2 HKEY, SubKey
 /* this function is used to avoid Type() functions conflicts from within RCRegEntry Class */
 Func cTypeForRCRegEntry para
 	Return Type(para)
+	
+Func StringToBinary Str
+	res = ""
+	If Len(Str) > 0
+		For i = 1 To Len(Str)
+			res += Hex(Ascii(Str[i]))
+			If i < Len(Str)
+				res += ","
+			Ok
+		Next
+	Ok
+	Return res
 
+Func BinaryToString Bin
+	res = ""
+	If Len(Bin) > 1
+		Bin = SubStr(Bin, ",", NL)
+		Bin = Str2List(Bin)
+		For hx in Bin
+			res += Char(Dec(hx))
+		Next
+	Ok
+	Return res
 	
 Class RCRegistry		# Short for Ring CRegistry Class
 

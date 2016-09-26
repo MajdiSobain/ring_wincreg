@@ -220,6 +220,13 @@ Registry["nEntry"].SetBinary(value)
 // To get a length of the REG_BINARY value 
 n = Registry["nEntry"].BinaryLength()
 
+// To convert binary string value into equivalent string
+str = BinaryToString(Registry["nEntry"].GetBinary())
+
+// To Convert string into binary string value to be saved into registry
+value = "This string will be saved as binary"
+Registry["nEntry"].SetBinary(StringToBinary(value))
+
 // To check whether the entry named "nEntry" is present within this opened key
 If Registry["nEntry"].Exists() = true 
 	See "nEntry Value is present"
