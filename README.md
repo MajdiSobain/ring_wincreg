@@ -9,7 +9,7 @@ This Ring Extension helps access and edit windows registry entries and values ea
 
 3- Load the "wincreg.ring" file as it loads all of the extension and its associated library features
 
-4- For more information on how to use the extension and the associated library functions use the documentations attached(RCRegistry Class Documentation)
+4- For more information on how to use the extension and the associated library functions use the documentations attached(Documentation)
 
 ## Example
 
