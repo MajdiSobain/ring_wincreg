@@ -542,6 +542,9 @@ void CRegEntry::GetBinary(LPBYTE lpbDest, size_t nMaxLen) {
 	
 	REGENTRY_REFRESH_IF_NOCACHE
 	
+	/* *** adding this check to ignore retrieving data if nMazLen is 0 */
+	if (nMaxLen > 0)
+
 	if ((size_t)(&vBytes.back() - &vBytes.at(0)+1) == vBytes.size()*sizeof(BYTE))
 		memcpy(lpbDest, (LPBYTE)&vBytes.at(0), vBytes.size() > nMaxLen ? nMaxLen : vBytes.size());
 	else
