@@ -176,7 +176,7 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 	Func Get
 		value = CRegGetValue(Key, EntryName)
 		If IsNumber(value)			# It must be a DWORD value so 
-			value = floor(Value)	# it needs to be saved as int value
+			value = floor(Value)	# it needs to be returned as int value
 		Ok
 		Return value
 
@@ -270,6 +270,9 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 		
 	Func SetExpandSZ value
 		Return CRegSetExpandSZ(Key, EntryName, value)
+		
+	Func GetExpandedSZ
+		Return CRegGetExpandedSZ(Key, EntryName)
 		
 	Func GetQWORD
 		Return CRegGetQWORD(Key, EntryName)

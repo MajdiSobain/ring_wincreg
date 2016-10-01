@@ -43,6 +43,7 @@ RING_API void ringlib_init ( RingState *pRingState )
 	ring_vm_funcregister("cregmulticlear",ring_vm_creg_cregmulticlear);
 	ring_vm_funcregister("creggetexpandsz",ring_vm_creg_creggetexpandsz);
 	ring_vm_funcregister("cregsetexpandsz",ring_vm_creg_cregsetexpandsz);
+	ring_vm_funcregister("creggetexpandedsz",ring_vm_creg_creggetexpandedsz);
 	ring_vm_funcregister("cregsetqword",ring_vm_creg_cregsetqword);
 	ring_vm_funcregister("creggetqword",ring_vm_creg_creggetqword);
 	ring_vm_funcregister("creggetbinary",ring_vm_creg_creggetbinary);
@@ -512,10 +513,8 @@ void ring_vm_creg_creggetvalue( void *pPointer ) {
 				RING_API_RETNUMBER(p[0][RING_API_GETSTRING(2)]);
 			} else if ( p[0][RING_API_GETSTRING(2)].IsString() ) {
 				RING_API_RETSTRING(p[0][RING_API_GETSTRING(2)]);
-			} else if ( p[0][RING_API_GETSTRING(2)].IsExpandSZ() ) {
-				RING_API_RETSTRING((LPTSTR) p[0][RING_API_GETSTRING(2)]);
 			} else {
-				RING_API_ERROR("Error : This function can return DWORD, REG_SZ, and REG_EXPAND_SZ values only");
+				RING_API_ERROR("Error : This function can return REG_SZ and REG_DWORD values only");
 			}
 		} else RING_API_ERROR("Error : Bad CRegistry Key handle");
 	} else {
@@ -704,6 +703,24 @@ void ring_vm_creg_cregsetexpandsz( void *pPointer ) {
 		} else RING_API_ERROR("Error : Bad CRegistry Key handle"); 
 	} else {
 		RING_API_ERROR("Error : Bad CRegistry Key handle, entry name type, or value type");
+	}
+}
+
+// string creggetexpandedsz( CRegistry keyhandle , string valuename )
+void ring_vm_creg_creggetexpandedsz( void *pPointer ) {
+	if ( RING_API_PARACOUNT != 2 ) {
+		RING_API_ERROR(RING_API_MISS2PARA);
+		return ;
+	}
+	if ( RING_API_ISPOINTER(1) && RING_API_ISSTRING(2) ) {
+		CRegistry *p = (CRegistry *) RING_API_GETCPOINTER(1, "CRegistry") ;
+		if ( (p) && AUTOOPEN_CHECK ) {
+			if ( EntryExistsM(RING_API_GETSTRING(2)) && p[0][RING_API_GETSTRING(2)].IsExpandSZ() ) {
+				RING_API_RETSTRING((LPTSTR) p[0][RING_API_GETSTRING(2)]);
+			} else RING_API_ERROR("Error : Not found any REG_EXPAND_SZ entry with this name!!"); 
+		} else RING_API_ERROR("Error : Bad CRegistry Key handle"); 
+	} else {
+		RING_API_ERROR("Error : Bad CRegistry Key handle, or entry name type");
 	}
 }
 

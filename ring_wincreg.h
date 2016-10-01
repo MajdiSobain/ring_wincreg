@@ -69,6 +69,8 @@ void ring_vm_creg_creggetexpandsz( void *pPointer ) ;
 
 void ring_vm_creg_cregsetexpandsz( void *pPointer ) ;
 
+void ring_vm_creg_creggetexpandedsz( void *pPointer ) ;
+
 void ring_vm_creg_cregsetqword( void *pPointer ) ;
 
 void ring_vm_creg_creggetqword( void *pPointer ) ;
