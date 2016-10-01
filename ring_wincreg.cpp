@@ -721,7 +721,7 @@ void ring_vm_creg_cregsetqword( void *pPointer ) {
 				lResult = p[0][RING_API_GETSTRING(2)].SetQWORD((UINT64) RING_API_GETNUMBER(3));
 			} else {
 				if (isnum(RING_API_GETSTRING(3))) {
-					lResult = p[0][RING_API_GETSTRING(2)].SetQWORD(_tstoi64(RING_API_GETSTRING(3)));
+					lResult = p[0][RING_API_GETSTRING(2)].SetQWORD(_tcstoui64(RING_API_GETSTRING(3), NULL, 10));
 				} else RING_API_ERROR("Error : invalid entered QWORD string value"); 
 			}
 			if ( lResult != ERROR_SUCCESS ) {
