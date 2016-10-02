@@ -196,7 +196,7 @@ We can access the default entry that is present in each key in the registry tree
 	Reg.CloseKey()
 	
 .. note:: 
-   Default entry is of REG_SZ data type by default but it can take any data type by setting the value using the data type specific functions. (:ref:`Set-Value`)
+   Default entry is of (REG_SZ) data type by default but it can take any data type by setting the value using the data type specific functions. (:ref:`Set-Value`)
 
 .. index::
 	pair: Dealing with Entries; Copy Entries
@@ -290,12 +290,12 @@ Checking Entry Type
 
 We can check a specific entry for it is type by some useful functions. These functions are:
 
-1. IsString() function : return True if the entry is of REG_SZ type.
-2. IsDWORD() function : return True if the entry is of REG_DWORD type.
-3. IsMultiString() function : return True if the entry is of REG_MULTI_SZ type.
-4. IsExpandSZ() function : return True if the entry is of REG_EXPAND_SZ type.
-5. IsQWORD() function : return True if the entry is of REG_QWORD type.
-6. IsBinary() function : return True if the entry is of REG_BINARY type.
+1. IsString() function : return True if the entry is of (REG_SZ) type.
+2. IsDWORD() function : return True if the entry is of (REG_DWORD) type.
+3. IsMultiString() function : return True if the entry is of (REG_MULTI_SZ) type.
+4. IsExpandSZ() function : return True if the entry is of (REG_EXPAND_SZ) type.
+5. IsQWORD() function : return True if the entry is of (REG_QWORD) type.
+6. IsBinary() function : return True if the entry is of (REG_BINARY) type.
 
 Example:
 
@@ -338,7 +338,7 @@ Example:
 	Reg = New RCRegistry { OpenKey([HKEY_CURRENT_USER, "Software\MyApp"]) }
 	
 	If Reg["AppVersion"].Type() = REG_SZ
-		See "This (AppVersion) entry is of REG_SZ type"
+		See "This (AppVersion) entry is of (REG_SZ) type"
 	Ok
 	
 	Reg.CloseKey()
@@ -409,4 +409,4 @@ We can delete any entry that is not needed by using **Delete()** function as fol
 	
 	Reg.CloseKey()
 	
-.. note:: We can use this function with default entry to clear its content and restore its default data type REG_SZ.
+.. note:: We can use this function with default entry to clear its content and restore its default data type (REG_SZ).

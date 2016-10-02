@@ -22,10 +22,10 @@ Set() Function
 
 This general function can set values smartly according to entry existence. If the entry existed it will save the data automatically using entry data type setting function, BUT if it does not exist it will save it according to the following rules:
 
-* String value will be saved as REG_SZ type.
-* Numbers in the range of DWORD will be saved as REG_DWORD.
-* Numbers not in the range of DWORD will be converted to string then saved as REG_SZ.
-* Floated numbers will automatically be converted to string and saved as REG_SZ.
+* String value will be saved as (REG_SZ) type.
+* Numbers in the range of DWORD will be saved as (REG_DWORD).
+* Numbers not in the range of DWORD will be converted to string then saved as (REG_SZ).
+* Floated numbers will automatically be converted to string and saved as (REG_SZ).
 
 This function has been used in the previous examples to save strings, but now will try to save DWORD value.
 
@@ -43,7 +43,7 @@ This function has been used in the previous examples to save strings, but now wi
 	
 .. note:: 5.0000 is considered as not floated value as there's no real value after the point.
 
-.. note:: Setting values to already present REG_MULTI_SZ entry using Set() function will be done by using SetMultiList() function which means that we have to pass list to Set() function to set REG_MULTI_SZ values.
+.. note:: Setting values to already present (REG_MULTI_SZ) entry using Set() function will be done by using SetMultiList() function which means that we have to pass list to Set() function to set (REG_MULTI_SZ) values.
    
    This is the same thing with Set2() function.
 
@@ -79,12 +79,12 @@ Get Value
 
 We can get a value for any specified entry using get functions for each registry type. But there's a general **Get()** function that could be used to get values smartly according to their data type as follow:
 
-* REG_SZ will be returned as string.
-* REG_DWORD values will be returned as numbers.
-* REG_MULTI_SZ values will be return as list.
-* REG_QWORD values will be return as number or string.(:ref:`QWORD-numbers`)
-* REG_EXPAND_SZ values will be returned as string.
-* REG_BINARY values will be returned as string.
+* (REG_SZ) values will be returned as string.
+* (REG_DWORD) values will be returned as numbers.
+* (REG_MULTI_SZ) values will be return as list.
+* (REG_QWORD) values will be return as number or string.(:ref:`QWORD-numbers`)
+* (REG_EXPAND_SZ) values will be returned as string.
+* (REG_BINARY) values will be returned as string.
 
 This function could be used if its not necessary to use type specific functions.
 
@@ -110,7 +110,7 @@ Here is an example of how to use it.
 String Values
 ==============
 
-We can set and get strictly string values using **SetString()** and **GetString()** functions. These values will be saved in registry as REG_SZ values.
+We can set and get strictly string values using **SetString()** and **GetString()** functions. These values will be saved in registry as (REG_SZ) values.
 
 .. code-block:: none
 
@@ -130,7 +130,7 @@ We can set and get strictly string values using **SetString()** and **GetString(
 DWORD Numerical Values
 =======================
 
-DWORD numerical values are unsigned Long 32 bit numbers (Unsigned Long) that are saved in registry as REG_DWORD values. They have a range of  (0 - 4294967294). Floated numbers will be converted into strings and dealt with as string, So its better to deal with them as string from the beginning.
+DWORD numerical values are unsigned Long 32 bit numbers (Unsigned Long) that are saved in registry as (REG_DWORD) values. They have a range of  (0 - 4294967294). Floated numbers will be converted into strings and dealt with as string, So its better to deal with them as string from the beginning.
 
 Here we will talk about integer values. These values can strictly be saved and gotten by **SetDWORD()** and **GetDWORD()** functions.
 
@@ -348,13 +348,13 @@ This function can get all items(lines) of multi string value as a list as follow
 QWORD Numerical Values
 =======================
 
-QWORD numerical values are unsigned 64 bit numbers (Unsigned Long Long) that have a range from 0 to 18446744073709551615. These numerical values are saved in registry as REG_QWORD type values.
+QWORD numerical values are unsigned 64 bit numbers (Unsigned Long Long) that have a range from 0 to 18446744073709551615. These numerical values are saved in registry as (REG_QWORD) type values.
 
-We can deal with REG_QWORD registry type by using **SetQWORD()**, **GetQWORD()**, and **GetQWORDs()** functions.
+We can deal with (REG_QWORD) registry type by using **SetQWORD()**, **GetQWORD()**, and **GetQWORDs()** functions.
 
 These functions can do the following:
 
-1. SetQWORD() function : accepts numbers and numerical string values and save them as REG_QWORD.
+1. SetQWORD() function : accepts numbers and numerical string values and save them as (REG_QWORD).
 2. GetQWORD() function : return QWORD value and check if it is within Ring numbers range so it return it as number, but if it is not return it as string value.
 3. GetQWORDs() function: return QWORD value always as string value.
 
@@ -414,9 +414,9 @@ Here is a complete example that show all of that:
 Binary Values
 ==============
 
-Binary values are primary values that can represent any data. In registry editor we can see these values as hexadecimal representation. They are saved in registry as REG_BINARY data type.
+Binary values are primary values that can represent any data. In registry editor we can see these values as hexadecimal representation. They are saved in registry as (REG_BINARY) data type.
 
-We can set and get REG_BINARY type values using **SetBinary()** and **GetBinary()** functions also we can get the whole length of binary elements by using **BinaryLength()** function.
+We can set and get (REG_BINARY) type values using **SetBinary()** and **GetBinary()** functions also we can get the whole length of binary elements by using **BinaryLength()** function.
 
 Binary values are dealt with in Ring as a string contains each binary value as hexadecimal representation separated by commas.
 
@@ -441,3 +441,73 @@ Here is an example:
 	Reg.CloseKey()
 	
 .. note:: SetBinary() function may accept any character as a separator instead of "," but its better to use comma to unify coding.
+
+.. index::
+	pair: Dealing with Values; Set and Get Ring Objects
+	
+Set and Get Ring Objects
+=========================
+
+We can save and retrieve Ring objects during runtime to help saving their states for future use. There two functions (**SetObject()** and **GetObject()**) that deal with objects in a nice and smart manner. 
+
+Here is an example that will clarify all of what we said.
+
+.. code-block:: none
+
+	Load "wincreg.ring"
+	
+	Reg = New RCRegistry { OpenKey([HKEY_CURRENT_USER, "Software\MyApp"]) }
+	
+	oOne = New One
+	
+	See "Saving oOne Object ... " + NL
+	Reg["oOne"].SetObject(oOne)
+	
+	See "Retrieving oOne Object ... " + NL
+	See Reg["oOne"].GetObject()
+	
+	oTwo = New Two
+	
+	oTwo.o.x = 15
+	
+	See "Saving oTwo Object ... " + NL
+	Reg["oTwo"].SetObject(oTwo) 
+	
+	See "Retrieving oTwo Object ... " + NL
+	T = Reg["oTwo"].GetObject()
+	
+	See "This is printable copy of retrieved oTwo object : " + NL
+	See T
+	
+	See "This is the modified x value of o object in oTwo Object : " + NL
+	See T.o.x
+	
+	See NL + "This is the printable form of z list that's a part of o Object in oTwo Object : " + NL
+	See T.o.z
+	
+	Reg.CloseKey()
+	
+	
+	Class One
+		x = 2
+		y = "One"
+		z = [4, 5, "LOne", ["Ltwo", 53, 66], 32, "Last"]
+		
+		Func Hello See "Hello"
+		
+		
+	Class Two 
+		g = 44
+		u = "Two"
+		o = New One
+		
+		Func Hello See "Hello"
+		
+This example show the power of these functions in dealing with Ring Objects. But there are some points that we should know about:
+
+1. We can save objects by saving their attributes and their values.
+2. These two functions can smartly save attribute that are lists and objects.
+3. They take dynamic nature of Ring Language in account so that new created attributes are also saved and retrieved correctly.
+4. Attributes that are not strings, numbers, lists, or objects will be ignored.
+5. Objects are saved in registry as a binary values. 
+6. Saving Objects that have some attributes of their same class will not be saved correctly. This is because saving recursive objects have been halted for overflow problems.

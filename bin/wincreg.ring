@@ -14,7 +14,7 @@
 LoadLib("ring_wincreg.dll")
 Load "wincreg.rh"
 
-
+RCRegRetObj = NULL
 
 /* this function is used to avoid Type() functions conflicts from within RCRegEntry Class */
 Func cTypeForRCRegEntry para
@@ -456,3 +456,219 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 				 "REG_RESOURCE_LIST", "REG_FULL_RESOURCE_DESCRIPTOR", "REG_RESOURCE_REQUIREMENTS_LIST", "REG_QWORD"]
 		return aList[Type() + 1]   # increment by 1 is due to list index that starts with one
 
+	Func SetObject obj
+		O4R = New Objects2Reg(Self)
+		O4R.SetObject(obj)
+			
+	Func GetObject
+		O4R = New Objects2Reg(Self)
+		Return O4R.GetObject()
+
+		
+Class Objects2Reg
+	EntryObj = NULL
+	CollecterList = []
+
+	Func init EntObj
+		EntryObj = EntObj
+	
+	Func SetObject obj		# From Collector to Registry
+		ConfObject(obj, EntryObj.EntryName /*ObjectName*/)		# From Input to Collector
+		TempD = List2Str(CollecterList)
+		oReg = New RCRegistry
+		EntryObj.SetBinary(oReg.StringToBinary(TempD))
+		
+	Func ConfObject obj, objectName
+		ResList = ["--RING--OBJECT--"]
+		If IsObject(obj) = False 
+			Raise("Error : ConfObject() can just accept objects, and their names")
+		Ok
+		Add(ResList, "-CName--" + ClassName(obj))
+		Add(ResList, "........")
+		oList = Attributes(obj)
+		ObjNum = 1
+		For o in oList
+			v = 0
+			eval("v = obj." + o)
+			Switch cTypeForRCRegEntry(v)
+				On "STRING"
+					Add(ResList, "-S--" + o + " = '" + v + "'")
+				On "NUMBER"
+					Add(ResList, "-N--" + o + " = " + String(v))
+				On "LIST"
+					Add(ResList, "-L--" + o)
+					AddToInputList(ResList, v, "-L--", obj, objectName)
+				On "OBJECT"
+					If ClassName(v) = ClassName(obj) 
+						See "Warning : Theres ignored object recursion. Object Recursion will end in overflow problems"
+					Ok
+					nObjEntName = objectName + "-o" + ObjNum
+					Add(ResList, "-O--" + o + " = '" + nObjEntName + "'" )
+					ConfObject(v, nObjEntName)
+					ObjNum += 1
+				Other
+				
+				Off
+			
+			Add(ResList, "........")
+		Next
+		ToCollector(ResList, objectName)
+		
+	Func ToCollector srcList, objectName
+		FinalRes = List2Str(srcList)
+		FinalRes = SubStr(FinalRes, NL, "@!^")
+		Add(CollecterList, objectName)
+		Add(CollecterList, FinalRes)
+	
+	Func AddToInputList ResLst, currentlist, prefix, CurrObj, ObName
+		ObjNum = 1
+		For i = 1 To Len(currentlist)
+			Switch cTypeForRCRegEntry(currentlist[i])
+				On "STRING"
+					Add(ResLst, prefix + "-S--" + currentlist[i] )
+				On "NUMBER"
+					Add(ResLst, prefix + "-N--" + currentlist[i])
+				On "LIST"
+					AddToInputList(ResLst, currentlist[i], prefix + "-L--", CurrObj, ObName) 
+				On "OBJECT"
+					If ClassName(currentlist[i]) = ClassName(CurrObj) 
+						See "Warning : Theres ignored object recursion. Object Recursion will end in overflow problems" 
+					Ok
+					nObjEntName = ObName + "-l" + String(Len(prefix)/4) + "o" + ObjNum
+					Add(ResLst, prefix + "-O--" + nObjEntName )
+					ConfObject(currentlist[i], nObjEntName)
+					ObjNum += 1
+				Other
+					
+				Off
+			Add(ResLst, prefix + "........")
+		Next
+
+	Func GetObject		# From Registry to Collector + Request Retrieving The Main Object
+		If EntryObj.IsBinary() = False
+			Raise("Error : Unknown Object saving type entry")
+		Ok
+		oReg = New RCRegistry
+		RwaData = oReg.BinaryToString(EntryObj.GetBinary())
+		CollecterList = Str2List(RwaData)
+		
+		Return RetObject(FromCollector(EntryObj.EntryName))	# The main object
+			
+	Func FromCollector Objname
+		ObjIndex = Find(CollecterList, Objname)
+		TempLst = SubStr(CollecterList[ObjIndex +1], "@!^", NL)
+		TempLst = Str2List(TempLst)
+		Return TempLst
+	
+	Func RetObject objList		# Return Objects from Collector
+		resList = []
+		LocRetObj = NULL
+		If Len(objList) > 0 
+			If objList[1] != "--RING--OBJECT--"
+				Raise("Error : Unknown Ring Object saving format")
+			Ok
+			If Left(objList[2], 8) = "-CName--"
+				If Find(Classes(), SubStr(objList[2], 9)) = 0
+					Raise("Error : Cannot return Ring Object because it's class is not in the available classes list")
+				Ok
+				Eval("LocRetObj = New " + SubStr(objList[2], 9))
+			Else
+				Raise("Error : Unknown Ring Object saving format")
+			Ok
+			For o = 1 to Len(objList)
+				attlst = []
+				chvalue = Left(objList[o], 4)
+				Switch chvalue
+					On "...."
+						Loop
+					On "-S--"
+						Eval("Add(attlst, :" + SubStr(objList[o], 5) + ")")
+						If Find(Attributes(LocRetObj), attlst[1][1])
+							Eval("LocRetObj." + attlst[1][1] + " = '" + attlst[1][2] + "'")
+						Else
+							AddAttribute(LocRetObj, attlst[1][1])
+							Eval("LocRetObj." + attlst[1][1] + " = '" + attlst[1][2] + "'")
+						Ok
+					On "-N--"
+						Eval("Add(attlst, :" + SubStr(objList[o], 5) + ")")
+						If Find(Attributes(LocRetObj), attlst[1][1])
+							Eval("LocRetObj." + attlst[1][1] + " = " + attlst[1][2])
+						Else
+							AddAttribute(LocRetObj, attlst[1][1])
+							Eval("LocRetObj." + attlst[1][1] + " = " + attlst[1][2])
+						Ok
+					On "-L--"
+						lstname = ""
+						Eval("lstname = '" + SubStr(objList[o], 5) + "'")
+						If Find(Attributes(LocRetObj), lstname)
+							lst = AddToOutputList(objList, o + 1, "-L--", 1) 
+							Eval("LocRetObj." + lstname + " = lst")
+						Else
+							AddAttribute(LocRetObj, lstname)
+							lst = AddToOutputList(objList, o + 1, "-L--", 1) 
+							Eval("LocRetObj." + lstname + " = lst")
+						Ok
+												
+						For i = o to Len(objList)		# this loop to help jump already added list
+							If objList[i] = "........"
+								o = i
+							Ok
+						Next
+					On "-O--"
+						Eval("Add(attlst, :" + SubStr(objList[o], 5) + ")")
+						If Find(Attributes(LocRetObj), attlst[1][1])
+							TempLst = FromCollector(attlst[1][2])
+							ob = RetObject(TempLst)
+							Eval("LocRetObj." + attlst[1][1] + " = ob")
+						Else
+							AddAttribute(LocRetObj, attlst[1][1])
+							TempLst = FromCollector(attlst[1][2])
+							ob = RetObject(TempLst)
+							Eval("LocRetObj." + attlst[1][1] + " = ob")
+						Ok
+					Other
+					
+					Off
+				attlst = []
+			Next
+		Ok
+		RCRegRetObj = LocRetObj
+		Return RCRegRetObj
+
+		
+	Func AddToOutputList srcObjList, currentIndex, prefix, level
+		opList = []
+		lastindex = 0
+		For j = currentIndex To Len(srcObjList)
+			If srcObjList[j] = SubStr(prefix, 5) + "........"
+				lastindex = j
+			Ok
+		Next
+		For k = currentIndex To lastindex
+			chkvalue = SubStr(srcObjList[k], Len(prefix) +1 , 4)
+			Switch chkvalue
+				On "...."
+					Loop
+				On "-S--"
+					Add(opList, SubStr(srcObjList[k], Len(prefix) + 5))
+				On "-N--"
+					Add(opList, Number(SubStr(srcObjList[k], Len(prefix) + 5)))
+				On "-L--"
+					nlist = AddToOutputList(srcObjList, k, prefix + "-L--" , (Len(prefix)/4) +1)
+					Add(opList, nlist)
+					For i = k to Len(srcObjList)	# this loop to help jump already added list
+						If srcObjList[i] = copy("-L--",level +1) + "........"
+							k = i
+						Ok
+					Next
+				On "-O--"
+					TempLst = FromCollector(SubStr(srcObjList[k], Len(prefix) + 5))
+					ob = RetObject(TempLst)
+					Add(opList, ob)
+				Other
+				
+				Off
+		Next
+		
+		Return opList
+		

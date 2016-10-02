@@ -441,3 +441,73 @@ Here is an example:
 	Reg.CloseKey()
 	
 .. note:: SetBinary() function may accept any character as a separator instead of "," but its better to use comma to unify coding.
+
+.. index::
+	pair: Dealing with Values; Set and Get Ring Objects
+	
+Set and Get Ring Objects
+=========================
+
+We can save and retrieve Ring objects during runtime to help saving their states for future use. There two functions (**SetObject()** and **GetObject()**) that deal with objects in a nice and smart manner. 
+
+Here is an example that will clarify all of what we said.
+
+.. code-block:: none
+
+	Load "wincreg.ring"
+	
+	Reg = New RCRegistry { OpenKey([HKEY_CURRENT_USER, "Software\MyApp"]) }
+	
+	oOne = New One
+	
+	See "Saving oOne Object ... " + NL
+	Reg["oOne"].SetObject(oOne)
+	
+	See "Retrieving oOne Object ... " + NL
+	See Reg["oOne"].GetObject()
+	
+	oTwo = New Two
+	
+	oTwo.o.x = 15
+	
+	See "Saving oTwo Object ... " + NL
+	Reg["oTwo"].SetObject(oTwo) 
+	
+	See "Retrieving oTwo Object ... " + NL
+	T = Reg["oTwo"].GetObject()
+	
+	See "This is printable copy of retrieved oTwo object : " + NL
+	See T
+	
+	See "This is the modified x value of o object in oTwo Object : " + NL
+	See T.o.x
+	
+	See NL + "This is the printable form of z list that's a part of o Object in oTwo Object : " + NL
+	See T.o.z
+	
+	Reg.CloseKey()
+	
+	
+	Class One
+		x = 2
+		y = "One"
+		z = [4, 5, "LOne", ["Ltwo", 53, 66], 32, "Last"]
+		
+		Func Hello See "Hello"
+		
+		
+	Class Two 
+		g = 44
+		u = "Two"
+		o = New One
+		
+		Func Hello See "Hello"
+		
+This example show the power of these functions in dealing with Ring Objects. But there are some points that we should know about:
+
+1. We can save objects by saving their attributes and their values.
+2. These two functions can smartly save attribute that are lists and objects.
+3. They take dynamic nature of Ring Language in account so that new created attributes are also saved and retrieved correctly.
+4. Attributes that are not strings, numbers, lists, or objects will be ignored.
+5. Objects are saved in registry as a binary values. 
+6. Saving Objects that have some attributes of their same class will not be saved correctly. This is because saving recursive objects have been halted for overflow problems.
