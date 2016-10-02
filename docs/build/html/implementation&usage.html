@@ -109,20 +109,38 @@ CRegCloseKey(oKey)
 <p>Now we have to apply the previous example using this method to clarify the difference.</p>
 <div class="highlight-none"><div class="highlight"><pre><span></span>Load &quot;wincreg.ring&quot;
 
-Registry = New RCRegistry
+oReg = New RCRegistry {
 
-Registry.OpenKey([HKEY_CURRENT_USER, &quot;Software\MyApp&quot;])
+        OpenKey([HKEY_CURRENT_USER, &quot;Software\MyApp&quot;])
 
-Registry[&quot;version&quot;].Set(&quot;4.4&quot;)
+        oReg[&quot;version&quot;].Set(&quot;4.4&quot;)
 
-See &quot;MyApp version is : &quot; + Registry[&quot;version&quot;].Get()
+        See &quot;MyApp version is : &quot; + oReg[&quot;version&quot;].Get()
 
-Registry.CloseKey()
+        CloseKey()
+
+        }
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">RCRegistry class can represent and deal with one open key. So in case of dealing with more than one key at the same time we should define a separate RCRegistry Object for each key.</p>
+</div>
+<p>As we are really lucky using Ring, we can write the same previous example without creating any object like this:</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>Load &quot;wincreg.ring&quot;
+
+New RCRegistry {
+
+        OpenKey([HKEY_CURRENT_USER, :Software\MyApp])
+
+        Self[&quot;version&quot;].Set(&quot;4.4&quot;)
+
+        See &quot;MyApp version is : &quot; + Self[&quot;version&quot;].Get()
+
+        CloseKey()
+
+        }
+</pre></div>
 </div>
 <p>In the next sections I&#8217;m going to explain how to use &#8220;ring_wincreg&#8221; extension using RCRegistry class but I should also list all of the extension functions later on.</p>
 </div>

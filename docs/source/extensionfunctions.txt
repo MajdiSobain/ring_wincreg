@@ -105,4 +105,4 @@ Here we are going to know the whole list of functions that could be called direc
 
 .. note::
    1. Each function or parameter preceded by star in its definition denotes that it is a handle/pointer.
-   2. Each function has "CReg" prefix to show that these functions are a normal extension of their Original C++ class "CRegistry", and to preserve enough space for any one who could develop other extension which will deal directly with WIN APIs of Wndows Registry.
+   2. Each function has "CReg" prefix to show that these functions are normal extension of their original C++ class "CRegistry", and to preserve enough space for any one who could develop other extension which will deal directly with WIN APIs of Wndows Registry.

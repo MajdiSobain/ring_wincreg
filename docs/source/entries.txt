@@ -2,7 +2,7 @@
 Dealing with Entries
 =====================
 
-Here we are going to learn how to deal with registry entries by using "ring_wincreg" extension capabilities through RCRegistry class.
+Here, we are going to learn how to deal with registry entries by using "ring_wincreg" extension capabilities through RCRegistry class.
 
 .. index::
 	pair: Dealing with Entries; Create Entry
@@ -10,7 +10,25 @@ Here we are going to learn how to deal with registry entries by using "ring_winc
 Create Entry
 =============
 
-We can create empty entries using the functions that set the value but with passing empty value.(:ref:`Set-Value`) This will depend on the type of entry that we want to create so that we will use the corresponding function.
+We can create an empty entry using **Create()** function. This function accepts one parameter which is the type of entry to be created. If the entry is already existed this function will return error message.
+
+.. code-block:: none
+
+	Load "wincreg.ring"
+	
+	Reg = New RCRegistry {
+		OpenKey([HKEY_CURRENT_USER, "Software\MyApp"])
+		}
+	
+	Reg["NewValue"].Create(REG_BINARY)
+	
+	Reg.CloseKey()
+	
+.. note:: Creating an empty entry with Create() function will initialize it with nil value of the corresponding data type.
+
+.. note:: Default entry is considered not existed if it is still not set. So if we use Create() function it will be initialized with value of corresponding data type.
+
+We can indirectly create any entry by using those functions that set the values for each data type.(:ref:`Set-Value`) So that we can create any entry by initially setting any value to it as follow:
 
 .. code-block:: none
 
@@ -20,9 +38,9 @@ We can create empty entries using the functions that set the value but with pass
 		OpenKey([HKEY_CURRENT_USER, "Software\MyApp"])
 		}
 		
-	Reg["AppStyle"].Set("")
+	Reg["AppStyle"].Set("Normal Style")
 	
-	Reg["AppOpenCount"].Set(0)
+	Reg["AppOpenCount"].SetDWORD(3)
 	
 	Reg.CloseKey()
 	
@@ -57,11 +75,11 @@ Get Entry
 We can get one entry from any opened key, if it contains any, by using **GetEntryAt()** and **GetEntryName()** functions.
 
 .. index::
-	pair: Get Entry; GetEntryAt() function
+	pair: Get Entry; GetEntryAt() Function
 	
 .. _GetEntryAt()-function:
 
-GetEntryAt() function
+GetEntryAt() Function
 ----------------------
 
 This function will return a key handle by its index so that we can not deal with it as string with all other function but we can use GetEntryName() function to get it is string.
@@ -91,9 +109,9 @@ This function actually used in case that we want to transfer a whole entry conta
 	DestReg.CloseKey()
 	
 .. index::
-	pair: Get Entry; GetEntryName() function
+	pair: Get Entry; GetEntryName() Function
 	
-GetEntryName() function
+GetEntryName() Function
 ------------------------
 
 This function is used to get the name of an entry handle that could be retrieved by GetEntryAt() function.
@@ -156,6 +174,31 @@ We can get a list of all entries contained in an opened key by using **GetEntrie
 	Reg.CloseKey()
 	
 .. index::
+	pair: Dealing with Entries; Access the default entry
+
+Access the default entry
+=========================
+
+We can access the default entry that is present in each key in the registry tree by passing empty string as an entry name
+
+.. code-block:: none
+	
+	Load "wincreg.ring"
+	
+	Reg = New RCRegistry { OpenKey([HKEY_CURRENT_USER, "Software\MyApp"]) }
+	
+	See "Setting the default entry value >>> " + NL
+	
+	Reg[""].Set("default entry value")
+	
+	See "The value of default entry is : " + Reg[""].Get()
+	
+	Reg.CloseKey()
+	
+.. note:: 
+   Default entry is of (REG_SZ) data type by default but it can take any data type by setting the value using the data type specific functions. (:ref:`Set-Value`)
+
+.. index::
 	pair: Dealing with Entries; Copy Entries
 	
 Copy Entries
@@ -164,9 +207,9 @@ Copy Entries
 We can copy an entry or the whole list of entries in an opened key to another key by using **CopyTo()** and **CopyAllTo()** functions.
 
 .. index::
-	pair: Copy Entries; CopyTo() function
+	pair: Copy Entries; CopyTo() Function
 	
-CopyTo() function
+CopyTo() Function
 ------------------
 
 This function has two instances one can be used to copy an entry by passing its handle :ref:`GetEntryAt()-function`, the other is used to copy any entry by using its name.
@@ -194,9 +237,9 @@ Here is an example of the second instance of **CopyTo()** function.
 	DestReg.CloseKey()
 	
 .. index::
-	pair: Copy Entries; CopyAllTo() function
+	pair: Copy Entries; CopyAllTo() Function
 	
-CopyAllTo() function
+CopyAllTo() Function
 ---------------------
 
 This function can copy all of the opened key entries to another one.
@@ -247,12 +290,12 @@ Checking Entry Type
 
 We can check a specific entry for it is type by some useful functions. These functions are:
 
-1. IsString() function : return True if the entry is of REG_SZ type.
-2. IsDWORD() function : return True if the entry is of REG_DWORD type.
-3. IsMultiString() function : return True if the entry is of REG_MULTI_SZ type.
-4. IsExpandSZ() function : return True if the entry is of REG_EXPAND_SZ type.
-5. IsQWORD() function : return True if the entry is of REG_QWORD type.
-6. IsBinary() function : return True if the entry is of REG_BINARY type.
+1. IsString() function : return True if the entry is of (REG_SZ) type.
+2. IsDWORD() function : return True if the entry is of (REG_DWORD) type.
+3. IsMultiString() function : return True if the entry is of (REG_MULTI_SZ) type.
+4. IsExpandSZ() function : return True if the entry is of (REG_EXPAND_SZ) type.
+5. IsQWORD() function : return True if the entry is of (REG_QWORD) type.
+6. IsBinary() function : return True if the entry is of (REG_BINARY) type.
 
 Example:
 
@@ -277,9 +320,9 @@ Get Entry Type
 We can get the type of entry directly from registry by using **Type()** and **TypeName()** functions. 
 
 .. index::
-	pair: Get Entry Type; Type() function
+	pair: Get Entry Type; Type() Function
 	
-Type() function
+Type() Function
 ----------------
 
 The registry entries types are known with specific numbers so that using **Type()** function will return a number of the type of the specified entry.
@@ -295,15 +338,15 @@ Example:
 	Reg = New RCRegistry { OpenKey([HKEY_CURRENT_USER, "Software\MyApp"]) }
 	
 	If Reg["AppVersion"].Type() = REG_SZ
-		See "This (AppVersion) entry is of REG_SZ type"
+		See "This (AppVersion) entry is of (REG_SZ) type"
 	Ok
 	
 	Reg.CloseKey()
 	
 .. index::
-	pair: Get Entry Type; TypeName() function
+	pair: Get Entry Type; TypeName() Function
 	
-TypeName() function
+TypeName() Function
 --------------------
 
 This function return the type name of a specified entry as a string.
@@ -318,3 +361,52 @@ This function return the type name of a specified entry as a string.
 	
 	Reg.CloseKey()
 	
+.. index::
+	pair: Dealing with Entries; Clear Entry
+	
+Clear Entry
+============
+
+We can clear the content of any data type entry by using **Clear()** function as follow:
+
+.. code-block:: none
+
+	Load "wincreg.ring" 
+	
+	Reg = New RCRegistry { OpenKey([HKEY_CURRENT_USER, "Software\MyApp"]) }
+	
+	See "The old logo is : " + Reg["AppLogo"].Get() + NL
+	
+	Reg["AppLogo"].Clear()
+	
+	Reg["AppLogo"].Set("We are in your eye's TRUST")
+	
+	See "The new logo is : " + Reg["AppLogo"].Get()
+	
+	Reg.CloseKey()
+	
+.. index::
+	pair: Dealing with Entries; Delete Entry
+
+Delete Entry
+=============
+
+We can delete any entry that is not needed by using **Delete()** function as follow:
+
+.. code-block:: none
+	
+	Load "wincreg.ring"
+	
+	Reg = New RCRegistry { OpenKey([HKEY_CURRENT_USER, "Software\MyApp"]) }
+	
+	Reg["NewEntry"].Create(REG_SZ)
+	
+	See "NewEntry has been created" + NL
+	
+	Reg["NewEntry"].Delete()
+	
+	See "NewEntry has been deleted"
+	
+	Reg.CloseKey()
+	
+.. note:: We can use this function with default entry to clear its content and restore its default data type (REG_SZ).

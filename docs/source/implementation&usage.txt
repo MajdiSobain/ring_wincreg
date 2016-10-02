@@ -103,18 +103,38 @@ Now we have to apply the previous example using this method to clarify the diffe
 
 	Load "wincreg.ring"
 	
-	Registry = New RCRegistry
+	oReg = New RCRegistry {
 	
-	Registry.OpenKey([HKEY_CURRENT_USER, "Software\MyApp"])
+		OpenKey([HKEY_CURRENT_USER, "Software\MyApp"])
 		
-	Registry["version"].Set("4.4")
+		oReg["version"].Set("4.4")
 		
-	See "MyApp version is : " + Registry["version"].Get()
+		See "MyApp version is : " + oReg["version"].Get()
 		
-	Registry.CloseKey()
+		CloseKey()
+		
+		}
 
 .. note::
 
 	RCRegistry class can represent and deal with one open key. So in case of dealing with more than one key at the same time we should define a separate RCRegistry Object for each key.
+	
+As we are really lucky using Ring, we can write the same previous example without creating any object like this:
+
+.. code-block:: none
+
+	Load "wincreg.ring"
+	
+	New RCRegistry {
+	
+		OpenKey([HKEY_CURRENT_USER, :Software\MyApp])
+		
+		Self["version"].Set("4.4")
+		
+		See "MyApp version is : " + Self["version"].Get()
+		
+		CloseKey()
+		
+		}
 
 In the next sections I'm going to explain how to use "ring_wincreg" extension using RCRegistry class but I should also list all of the extension functions later on.

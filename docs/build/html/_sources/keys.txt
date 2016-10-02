@@ -2,12 +2,12 @@
 Dealing with Keys
 ==================
 
-Here we are going to learn how to deal with registry keys by using "ring_wincreg" extension capabilities through RCRegistry class.
+Here, we are going to learn how to deal with registry keys by using "ring_wincreg" extension capabilities through RCRegistry class.
 
 .. index::
-	pair: Dealing with Keys; Create a Key
+	pair: Dealing with Keys; Create Key
 
-Create a Key
+Create Key
 =============
 
 We can create a new key by using the same functions for opening keys because these functions can create a key if it is not existed and then open it. (:ref:`Open-Keys`)
@@ -24,26 +24,29 @@ We can check whether a specific key existed before we open it by using **KeyExis
 
 	Load "wincreg.ring"
 	
-	If KeyExists(HKEY_CURRENT_USER, "Software\MyApp") = True
-		See "MyApp key is existed inside Software key"
-	Else
-		See "MyApp does not exist in Software key"
-	Ok
+	New RCRegistry {
+	
+		If KeyExists(HKEY_CURRENT_USER, "Software\MyApp") = True
+			See "MyApp key is existed inside Software key"
+		Else
+			See "MyApp does not exist in Software key"
+		Ok
+	}
 	
 .. index:: 
-	pair: Dealing with Keys; Open a Key
+	pair: Dealing with Keys; Open Key
 	
 .. _Open-Keys:
 
-Open a Key
+Open Key
 ===========
 
 We can open a registry key using more than one function and option.
 
 .. index::
-	pair: Open a Key; OpenKey() function
+	pair: Open Key; OpenKey() Function
 	
-OpenKey() function
+OpenKey() Function
 -------------------
 
 This function is the primary open key function in the RCRegistry class that could be used to open keys.
@@ -73,9 +76,9 @@ This Function accepts parameters as a list so we should pass one list parameter 
 
    Note that each HKEY root has been shorten for easier call.
    
-2. The sub key name which is the key that we want to open under the specified root. It is a complete path to the required key under the specified root.
+2. The sub key path which is the key that we want to open under the specified root. It is a complete path to the required key under the specified root.
 3. Flags that control how we want to use this library functions. These Flags could be one or more of the follow:
-		* CREG_READONLY : open the key if it is existed but will create it if it is not. This flag cannot be used with others in the same time.
+		* CREG_READONLY : open the key if it is existed but will not create it if it is not. This flag cannot be used with others in the same time.
 		* CREG_CREATE   : this flag will make the function to create the key if its not exist. ( This Flag is Used by default when calling OpenKey function )
 		* CREG_AUTOOPEN : activate the auto open mechanism of CRegistry Class, which help in repeatedly open and close functions calling.
 		* CREG_NOCACHE  : deactivate the caching mechanism of the CRegistry Class. ( Activated by default )
@@ -123,9 +126,9 @@ Example 2
    You can use `"Ring_WINAPI" <https://github.com/MajdiSobain/ring_winapi>`_ extension to help elevating Ring.
 
 .. index::
-	pair: Open a Key; OpenKey2() function
+	pair: Open Key; OpenKey2() Function
 	
-OpenKey2() function
+OpenKey2() Function
 --------------------
 
 This function is an overriding copy of the previous **OpenKey()** . But it accepts just two non list parameters, these are:
@@ -141,7 +144,7 @@ Example
 	
 	Reg = New RCRegistry
 	
-	Reg.OpenKey2(HKEY_CURRENT_USER, "Software\MyApp")
+	Reg.OpenKey2(HKCU, "Software\MyApp")
 	
 	Reg["version"].Set("4.4")
 	
@@ -150,9 +153,9 @@ Example
 	Reg.CloseKey()
 	
 .. index::
-	pair: Open a Key; OpenKey3() function
+	pair: Open Key; OpenKey3() Function
 	
-OpenKey3() function
+OpenKey3() Function
 --------------------
 
 This function is an overriding copy of OpenKey() function. But it accepts just three non list parameters, these are:
@@ -169,7 +172,7 @@ Example
 	
 	Reg = New RCRegistry
 	
-	Reg.OpenKey3(HKEY_CURRENT_USER, "Software\MyApp", CREG_CREATE)
+	Reg.OpenKey3(HKCU, "Software\MyApp", CREG_CREATE)
 	
 	Reg["version"].Set("4.4")
 	
@@ -178,9 +181,9 @@ Example
 	Reg.CloseKey()
 
 .. index::
-	pair: Open a Key; OpenKey4() function
+	pair: Open Key; OpenKey4() Function
 	
-OpenKey4() function
+OpenKey4() Function
 --------------------
 
 This function is another overriding copy of OpenKey() function. But it accepts all four non list parameters, which are:
@@ -206,8 +209,6 @@ Example
 	
 	Reg.CloseKey()
 
-.. note:: To Open an HKEY root itself pass empty string as sub key.
-
 After opening the key it will be saved in an attribute in RCRegistry object named **(Key)**, So that it could be used by other functions easily.
 
 .. code-block:: none 
@@ -224,10 +225,30 @@ After opening the key it will be saved in an attribute in RCRegistry object name
 	
 	Reg.CloseKey()
 	
-.. index:: 
-	pair: Dealing with Keys; Close a Key
+.. index::
+	pair: Dealing with Keys; Access HKEY Root
 	
-Close a Key
+Access HKEY Root
+=================
+
+We can access/open any HKEY Root by passing empty string as sub key path as follow:
+
+.. code-block:: none
+
+	Load "wincreg.ring"
+	
+	Reg = New RCRegistry { OpenKey([HKCU, ""]) }
+	
+	See "The sub keys contained in HKEY_CURRENT_USER are : " + NL
+	
+	See Reg.GetSubKeys()
+	
+	Reg.CloseKey()
+	
+.. index:: 
+	pair: Dealing with Keys; Close Key
+		
+Close Key
 ============
 
 We can close any opened key by using **CloseKey()** function. It is recommended to close any key you opened to prevent any conflicts when the key is needed to be opened again.
@@ -247,9 +268,9 @@ We can close any opened key by using **CloseKey()** function. It is recommended 
 	See "MyApp key is closed"
 
 .. index::
-	pair: Dealing with Keys; Set and Get flags
+	pair: Dealing with Keys; Set and Get Flags
 	
-Set and Get flags
+Set and Get Flags
 ==================
 
 We can Set or Get flags any time in the code using special functions. This may be useful if we opened a key without specifying enough flags that we want.
@@ -273,9 +294,9 @@ This can be done using **SetFlags()** and **GetFlags()** functions as follow:
 	Reg.CloseKey()
 	
 .. index::
-	pair: Dealing with Keys; Accessing 64 bit tree (Registry Redirection)
+	pair: Dealing with Keys; Accessing 64 Bit Tree (Registry Redirection)
 	
-Accessing 64 bit tree (Registry Redirection)
+Accessing 64 Bit Tree (Registry Redirection)
 =============================================
 
 We can change the setting that let us access the 64 bit applications registry tree any time if we miss to set it during key opening.
@@ -499,17 +520,17 @@ We can get the list of all sub keys in the opened key as a list by using **GetSu
 	}
 	
 .. index::
-	pair: Dealing with Keys; Delete a Key
+	pair: Dealing with Keys; Delete Key
 	
-Delete a key
+Delete Key
 =============
 
 We can delete any key by using **DeleteKey()** and **DeleteKey2()** functions.
 
 .. index::
-	pair: Delete a Key; DeleteKey() function
+	pair: Delete Key; DeleteKey() Function
 	
-DeleteKey() function
+DeleteKey() Function
 ---------------------
 
 This function can delete any opened key as follow:
@@ -520,18 +541,18 @@ This function can delete any opened key as follow:
 	
 	Reg = New RCRegistry
 	
-	Reg.OpenKey([HKEY_CURRENT_USER, "Software\MyApp"])
+	Reg.OpenKey([HKEY_CURRENT_USER, "Software\MyTempApp"])
 	
-	See "MyApp key is Opened" + NL
+	See "MyTempApp key is Created and Opened" + NL
 	
 	Reg.DeleteKey()
 	
-	See "MyApp key is deleted now"
+	See "MyTempApp key is deleted now"
 	
 .. index::
-	pair: Delete a Key; DeleteKey2() function
+	pair: Delete Key; DeleteKey2() Function
 	
-DeleteKey2() function
+DeleteKey2() Function
 ----------------------
 
 This function can delete any key that is not already opened. This function accepts two parameters (HKEY ROOT, "SubKey\Path") as follow:
@@ -540,7 +561,20 @@ This function can delete any key that is not already opened. This function accep
 
 	Load "wincreg.ring"
 	
-	DeleteKey2(HKEY_CURRENT_USER, "Software\MyApp")
+	New RCRegistry { 
 	
-	See "MyApp key is deleted without opening"
+		OpenKey([HKEY_CURRENT_USER, "Software\MyTempApp"]) 
+		
+		See "MyTempApp has been created" + NL
+		
+		CloseKey() 
+	}
+	
+	New RCRegistry {
+
+		DeleteKey2(HKEY_CURRENT_USER, "Software\MyTempApp")
+	
+		See "MyTempApp key is deleted without opening"
+		
+	}
 	

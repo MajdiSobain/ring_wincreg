@@ -43,29 +43,32 @@
             
   <div class="section" id="dealing-with-keys">
 <h1>Dealing with Keys<a class="headerlink" href="#dealing-with-keys" title="Permalink to this headline">¶</a></h1>
-<p>Here we are going to learn how to deal with registry keys by using &#8220;ring_wincreg&#8221; extension capabilities through RCRegistry class.</p>
-<div class="section" id="create-a-key">
-<span id="index-0"></span><h2>Create a Key<a class="headerlink" href="#create-a-key" title="Permalink to this headline">¶</a></h2>
-<p>We can create a new key by using the same functions for opening keys because these functions can create a key if it is not existed and then open it. (<a class="reference internal" href="#open-keys"><span class="std std-ref">Open a Key</span></a>)</p>
+<p>Here, we are going to learn how to deal with registry keys by using &#8220;ring_wincreg&#8221; extension capabilities through RCRegistry class.</p>
+<div class="section" id="create-key">
+<span id="index-0"></span><h2>Create Key<a class="headerlink" href="#create-key" title="Permalink to this headline">¶</a></h2>
+<p>We can create a new key by using the same functions for opening keys because these functions can create a key if it is not existed and then open it. (<a class="reference internal" href="#open-keys"><span class="std std-ref">Open Key</span></a>)</p>
 </div>
 <div class="section" id="key-existence">
 <span id="index-1"></span><h2>Key Existence<a class="headerlink" href="#key-existence" title="Permalink to this headline">¶</a></h2>
 <p>We can check whether a specific key existed before we open it by using <strong>KeyExists()</strong> function. This function accepts two parameters(HKEY ROOT, &#8220;SubKeyPath&#8221;). See the next example:</p>
 <div class="highlight-none"><div class="highlight"><pre><span></span>Load &quot;wincreg.ring&quot;
 
-If KeyExists(HKEY_CURRENT_USER, &quot;Software\MyApp&quot;) = True
-        See &quot;MyApp key is existed inside Software key&quot;
-Else
-        See &quot;MyApp does not exist in Software key&quot;
-Ok
+New RCRegistry {
+
+        If KeyExists(HKEY_CURRENT_USER, &quot;Software\MyApp&quot;) = True
+                See &quot;MyApp key is existed inside Software key&quot;
+        Else
+                See &quot;MyApp does not exist in Software key&quot;
+        Ok
+}
 </pre></div>
 </div>
 </div>
-<div class="section" id="open-a-key">
-<span id="open-keys"></span><span id="index-2"></span><h2>Open a Key<a class="headerlink" href="#open-a-key" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="open-key">
+<span id="open-keys"></span><span id="index-2"></span><h2>Open Key<a class="headerlink" href="#open-key" title="Permalink to this headline">¶</a></h2>
 <p>We can open a registry key using more than one function and option.</p>
 <div class="section" id="openkey-function">
-<span id="index-3"></span><h3>OpenKey() function<a class="headerlink" href="#openkey-function" title="Permalink to this headline">¶</a></h3>
+<span id="index-3"></span><h3>OpenKey() Function<a class="headerlink" href="#openkey-function" title="Permalink to this headline">¶</a></h3>
 <p>This function is the primary open key function in the RCRegistry class that could be used to open keys.</p>
 <p>This Function accepts parameters as a list so we should pass one list parameter that contains other parameters. The number of parameters allowed are 2-4. These parameters are:</p>
 <ol class="arabic">
@@ -130,12 +133,12 @@ Ok
 <p class="last">Note that each HKEY root has been shorten for easier call.</p>
 </div>
 <ol class="arabic" start="2">
-<li><p class="first">The sub key name which is the key that we want to open under the specified root. It is a complete path to the required key under the specified root.</p>
+<li><p class="first">The sub key path which is the key that we want to open under the specified root. It is a complete path to the required key under the specified root.</p>
 </li>
 <li><dl class="first docutils">
 <dt>Flags that control how we want to use this library functions. These Flags could be one or more of the follow:</dt>
 <dd><ul class="first last simple">
-<li>CREG_READONLY : open the key if it is existed but will create it if it is not. This flag cannot be used with others in the same time.</li>
+<li>CREG_READONLY : open the key if it is existed but will not create it if it is not. This flag cannot be used with others in the same time.</li>
 <li>CREG_CREATE   : this flag will make the function to create the key if its not exist. ( This Flag is Used by default when calling OpenKey function )</li>
 <li>CREG_AUTOOPEN : activate the auto open mechanism of CRegistry Class, which help in repeatedly open and close functions calling.</li>
 <li>CREG_NOCACHE  : deactivate the caching mechanism of the CRegistry Class. ( Activated by default )</li>
@@ -186,7 +189,7 @@ You can use <a class="reference external" href="https://github.com/MajdiSobain/r
 </div>
 </div>
 <div class="section" id="openkey2-function">
-<span id="index-4"></span><h3>OpenKey2() function<a class="headerlink" href="#openkey2-function" title="Permalink to this headline">¶</a></h3>
+<span id="index-4"></span><h3>OpenKey2() Function<a class="headerlink" href="#openkey2-function" title="Permalink to this headline">¶</a></h3>
 <p>This function is an overriding copy of the previous <strong>OpenKey()</strong> . But it accepts just two non list parameters, these are:</p>
 <ol class="arabic simple">
 <li>HKEY root.</li>
@@ -197,7 +200,7 @@ You can use <a class="reference external" href="https://github.com/MajdiSobain/r
 
 Reg = New RCRegistry
 
-Reg.OpenKey2(HKEY_CURRENT_USER, &quot;Software\MyApp&quot;)
+Reg.OpenKey2(HKCU, &quot;Software\MyApp&quot;)
 
 Reg[&quot;version&quot;].Set(&quot;4.4&quot;)
 
@@ -208,7 +211,7 @@ Reg.CloseKey()
 </div>
 </div>
 <div class="section" id="openkey3-function">
-<span id="index-5"></span><h3>OpenKey3() function<a class="headerlink" href="#openkey3-function" title="Permalink to this headline">¶</a></h3>
+<span id="index-5"></span><h3>OpenKey3() Function<a class="headerlink" href="#openkey3-function" title="Permalink to this headline">¶</a></h3>
 <p>This function is an overriding copy of OpenKey() function. But it accepts just three non list parameters, these are:</p>
 <ol class="arabic simple">
 <li>HKEY root.</li>
@@ -220,7 +223,7 @@ Reg.CloseKey()
 
 Reg = New RCRegistry
 
-Reg.OpenKey3(HKEY_CURRENT_USER, &quot;Software\MyApp&quot;, CREG_CREATE)
+Reg.OpenKey3(HKCU, &quot;Software\MyApp&quot;, CREG_CREATE)
 
 Reg[&quot;version&quot;].Set(&quot;4.4&quot;)
 
@@ -231,7 +234,7 @@ Reg.CloseKey()
 </div>
 </div>
 <div class="section" id="openkey4-function">
-<span id="index-6"></span><h3>OpenKey4() function<a class="headerlink" href="#openkey4-function" title="Permalink to this headline">¶</a></h3>
+<span id="index-6"></span><h3>OpenKey4() Function<a class="headerlink" href="#openkey4-function" title="Permalink to this headline">¶</a></h3>
 <p>This function is another overriding copy of OpenKey() function. But it accepts all four non list parameters, which are:</p>
 <ol class="arabic simple">
 <li>HKEY root.</li>
@@ -253,10 +256,6 @@ See &quot;MyApp version is : &quot; + Reg[&quot;version&quot;].Get()
 Reg.CloseKey()
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">To Open an HKEY root itself pass empty string as sub key.</p>
-</div>
 <p>After opening the key it will be saved in an attribute in RCRegistry object named <strong>(Key)</strong>, So that it could be used by other functions easily.</p>
 <div class="highlight-none"><div class="highlight"><pre><span></span>Load &quot;wincreg.ring&quot;
 
@@ -273,8 +272,23 @@ Reg.CloseKey()
 </div>
 </div>
 </div>
-<div class="section" id="close-a-key">
-<span id="index-7"></span><h2>Close a Key<a class="headerlink" href="#close-a-key" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="access-hkey-root">
+<span id="index-7"></span><h2>Access HKEY Root<a class="headerlink" href="#access-hkey-root" title="Permalink to this headline">¶</a></h2>
+<p>We can access/open any HKEY Root by passing empty string as sub key path as follow:</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>Load &quot;wincreg.ring&quot;
+
+Reg = New RCRegistry { OpenKey([HKCU, &quot;&quot;]) }
+
+See &quot;The sub keys contained in HKEY_CURRENT_USER are : &quot; + NL
+
+See Reg.GetSubKeys()
+
+Reg.CloseKey()
+</pre></div>
+</div>
+</div>
+<div class="section" id="close-key">
+<span id="index-8"></span><h2>Close Key<a class="headerlink" href="#close-key" title="Permalink to this headline">¶</a></h2>
 <p>We can close any opened key by using <strong>CloseKey()</strong> function. It is recommended to close any key you opened to prevent any conflicts when the key is needed to be opened again.</p>
 <div class="highlight-none"><div class="highlight"><pre><span></span>Load &quot;wincreg.ring&quot;
 
@@ -291,7 +305,7 @@ See &quot;MyApp key is closed&quot;
 </div>
 </div>
 <div class="section" id="set-and-get-flags">
-<span id="index-8"></span><h2>Set and Get flags<a class="headerlink" href="#set-and-get-flags" title="Permalink to this headline">¶</a></h2>
+<span id="index-9"></span><h2>Set and Get Flags<a class="headerlink" href="#set-and-get-flags" title="Permalink to this headline">¶</a></h2>
 <p>We can Set or Get flags any time in the code using special functions. This may be useful if we opened a key without specifying enough flags that we want.</p>
 <p>This can be done using <strong>SetFlags()</strong> and <strong>GetFlags()</strong> functions as follow:</p>
 <div class="highlight-none"><div class="highlight"><pre><span></span>Load &quot;wincreg.ring&quot;
@@ -311,7 +325,7 @@ Reg.CloseKey()
 </div>
 </div>
 <div class="section" id="accessing-64-bit-tree-registry-redirection">
-<span id="index-9"></span><h2>Accessing 64 bit tree (Registry Redirection)<a class="headerlink" href="#accessing-64-bit-tree-registry-redirection" title="Permalink to this headline">¶</a></h2>
+<span id="index-10"></span><h2>Accessing 64 Bit Tree (Registry Redirection)<a class="headerlink" href="#accessing-64-bit-tree-registry-redirection" title="Permalink to this headline">¶</a></h2>
 <p>We can change the setting that let us access the 64 bit applications registry tree any time if we miss to set it during key opening.</p>
 <p>This could be done by using <strong>Access64Tree()</strong> function as follow:</p>
 <div class="highlight-none"><div class="highlight"><pre><span></span>Load &quot;wincreg.ring&quot;
@@ -350,12 +364,12 @@ You can use <a class="reference external" href="https://github.com/MajdiSobain/r
 </div>
 </div>
 <div class="section" id="registry-virtualization-check">
-<span id="index-10"></span><h2>Registry Virtualization Check<a class="headerlink" href="#registry-virtualization-check" title="Permalink to this headline">¶</a></h2>
+<span id="index-11"></span><h2>Registry Virtualization Check<a class="headerlink" href="#registry-virtualization-check" title="Permalink to this headline">¶</a></h2>
 <p>We can attempt to check whether the opened key is under virtualization effect or not using <strong>IsVirtualized()</strong> and <strong>IsVirtualized2()</strong> functions.</p>
 <p><strong>Registry Virtualization</strong> is an internal mechanism of Windows that helps keeping the sensitive registry keys and windows files away from being touched by the applications that have been developed to reach them in the previous copies of windows. So that to reach such sensitive keys and files you have to disable virtualization either by running your application/program as an administrator or use manifest files.</p>
 <p>Now check whether the currently opened key has been virtualized or not we can use these two functions.</p>
 <div class="section" id="isvirtualized-function">
-<span id="index-11"></span><h3>IsVirtualized() Function<a class="headerlink" href="#isvirtualized-function" title="Permalink to this headline">¶</a></h3>
+<span id="index-12"></span><h3>IsVirtualized() Function<a class="headerlink" href="#isvirtualized-function" title="Permalink to this headline">¶</a></h3>
 <p>This function checks virtualization of the opened key and return True/False.</p>
 <div class="highlight-none"><div class="highlight"><pre><span></span>Load &quot;wincreg.ring&quot;
 
@@ -374,7 +388,7 @@ Reg.CloseKey()
 </div>
 </div>
 <div class="section" id="isvirtualized2-function">
-<span id="index-12"></span><h3>IsVirtualized2() Function<a class="headerlink" href="#isvirtualized2-function" title="Permalink to this headline">¶</a></h3>
+<span id="index-13"></span><h3>IsVirtualized2() Function<a class="headerlink" href="#isvirtualized2-function" title="Permalink to this headline">¶</a></h3>
 <p>This function checks virtualization of the opened key and return:</p>
 <ol class="arabic simple">
 <li>Number ( 1 ) if it is virtualized.</li>
@@ -402,7 +416,7 @@ Reg.CloseKey()
 </div>
 </div>
 <div class="section" id="refresh-caching">
-<span id="index-13"></span><h2>Refresh Caching<a class="headerlink" href="#refresh-caching" title="Permalink to this headline">¶</a></h2>
+<span id="index-14"></span><h2>Refresh Caching<a class="headerlink" href="#refresh-caching" title="Permalink to this headline">¶</a></h2>
 <p>If we found that some unknown or unexpected behaviours of &#8220;ring_wincreg&#8221; extension regarding retrieving entries or some values we can refresh the internal catching mechanism by using <strong>Refresh()</strong> function.</p>
 <div class="highlight-none"><div class="highlight"><pre><span></span>Load &quot;wincreg.ring&quot;
 
@@ -425,7 +439,7 @@ Reg.CloseKey()
 </div>
 </div>
 <div class="section" id="sub-keys-existence">
-<span id="index-14"></span><h2>Sub Keys Existence<a class="headerlink" href="#sub-keys-existence" title="Permalink to this headline">¶</a></h2>
+<span id="index-15"></span><h2>Sub Keys Existence<a class="headerlink" href="#sub-keys-existence" title="Permalink to this headline">¶</a></h2>
 <p>We can check for any sub key that we may think it could be existed within the opened key by <strong>SubKeyExists()</strong> function.</p>
 <div class="highlight-none"><div class="highlight"><pre><span></span>Load &quot;wincreg.ring&quot;
 
@@ -444,7 +458,7 @@ Reg.CloseKey()
 </div>
 </div>
 <div class="section" id="sub-keys-count">
-<span id="index-15"></span><h2>Sub Keys Count<a class="headerlink" href="#sub-keys-count" title="Permalink to this headline">¶</a></h2>
+<span id="index-16"></span><h2>Sub Keys Count<a class="headerlink" href="#sub-keys-count" title="Permalink to this headline">¶</a></h2>
 <p>We can get the total number of sub keys that are contained within any opened key by using <strong>SubKeysCount()</strong> function as follow:</p>
 <div class="highlight-none"><div class="highlight"><pre><span></span>Load &quot;wincreg.ring&quot;
 
@@ -459,7 +473,7 @@ Reg.CloseKey()
 </div>
 </div>
 <div class="section" id="sub-key-by-index">
-<span id="index-16"></span><h2>Sub Key by Index<a class="headerlink" href="#sub-key-by-index" title="Permalink to this headline">¶</a></h2>
+<span id="index-17"></span><h2>Sub Key by Index<a class="headerlink" href="#sub-key-by-index" title="Permalink to this headline">¶</a></h2>
 <p>We can get any sub key present in the opened key by its index using <strong>GetSubKeyAt()</strong> function.</p>
 <div class="highlight-none"><div class="highlight"><pre><span></span>Load &quot;wincreg.ring&quot;
 
@@ -474,7 +488,7 @@ Reg.CloseKey()
 </div>
 </div>
 <div class="section" id="get-all-sub-keys">
-<span id="index-17"></span><h2>Get All Sub Keys<a class="headerlink" href="#get-all-sub-keys" title="Permalink to this headline">¶</a></h2>
+<span id="index-18"></span><h2>Get All Sub Keys<a class="headerlink" href="#get-all-sub-keys" title="Permalink to this headline">¶</a></h2>
 <p>We can get the list of all sub keys in the opened key as a list by using <strong>GetSubKeys()</strong> function as follow:</p>
 <div class="highlight-none"><div class="highlight"><pre><span></span>Load &quot;wincreg.ring&quot;
 
@@ -494,34 +508,47 @@ New RCRegistry {
 </pre></div>
 </div>
 </div>
-<div class="section" id="delete-a-key">
-<span id="index-18"></span><h2>Delete a key<a class="headerlink" href="#delete-a-key" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="delete-key">
+<span id="index-19"></span><h2>Delete Key<a class="headerlink" href="#delete-key" title="Permalink to this headline">¶</a></h2>
 <p>We can delete any key by using <strong>DeleteKey()</strong> and <strong>DeleteKey2()</strong> functions.</p>
 <div class="section" id="deletekey-function">
-<span id="index-19"></span><h3>DeleteKey() function<a class="headerlink" href="#deletekey-function" title="Permalink to this headline">¶</a></h3>
+<span id="index-20"></span><h3>DeleteKey() Function<a class="headerlink" href="#deletekey-function" title="Permalink to this headline">¶</a></h3>
 <p>This function can delete any opened key as follow:</p>
 <div class="highlight-none"><div class="highlight"><pre><span></span>Load &quot;wincreg.ring&quot;
 
 Reg = New RCRegistry
 
-Reg.OpenKey([HKEY_CURRENT_USER, &quot;Software\MyApp&quot;])
+Reg.OpenKey([HKEY_CURRENT_USER, &quot;Software\MyTempApp&quot;])
 
-See &quot;MyApp key is Opened&quot; + NL
+See &quot;MyTempApp key is Created and Opened&quot; + NL
 
 Reg.DeleteKey()
 
-See &quot;MyApp key is deleted now&quot;
+See &quot;MyTempApp key is deleted now&quot;
 </pre></div>
 </div>
 </div>
 <div class="section" id="deletekey2-function">
-<span id="index-20"></span><h3>DeleteKey2() function<a class="headerlink" href="#deletekey2-function" title="Permalink to this headline">¶</a></h3>
+<span id="index-21"></span><h3>DeleteKey2() Function<a class="headerlink" href="#deletekey2-function" title="Permalink to this headline">¶</a></h3>
 <p>This function can delete any key that is not already opened. This function accepts two parameters (HKEY ROOT, &#8220;SubKeyPath&#8221;) as follow:</p>
 <div class="highlight-none"><div class="highlight"><pre><span></span>Load &quot;wincreg.ring&quot;
 
-DeleteKey2(HKEY_CURRENT_USER, &quot;Software\MyApp&quot;)
+New RCRegistry {
 
-See &quot;MyApp key is deleted without opening&quot;
+        OpenKey([HKEY_CURRENT_USER, &quot;Software\MyTempApp&quot;])
+
+        See &quot;MyTempApp has been created&quot; + NL
+
+        CloseKey()
+}
+
+New RCRegistry {
+
+        DeleteKey2(HKEY_CURRENT_USER, &quot;Software\MyTempApp&quot;)
+
+        See &quot;MyTempApp key is deleted without opening&quot;
+
+}
 </pre></div>
 </div>
 </div>
@@ -537,18 +564,19 @@ See &quot;MyApp key is deleted without opening&quot;
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Dealing with Keys</a><ul>
-<li><a class="reference internal" href="#create-a-key">Create a Key</a></li>
+<li><a class="reference internal" href="#create-key">Create Key</a></li>
 <li><a class="reference internal" href="#key-existence">Key Existence</a></li>
-<li><a class="reference internal" href="#open-a-key">Open a Key</a><ul>
-<li><a class="reference internal" href="#openkey-function">OpenKey() function</a></li>
-<li><a class="reference internal" href="#openkey2-function">OpenKey2() function</a></li>
-<li><a class="reference internal" href="#openkey3-function">OpenKey3() function</a></li>
-<li><a class="reference internal" href="#openkey4-function">OpenKey4() function</a></li>
+<li><a class="reference internal" href="#open-key">Open Key</a><ul>
+<li><a class="reference internal" href="#openkey-function">OpenKey() Function</a></li>
+<li><a class="reference internal" href="#openkey2-function">OpenKey2() Function</a></li>
+<li><a class="reference internal" href="#openkey3-function">OpenKey3() Function</a></li>
+<li><a class="reference internal" href="#openkey4-function">OpenKey4() Function</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#close-a-key">Close a Key</a></li>
-<li><a class="reference internal" href="#set-and-get-flags">Set and Get flags</a></li>
-<li><a class="reference internal" href="#accessing-64-bit-tree-registry-redirection">Accessing 64 bit tree (Registry Redirection)</a></li>
+<li><a class="reference internal" href="#access-hkey-root">Access HKEY Root</a></li>
+<li><a class="reference internal" href="#close-key">Close Key</a></li>
+<li><a class="reference internal" href="#set-and-get-flags">Set and Get Flags</a></li>
+<li><a class="reference internal" href="#accessing-64-bit-tree-registry-redirection">Accessing 64 Bit Tree (Registry Redirection)</a></li>
 <li><a class="reference internal" href="#registry-virtualization-check">Registry Virtualization Check</a><ul>
 <li><a class="reference internal" href="#isvirtualized-function">IsVirtualized() Function</a></li>
 <li><a class="reference internal" href="#isvirtualized2-function">IsVirtualized2() Function</a></li>
@@ -559,9 +587,9 @@ See &quot;MyApp key is deleted without opening&quot;
 <li><a class="reference internal" href="#sub-keys-count">Sub Keys Count</a></li>
 <li><a class="reference internal" href="#sub-key-by-index">Sub Key by Index</a></li>
 <li><a class="reference internal" href="#get-all-sub-keys">Get All Sub Keys</a></li>
-<li><a class="reference internal" href="#delete-a-key">Delete a key</a><ul>
-<li><a class="reference internal" href="#deletekey-function">DeleteKey() function</a></li>
-<li><a class="reference internal" href="#deletekey2-function">DeleteKey2() function</a></li>
+<li><a class="reference internal" href="#delete-key">Delete Key</a><ul>
+<li><a class="reference internal" href="#deletekey-function">DeleteKey() Function</a></li>
+<li><a class="reference internal" href="#deletekey2-function">DeleteKey2() Function</a></li>
 </ul>
 </li>
 </ul>

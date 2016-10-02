@@ -2,23 +2,30 @@
 Dealing with Values
 =====================
 
-Here we are going to learn how to deal with registry values by using "ring_wincreg" extension capabilities through RCRegistry class.
+Here, we are going to learn how to deal with registry values by using "ring_wincreg" extension capabilities through RCRegistry class.
 
 .. index::
-	pair: Dealing with Values; Set a Value
+	pair: Dealing with Values; Set Value
 	
 .. _Set-Value:
 
-Set a Value
-============
+Set Value
+==========
 
-We can set a value for any specified entry by using set functions for each registry type. But There's a general **Set()** function that could set values that doesn't need to be set with other type specific functions.
+We can set a value for any specified entry by using set functions for each registry data type. Additionally, two general functions **Set()** and **Set2()** that could set any data type. 
 
-This function can set:
-* String value as REG_SZ type.
-* Numbers in the range of DWORD will be saved as REG_DWORD.
-* Numbers not in the range of DWORD will be converted to string then saved as REG_SZ.
-* Floated numbers will automatically be converted to string and saved as REG_SZ.
+.. index::
+	pair: Set Value; Set() Function
+	
+Set() Function
+---------------
+
+This general function can set values smartly according to entry existence. If the entry existed it will save the data automatically using entry data type setting function, BUT if it does not exist it will save it according to the following rules:
+
+* String value will be saved as (REG_SZ) type.
+* Numbers in the range of DWORD will be saved as (REG_DWORD).
+* Numbers not in the range of DWORD will be converted to string then saved as (REG_SZ).
+* Floated numbers will automatically be converted to string and saved as (REG_SZ).
 
 This function has been used in the previous examples to save strings, but now will try to save DWORD value.
 
@@ -34,21 +41,50 @@ This function has been used in the previous examples to save strings, but now wi
 	
 	Reg.CloseKey()
 	
-.. Note:: 5.0000 is considered as not floated value as there's no real value after the point.
+.. note:: 5.0000 is considered as not floated value as there's no real value after the point.
+
+.. note:: Setting values to already present (REG_MULTI_SZ) entry using Set() function will be done by using SetMultiList() function which means that we have to pass list to Set() function to set (REG_MULTI_SZ) values.
+   
+   This is the same thing with Set2() function.
 
 .. index::
-	pair: Dealing with Values; Get a Value
+	pair: Set Value; Set2() Function
+	
+Set2() Function
+----------------
+
+This general function can set any data type explicitly by passing the value and its type as parameters as follow:
+
+.. code-block:: none
+
+	Load "wincreg.ring"
+	
+	Reg = New RCRegistry { OpenKey([HKEY_CURRENT_USER, "Software\MyApp"]) }
+	
+	Reg["ExplicitValue"].Set2(78232, REG_QWORD)
+	
+	See "The value is : " + Reg["ExplicitValue"].Get() + NL
+	
+	See "The value data type is : " + Reg["ExplicitValue"].TypeName()
+	
+	Reg.CloseKey()
+	
+.. index::
+	pair: Dealing with Values; Get Value
 	
 .. _Get-Value:
 
-Get a Value
-============
+Get Value
+==========
 
-We can get a value for any specified entry using get functions for each registry type. But there's a general **Get()** function that could be used to get string and number values as follow:
+We can get a value for any specified entry using get functions for each registry type. But there's a general **Get()** function that could be used to get values smartly according to their data type as follow:
 
-* REG_SZ will be returned as string.
-* REG_DWORD values will be returned as numbers.
-* REG_EXPAND_SZ values will be returned as expanded strings. 
+* (REG_SZ) values will be returned as string.
+* (REG_DWORD) values will be returned as numbers.
+* (REG_MULTI_SZ) values will be return as list.
+* (REG_QWORD) values will be return as number or string.(:ref:`QWORD-numbers`)
+* (REG_EXPAND_SZ) values will be returned as string.
+* (REG_BINARY) values will be returned as string.
 
 This function could be used if its not necessary to use type specific functions.
 
@@ -69,12 +105,12 @@ Here is an example of how to use it.
 	Reg.CloseKey()
 	
 .. index::
-	pair: Dealing with Values; String values
+	pair: Dealing with Values; String Values
 	
-String values
+String Values
 ==============
 
-We can set and get strictly string values using **SetString()** and **GetString()** functions as follow:
+We can set and get strictly string values using **SetString()** and **GetString()** functions. These values will be saved in registry as (REG_SZ) values.
 
 .. code-block:: none
 
@@ -89,12 +125,12 @@ We can set and get strictly string values using **SetString()** and **GetString(
 	Reg.CloseKey()
 	
 .. index::
-	pair: Dealing with Values; Numerical values (DWORD)
+	pair: Dealing with Values; DWORD Numerical Values
 	
-Numerical values (DWORD)
-=========================
+DWORD Numerical Values
+=======================
 
-As we read before integer values can be saved or gotten as DWORD values. Floated numbers will be converted into strings and dealt with as string, So its better to deal with them as string from the beginning.
+DWORD numerical values are unsigned Long 32 bit numbers (Unsigned Long) that are saved in registry as (REG_DWORD) values. They have a range of  (0 - 4294967294). Floated numbers will be converted into strings and dealt with as string, So its better to deal with them as string from the beginning.
 
 Here we will talk about integer values. These values can strictly be saved and gotten by **SetDWORD()** and **GetDWORD()** functions.
 
@@ -116,6 +152,8 @@ Here we will talk about integer values. These values can strictly be saved and g
 Multi String Values
 ====================
 
+Multi string values are values that contain a list of string values each list item is separated in single line. They are saved in registry as (REG_MULTI_SZ) values. 
+
 We can deal with multi string values (REG_MULTI_SZ) with more than just two functions. We can use these functions:
 
 1. SetMulti() function.
@@ -129,9 +167,9 @@ We can deal with multi string values (REG_MULTI_SZ) with more than just two func
 9. GetMultiList() function.
 
 .. index:: 
-	pair: Multi String Values; SetMulti() function
+	pair: Multi String Values; SetMulti() Function
 	
-SetMulti() function
+SetMulti() Function
 --------------------
 
 This function can create and set first item of the multi string value as follow:
@@ -147,12 +185,12 @@ This function can create and set first item of the multi string value as follow:
 	Reg.CloseKey()
 	
 .. index:: 
-	pair: Multi String Values; MultiSetAt() function
+	pair: Multi String Values; MultiSetAt() Function
 	
-MultiSetAt() function
+MultiSetAt() Function
 ----------------------
 
-This function can set(change) any item of the list with any given value.
+This function can set(substitute) any item of the list with any given value.
 
 .. code-block:: none
 
@@ -165,9 +203,9 @@ This function can set(change) any item of the list with any given value.
 	Reg.CloseKey()
 	
 .. index:: 
-	pair: Multi String Values; MultiAdd() function
+	pair: Multi String Values; MultiAdd() Function
 	
-MultiAdd() function
+MultiAdd() Function
 --------------------
 
 This function can add a value to a list pre existed multi string value or can establish a new multi string value list with help of SetMulti() function.
@@ -187,12 +225,12 @@ This function can add a value to a list pre existed multi string value or can es
 	Reg.CloseKey()
 	
 .. index:: 
-	pair: Multi String Values; MultiGetAt() function
+	pair: Multi String Values; MultiGetAt() Function
 	
-MultiGetAt() function
+MultiGetAt() Function
 ----------------------
 
-This function get the value of one item of multi string value by its index.
+This function gets the value of one item of multi string value by its index.
 
 .. code-block:: none
 
@@ -205,12 +243,12 @@ This function get the value of one item of multi string value by its index.
 	Reg.CloseKey()
 	
 .. index:: 
-	pair: Multi String Values; MultiRemoveAt() function
+	pair: Multi String Values; MultiRemoveAt() Function
 	
-MultiRemoveAt() function
+MultiRemoveAt() Function
 -------------------------
 
-This function remove any item of multi string value by its index.
+This function removes any item of multi string value by its index.
 
 .. code-block:: none
 
@@ -223,9 +261,9 @@ This function remove any item of multi string value by its index.
 	Reg.CloseKey()
 	
 .. index:: 
-	pair: Multi String Values; MultiCount() function
+	pair: Multi String Values; MultiCount() Function
 	
-MultiCount() function
+MultiCount() Function
 ----------------------
 
 This function can return the total number of items(lines) of multi string value.
@@ -241,9 +279,9 @@ This function can return the total number of items(lines) of multi string value.
 	Reg.CloseKey()
 	
 .. index:: 
-	pair: Multi String Values; MultiClear() function
+	pair: Multi String Values; MultiClear() Function
 	
-MultiClear() function
+MultiClear() Function
 ----------------------
 
 This function can clear all of the items(lines) in any multi string value making it empty entry.
@@ -259,9 +297,9 @@ This function can clear all of the items(lines) in any multi string value making
 	Reg.CloseKey()
 	
 .. index:: 
-	pair: Multi String Values; SetMultiList() function
+	pair: Multi String Values; SetMultiList() Function
 	
-SetMultiList() function
+SetMultiList() Function
 ------------------------
 
 This function can save a list of items completely to a multi string value.
@@ -278,10 +316,12 @@ This function can save a list of items completely to a multi string value.
 	
 	Reg.CloseKey()
 	
-.. index:: 
-	pair: Multi String Values; GetMultiList() function
+.. note:: SetMultiList() function will clear the content of the entry if its already existed.
 	
-GetMultiList() function
+.. index:: 
+	pair: Multi String Values; GetMultiList() Function
+	
+GetMultiList() Function
 ------------------------
 
 This function can get all items(lines) of multi string value as a list as follow:
@@ -301,42 +341,20 @@ This function can get all items(lines) of multi string value as a list as follow
 	Reg.CloseKey()
 	
 .. index:: 
-	pair: Dealing with Values; Expandable string values
+	pair: Dealing with Values; QWORD Numerical Values
 	
-Expandable string values
-=========================
+.. _QWORD-numbers:
+	
+QWORD Numerical Values
+=======================
 
-We can set and get expandable string value using type specific functions which are **SetExpandSZ()** and **GetExpandSZ()**.
+QWORD numerical values are unsigned 64 bit numbers (Unsigned Long Long) that have a range from 0 to 18446744073709551615. These numerical values are saved in registry as (REG_QWORD) type values.
 
-These type of string contain some system environment variables (ex. "%path%"). The functions that set and get these strings deal with them blindly which means it ignore whether they are expandable or not. But If you want to get the expanded result of them you can use the general **Get()** function. (:ref:`Get-Value`)
-
-Here is a complete example that show all of that:
-
-.. code-block:: none
-
-	Load "wincreg.ring"
-	
-	Reg = New RCRegistry { OpenKey([HKEY_CURRENT_USER, "Software\MyApp"]) }
-	
-	Reg["SysPaths"].SetExpandSZ("The system paths are : " + NL + "%path%")
-	
-	See Reg["SysPaths"].GetExpandSZ() + NL + NL
-	
-	See Reg["SysPaths"].Get()
-	
-	Reg.CloseKey()
-	
-.. index:: 
-	pair: Dealing with Values; Numerical Values (QWORD)
-	
-Numerical Values (QWORD)
-=========================
-
-We can deal with REG_QWORD registry type with **SetQWORD()**, **GetQWORD()**, and **GetQWORDs()** functions.
+We can deal with (REG_QWORD) registry type by using **SetQWORD()**, **GetQWORD()**, and **GetQWORDs()** functions.
 
 These functions can do the following:
 
-1. SetQWORD() function : accepts numbers and numerical string values and save them as REG_QWORD.
+1. SetQWORD() function : accepts numbers and numerical string values and save them as (REG_QWORD).
 2. GetQWORD() function : return QWORD value and check if it is within Ring numbers range so it return it as number, but if it is not return it as string value.
 3. GetQWORDs() function: return QWORD value always as string value.
 
@@ -363,16 +381,46 @@ Here is an example about QWORD:
 	Reg.CloseKey()
 	
 .. index:: 
+	pair: Dealing with Values; Expandable String Values
+	
+Expandable String Values
+=========================
+
+Expandable string values are string that contain some system environment variables (ex. "%path%") that could be expanded at the time of retrieving it by substitute the contained system environment variables with their values.
+
+We can set and get expandable string value using type specific functions which are **SetExpandSZ()**, **GetExpandSZ()** and **GetExpandedSZ()**.
+
+The first two functions (**SetExpandSZ()** and **GetExpandSZ()**) that set and get these strings deal with them blindly which means it ignores whether they are expandable or not. But If you want to get the expanded result of them you can use **GetExpandedSZ()** function.
+
+Here is a complete example that show all of that:
+
+.. code-block:: none
+
+	Load "wincreg.ring"
+	
+	Reg = New RCRegistry { OpenKey([HKEY_CURRENT_USER, "Software\MyApp"]) }
+	
+	Reg["SysPaths"].SetExpandSZ("The system paths are : " + NL + "%path%")
+	
+	See Reg["SysPaths"].GetExpandSZ() + NL + NL
+	
+	See Reg["SysPaths"].GetExpandedSZ()
+	
+	Reg.CloseKey()
+	
+.. index:: 
 	pair: Dealing with Values; Binary Values
 	
 Binary Values
 ==============
 
-We can set and get REG_BINARY type values using **SetBinary()** and **GetBinary()** functions also we can get the whole length of binary elements by using **BinaryLength()** function.
+Binary values are primary values that can represent any data. In registry editor we can see these values as hexadecimal representation. They are saved in registry as (REG_BINARY) data type.
+
+We can set and get (REG_BINARY) type values using **SetBinary()** and **GetBinary()** functions also we can get the whole length of binary elements by using **BinaryLength()** function.
 
 Binary values are dealt with in Ring as a string contains each binary value as hexadecimal representation separated by commas.
 
-There are two functions that help in binary <-> string conversion. These are **StringToBinary()** and **BinaryToString()**. These functions are not members of RCRegistry class but they are contained in "wincreg.ring" extension file so that they can be called directly.
+There are two functions that help in binary <-> string conversion. These are **StringToBinary()** and **BinaryToString()**. These functions are members of RCRegistry class so that they can be called from its objects.
 
 Here is an example:
 
@@ -382,14 +430,14 @@ Here is an example:
 	
 	Reg = New RCRegistry { OpenKey([HKEY_CURRENT_USER, "Software\MyApp"]) }
 	
-	Reg["BinaryValue"].SetBinary(StringToBinary("ring_wincreg"))
+	Reg["BinaryValue"].SetBinary(Reg.StringToBinary("ring_wincreg"))
 	
 	See "The entered binary value string representation is : " + Reg["BinaryValue"].GetBinary() + NL
 	
-	See "The Original String of this binary representation is : " + BinaryToString(Reg["BinaryValue"].GetBinary()) + NL
+	See "The Original String of this binary representation is : " + Reg.BinaryToString(Reg["BinaryValue"].GetBinary()) + NL
 	
 	See "The full length of BinaryValue is : " + Reg["BinaryValue"].BinaryLength()
 	
 	Reg.CloseKey()
 	
-.. note:: SetBinary() function may accept any character as a separator instead of "," but its better to use comma to unify the coding.
+.. note:: SetBinary() function may accept any character as a separator instead of "," but its better to use comma to unify coding.
