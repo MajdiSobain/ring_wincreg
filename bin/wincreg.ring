@@ -15,42 +15,12 @@ LoadLib("ring_wincreg.dll")
 Load "wincreg.rh"
 
 
-Func KeyExists HKEY, SubKey
-	Return CRegKeyExists(HKEY, SubKey)
-	
-Func DeleteKey2 HKEY, SubKey
-	New RCRegistry {
-		OpenKey([HKEY, SubKey])
-		DeleteKey()
-	}
 
 /* this function is used to avoid Type() functions conflicts from within RCRegEntry Class */
 Func cTypeForRCRegEntry para
 	Return Type(para)
 	
-Func StringToBinary Str
-	res = ""
-	If Len(Str) > 0
-		For i = 1 To Len(Str)
-			res += Hex(Ascii(Str[i]))
-			If i < Len(Str)
-				res += ","
-			Ok
-		Next
-	Ok
-	Return res
 
-Func BinaryToString Bin
-	res = ""
-	If Len(Bin) > 1
-		Bin = SubStr(Bin, ",", NL)
-		Bin = Str2List(Bin)
-		For hx in Bin
-			res += Char(Dec(hx))
-		Next
-	Ok
-	Return res
-	
 Class RCRegistry		# Short for Ring CRegistry Class
 
 	Key = 0		# This is the Key Handle
@@ -58,32 +28,35 @@ Class RCRegistry		# Short for Ring CRegistry Class
 
 	Func operator cOperator,Para
 		Switch cOperator
-		On "[]"
-			If IsString(Para) = False
-				Raise("Error : The name of the entry must be string")
-			Ok
-			RegEntry.Init(Key, Para)
-			Return RegEntry
-		Off
+			On "[]"
+				If IsString(Para) = False
+					Raise("Error : The name of the entry must be string")
+				Ok
+				RegEntry.Init(Key, Para)
+				Return RegEntry
+			Off
+
+	Func KeyExists HKEY, SubKey
+		Return CRegKeyExists(HKEY, SubKey)
 
 	Func OpenKey ParaList
 		If IsList(ParaList) = False 
 			Raise("Error : This function expects parameters as a list 'OpenKey([para1,para2])' ") 
 		Ok
 		Switch Len(ParaList)
-		On 2 
-			Key = CRegOpenKey(ParaList[1], ParaList[2])
-			Return Key
-		On 3 
-			Key = CRegOpenKey(ParaList[1], ParaList[2], ParaList[3])
-			Return Key
-		On 4 
-			Key = CRegOpenKey(ParaList[1], ParaList[2], ParaList[3], ParaList[4])
-			Return Key
-		Other 
-			Raise("Error : Incorrect Number of Parameters passed" + nl +
-			 "          This function expects parameters as a list 'OpenKey([para1,para2])' ")
-		Off 
+			On 2 
+				Key = CRegOpenKey(ParaList[1], ParaList[2])
+				Return Key
+			On 3 
+				Key = CRegOpenKey(ParaList[1], ParaList[2], ParaList[3])
+				Return Key
+			On 4 
+				Key = CRegOpenKey(ParaList[1], ParaList[2], ParaList[3], ParaList[4])
+				Return Key
+			Other 
+				Raise("Error : Incorrect Number of Parameters passed" + nl +
+				"          This function expects parameters as a list 'OpenKey([para1,para2])' ")
+			Off 
 
 	Func OpenKey2 HKEY, SubKey
 		Key = CRegOpenKey(HKEY, SubKey)
@@ -161,6 +134,39 @@ Class RCRegistry		# Short for Ring CRegistry Class
 	Func DeleteKey
 		CRegDeleteKey(Key)
 		
+	Func DeleteKey2 HKEY, SubKey
+		TempKey = Key
+		OpenKey([HKEY, SubKey])
+		DeleteKey()
+		Key = TempKey
+		
+	Func StringToBinary Str
+		res = ""
+		If Len(Str) > 0
+			For i = 1 To Len(Str)
+				tm = Hex(Ascii(Str[i]))
+				If Len(tm) = 1
+					res += "0" + tm
+				Else
+					res += tm
+				Ok
+				If i < Len(Str)
+					res += ","
+				Ok
+			Next
+		Ok
+		Return res
+
+	Func BinaryToString Bin
+		res = ""
+		If Len(Bin) > 1
+			Bin = SubStr(Bin, ",", NL)
+			Bin = Str2List(Bin)
+			For hx in Bin
+				res += Char(Dec(hx))
+			Next
+		Ok
+		Return res
 		
 		
 	
@@ -172,48 +178,136 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 	Func Init passedkey, passedentryName
 		Key = passedkey
 		EntryName = passedentryName
-
-	Func Get
-		value = CRegGetValue(Key, EntryName)
-		If IsNumber(value)			# It must be a DWORD value so 
-			value = floor(Value)	# it needs to be returned as int value
+	
+	Func Create type
+		If Exists() = False
+			Switch type
+				On REG_SZ
+					SetString("")
+				On REG_DWORD
+					SetDWORD(0)
+				On REG_MULTI_SZ
+					SetMulti("")
+				On REG_QWORD
+					SetQWORD(0)
+				On REG_EXPAND_SZ
+					SetExpandSZ("")
+				On REG_BINARY
+					SetBinary("")
+				Other
+					If EntryName = "" EntryName = "Default" Ok
+					Raise("Error : Unknown type has been passed to create (" + EntryName + ")")
+				Off
+		Else
+			If EntryName = "" EntryName = "Default" Ok
+			Raise("Error : Cannot create (" + EntryName + ") because it is already existed")
 		Ok
+		
+	Func Get
+		value = 0
+		Switch Type()
+				On REG_SZ
+					value = GetString()
+				On REG_DWORD
+					value = GetDWORD()
+				On REG_MULTI_SZ
+					value = GetMultiList()
+				On REG_QWORD
+					value = GetQWORD()
+				On REG_EXPAND_SZ
+					value = GetExpandSZ()
+				On REG_BINARY
+					value = GetBinary()
+				Other
+					If EntryName = "" EntryName = "Default" Ok
+					Raise("Error : Unknown type of (" + EntryName + ") to be retrieved")
+				Off
 		Return value
 
 	Func Set value
-		CRegSetValue(Key, EntryName, value)
+		If Exists() = True
+			Switch Type()
+				On REG_SZ
+					SetString(value)
+				On REG_DWORD
+					SetDWORD(value)
+				On REG_MULTI_SZ
+					SetMultiList(value)
+				On REG_QWORD
+					SetQWORD(value)
+				On REG_EXPAND_SZ
+					SetExpandSZ(value)
+				On REG_BINARY
+					SetBinary(value)
+				Other
+					If EntryName = "" EntryName = "Default" Ok
+					Raise("Error : Unknown type of (" + EntryName + ") to be set")
+				Off
+		Else
+			Switch cTypeForRCRegEntry(value)
+				On "STRING"
+					CRegSetValue(Key, EntryName, value)
+				On "NUMBER"
+					CRegSetValue(Key, EntryName, value)
+				Other
+					Raise("Error : Set() function could just set String or Numbers to newly created entries")
+				Off	
+		Ok
 
+	Func Set2 value, type
+		Switch type
+			On REG_SZ
+				SetString(value)
+			On REG_DWORD
+				SetDWORD(value)
+			On REG_MULTI_SZ
+				SetMultiList(value)
+			On REG_QWORD
+				SetQWORD(value)
+			On REG_EXPAND_SZ
+				SetExpandSZ(value)
+			On REG_BINARY
+				SetBinary(value)
+			Other
+				If EntryName = "" EntryName = "Default" Ok
+				Raise("Error : Unknown type of (" + EntryName + ") to be set")
+			Off
+		
 	Func SetString value
 		If cTypeForRCRegEntry(value) != "STRING"
-			Raise ("Error : SetString could just accept strings")
+			Raise ("Error : SetString() could just accept strings")
 		Ok
-		Set(value)
-		
+		CRegSetValue(Key, EntryName, value)
+	
 	Func GetString
-		value = Get()
-		If cTypeForRCRegEntry(value) != "STRING"
-			Raise ("Error : GetString could just return strings (REG_SZ)")
+		value = ""
+		If Type() = REG_SZ
+			value = CRegGetValue(Key, EntryName)
+		Else
+			Raise ("Error : GetString() could just return strings (REG_SZ)")
 		Ok
 		Return value
 		
 	Func SetDWORD value
 		If IsNumber(value) = False
-			Raise ("Error : SetDWORD could just accept numbers")
+			Raise ("Error : SetDWORD() could just accept numbers")
 		Else
 			If IsDigit(String(value)) = False
-				Raise ("Error : SetDWORD could just accept real numbers(not floated)")
+				Raise ("Error : SetDWORD() could just accept real numbers(not floated)")
 			Else
 				If value < 0 Or value > 4294967295
-					Raise ("Error : SetDWORD : the value is out of range (0 - 4294967295)")
+					Raise ("Error : SetDWORD() : the value is out of range (0 - 4294967295)")
 				Ok
 			Ok
 		Ok
-		Set(value)
+		CRegSetValue(Key, EntryName, value)
 				
 	Func GetDWORD
-		value = Get()
-		If IsNumber(value) = False
-			Raise ("Error : GetDWORD could just return numbers")
+		value = 0
+		If Type() = REG_DWORD
+			value = floor(CRegGetValue(Key, EntryName))	# To retrieve integer number
+		Else
+			Raise ("Error : GetDWORD() could just return DWORD numbers")
 		Ok
 		Return value
 
@@ -240,19 +334,23 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 		Return CRegMultiCount(Key, EntryName)
 
 	Func MultiClear
-		CRegMutliClear(Key, EntryName)
+		CRegMultiClear(Key, EntryName)
 
 	Func SetMultiList valuesList
+		If IsList(valuesList) = False 
+			Raise("Error : SetMultiList() function accepts only lists")
+		Ok
 		If Len(valuesList) > 0 
+			If Exists() And IsMultiString() MultiClear() Ok
 			For v in valuesList
-				switch cTypeForRCRegEntry(v)
-				On "STRING"
-					MultiAdd(v) 
-				ON "NUMBER"
-					MultiAdd(String(v)) 
-				Other
-					Raise ("Error : MultiString could just accept strings")
-				Off
+				Switch cTypeForRCRegEntry(v)
+					On "STRING"
+						MultiAdd(v) 
+					ON "NUMBER"
+						MultiAdd(String(v)) 
+					Other
+						Raise ("Error : MultiString could just accept strings or numerical strings")
+					Off
 			Next
 		Ok
 
@@ -304,6 +402,30 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 
 	Func CopyTo newKeyHandle
 		CRegCopy(Key, EntryName, newKeyHandle)
+		
+	Func Clear
+		If Exists() = True
+			Switch Type()
+				On REG_SZ
+					Set("")
+				On REG_DWORD
+					Set(0)
+				On REG_MULTI_SZ
+					SetMulti("")
+				On REG_QWORD
+					SetQWORD(0)
+				On REG_EXPAND_SZ
+					SetExpandSZ("")
+				On REG_BINARY
+					SetBinary("")
+				Other
+					If EntryName = "" EntryName = "Default" Ok
+					Raise("Error : Unknown type has been passed to create (" + EntryName + ")")
+				Off
+		Else
+			If EntryName = "" EntryName = "Default" Ok
+			Raise("Error : Cannot clear (" + EntryName + ") because it is not existed")
+		Ok
 
 	Func Delete
 		CRegDelete(Key, EntryName)

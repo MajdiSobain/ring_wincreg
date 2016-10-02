@@ -467,7 +467,7 @@ void ring_vm_creg_cregrename( void *pPointer ) {
 				if ( EntryExistsM(RING_API_GETSTRING(2)) ) {
 					p[0][RING_API_GETSTRING(2)].SetName(RING_API_GETSTRING(3));
 				} else { RING_API_ERROR("Error : Couldn't find the entry"); }
-			} else { RING_API_ERROR("Error : Entry name could not be empty. Empty names reserved for default keys"); }
+			} else { RING_API_ERROR("Error : Entry name could not be empty. Empty names reserved for default entries"); }
 		} else { RING_API_ERROR("Error : Bad CRegistry Key handle"); }
 	} else {
 		RING_API_ERROR("Bad parameters entered this function expects ( OwnerKey , oldEntryName, newEntryName )");
@@ -547,7 +547,9 @@ void ring_vm_creg_cregsetmulti( void *pPointer ) {
 	if ( RING_API_ISPOINTER(1) && RING_API_ISSTRING(2) && RING_API_ISSTRING(3) ) {
 		CRegistry *p = (CRegistry *) RING_API_GETCPOINTER(1, "CRegistry") ;
 		if ( (p) && ( p->hKey ) ) {
-			p[0][RING_API_GETSTRING(2)].SetMulti(RING_API_GETSTRING(3), RING_API_GETSTRINGSIZE(3) + 2 ); 
+			size_t size = 0 ;
+			if (RING_API_GETSTRINGSIZE(3) != 0) size = RING_API_GETSTRINGSIZE(3) + 2 ;
+			p[0][RING_API_GETSTRING(2)].SetMulti(RING_API_GETSTRING(3), size); 
 		} else RING_API_ERROR("Error : Bad CRegistry Key handle"); 
 	} else {
 		RING_API_ERROR("Error : Bad CRegistry Key handle, entry name type, or value type");
