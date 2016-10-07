@@ -601,17 +601,18 @@ Class Objects2Reg
 						lstname = ""
 						Eval("lstname = '" + SubStr(objList[o], 5) + "'")
 						If Find(Attributes(LocRetObj), lstname)
-							lst = AddToOutputList(objList, o + 1, "-L--", 1) 
+							lst = AddToOutputList(objList, o + 1, "-L--") 
 							Eval("LocRetObj." + lstname + " = lst")
 						Else
 							AddAttribute(LocRetObj, lstname)
-							lst = AddToOutputList(objList, o + 1, "-L--", 1) 
+							lst = AddToOutputList(objList, o + 1, "-L--") 
 							Eval("LocRetObj." + lstname + " = lst")
 						Ok
 												
 						For i = o to Len(objList)		# this loop to help jump already added list
 							If objList[i] = "........"
 								o = i
+								Exit
 							Ok
 						Next
 					On "-O--"
@@ -636,12 +637,13 @@ Class Objects2Reg
 		Return RCRegRetObj
 
 		
-	Func AddToOutputList srcObjList, currentIndex, prefix, level
+	Func AddToOutputList srcObjList, currentIndex, prefix
 		opList = []
 		lastindex = 0
 		For j = currentIndex To Len(srcObjList)
 			If srcObjList[j] = SubStr(prefix, 5) + "........"
 				lastindex = j
+				Exit
 			Ok
 		Next
 		For k = currentIndex To lastindex
@@ -654,11 +656,12 @@ Class Objects2Reg
 				On "-N--"
 					Add(opList, Number(SubStr(srcObjList[k], Len(prefix) + 5)))
 				On "-L--"
-					nlist = AddToOutputList(srcObjList, k, prefix + "-L--" , (Len(prefix)/4) +1)
+					nlist = AddToOutputList(srcObjList, k, prefix + "-L--")
 					Add(opList, nlist)
 					For i = k to Len(srcObjList)	# this loop to help jump already added list
-						If srcObjList[i] = copy("-L--",level +1) + "........"
-							k = i
+						If srcObjList[i] = prefix + "........"
+							k = i 
+							Exit
 						Ok
 					Next
 				On "-O--"
