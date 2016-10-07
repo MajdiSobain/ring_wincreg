@@ -4,7 +4,7 @@ call "C:\Program Files\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86
 
 cl /c /DEBUG /EHsc creg_registry.cpp ring_wincreg.cpp -I"..\..\include"
 
-link /DEBUG creg_registry.obj advapi32.lib ring_wincreg.obj  ..\..\lib\ring.lib  /DLL /OUT:ring_wincreg.dll /SUBSYSTEM:CONSOLE,"5.01" 
+link /DEBUG creg_registry.obj advapi32.lib shlwapi.lib ring_wincreg.obj  ..\..\lib\ring.lib  /DLL /OUT:ring_wincreg.dll /SUBSYSTEM:CONSOLE,"5.01" 
 
 mt.exe -manifest ring_wincreg.dll.manifest -outputresource:ring_wincreg.dll;2
 

@@ -339,12 +339,10 @@ CRegEntry::operator LPTSTR() {
 						 }
 			break;
 		case REG_EXPAND_SZ:
-			lpszStr = new TCHAR[_MAX_REG_VALUE * 16];
-			_stprintf(lpszStr, _T("%s"), GetExpandSZ(true));
+			GetExpandSZ(true);		// lpszStr will be prepared and then returned
 			break;
 		case REG_QWORD:
-			lpszStr = new TCHAR[21];
-			_stprintf(lpszStr, _T("%llu"), GetQWORD());
+			// Return lpszStr as it actually contains the value
 			break;
 	}
 	return lpszStr;
@@ -785,30 +783,30 @@ LPTSTR CRegEntry::GetMulti(LPTSTR lpszDest, size_t nMax) {
  */
 
 LPTSTR CRegEntry::GetExpandSZ(bool Expandable) {
-	DWORD vSize;
-	DWORD dwflags = RRF_RT_REG_EXPAND_SZ | RRF_RT_REG_SZ | RRF_ZEROONFAILURE;
-	
+
 	assert(IsExpandSZ());
 
-	// REGENTRY_REFRESH_IF_NOCACHE
+	REGENTRY_REFRESH_IF_NOCACHE
 	
-	if (!Expandable) {
-		lpszStr = new TCHAR[_MAX_REG_VALUE];	// lpszStr is used in this type (REG_EXPAND_SZ) as a reservoir for returned value
-		vSize = _MAX_REG_VALUE;
-		dwflags |= RRF_NOEXPAND ;
-	} else {
-		lpszStr = new TCHAR[_MAX_REG_VALUE * 16];
-		vSize = _MAX_REG_VALUE * 16; 
-	}
+	if (Expandable) {
 
-	assert( REGENTRY_KEYVALID ( KEY_QUERY_VALUE ) );
+		HANDLE dToken;
+		LPTSTR tmpStr = new TCHAR[(_tcslen(lpszStr) *sizeof(TCHAR))];
+		DWORD vSize = _MAX_REG_VALUE * 16; 
+		
+		_tcscpy(tmpStr, lpszStr);
+		
+		lpszStr = new TCHAR[vSize];
 
-	if (RegGetValue(__cregOwner[0].hKey, NULL, lpszName, dwflags, NULL, lpszStr, &vSize) == ERROR_MORE_DATA) 
-		lpszStr = "!!! ERROR_MORE_DATA !!!";		// This Error will mostly occur if the data of the Environment varaibles is large 
+		ExpandEnvironmentStrings(tmpStr, lpszStr, vSize);
+		
+	} else { 
+		__cregOwner->Refresh();		// Refresh lpszStr if it contains the expanded form
+	} 
 
 	REGENTRY_TRYCLOSE ;
 
-		return lpszStr;
+	return lpszStr;
 }
 
 
@@ -827,6 +825,9 @@ DWORD CRegEntry::SetExpandSZ(LPTSTR value) {
 	DWORD svalue = ( _tcslen(value) + 1 ) * sizeof(TCHAR);
 
 	assert(svalue <= _MAX_REG_VALUE);
+
+	lpszStr = new TCHAR[_MAX_REG_VALUE];
+	_tcscpy(lpszStr, value);
 
 	iType = REG_EXPAND_SZ;
 
@@ -855,9 +856,12 @@ DWORD CRegEntry::SetExpandSZ(LPTSTR value) {
  */
 
 DWORD CRegEntry::SetQWORD(UINT64 value) {
+	lpszStr = new TCHAR[21];		// limit of largest value of QWORD range (20) + NULL termination
 	DWORD lRes = 0;
 
 	iType = REG_QWORD;
+
+	_stprintf(lpszStr, _T("%llu"), value);
 
 	if (REGENTRY_NOTLOADING && REGENTRY_KEYVALID( KEY_SET_VALUE )) {
 
@@ -889,11 +893,9 @@ UINT64 CRegEntry::GetQWORD() {
 
 	assert(IsQWORD());
 
-	// REGENTRY_REFRESH_IF_NOCACHE
+	REGENTRY_REFRESH_IF_NOCACHE
 
-	assert( REGENTRY_KEYVALID ( KEY_QUERY_VALUE ) );
-	
-	RegGetValue(__cregOwner[0].hKey, NULL, lpszName, RRF_RT_REG_QWORD, NULL, (LPBYTE) &value, &size ) ;
+	value = _tcstoui64(lpszStr, NULL, 10);
 
 	REGENTRY_TRYCLOSE ;
 
@@ -1279,12 +1281,14 @@ void CRegistry::DeleteKey() {
 	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
 	
 	if (GetVersionEx(&osvi) && osvi.dwPlatformId == VER_PLATFORM_WIN32_NT)
-		DeleteKey(_hRootKey, _lpszSubKey);
-	else 
-		/**** To Delete a key in 32 or 64 bit windows registry tree	*/ 
+		//DeleteKey(_hRootKey, _lpszSubKey);
+		OpenParentnDelete(_hRootKey, _lpszSubKey);
 
-		RegDeleteKeyEx(_hRootKey, _lpszSubKey, (Enable64Tree == true ? KEY_WOW64_64KEY : KEY_WOW64_32KEY), 0);
+	else	// Give it a try :)
+
+		OpenParentnDelete(_hRootKey, _lpszSubKey);
 		
+		// *** not useful in case of Registry Redirection
 		//RegDeleteKey(_hRootKey, _lpszSubKey);
 
 	Close();
@@ -1300,7 +1304,7 @@ void CRegistry::DeleteKey() {
  *	This function is designed for NT based systems as it recursively
  *	deletes any subkeys present.
  */
-
+/* *** Disabled because of using alternative OpenParentnDelete() function */
 void CRegistry::DeleteKey(HKEY hPrimaryKey, LPCTSTR lpszSubKey) {
 
 	DWORD dwKeyLen;
@@ -1316,9 +1320,6 @@ void CRegistry::DeleteKey(HKEY hPrimaryKey, LPCTSTR lpszSubKey) {
 
 	dwAccess = KEY_ENUMERATE_SUB_KEYS | KEY_WRITE;
 
-	/*	*** To Access alternative 64 bit windows registry tree as All ring applications are of 32 bit	*/ 
-	if (Enable64Tree == true) dwAccess |= KEY_WOW64_64KEY;
-
 	if (IS_ES(RegOpenKeyEx(hPrimaryKey, lpszSubKey, 0, dwAccess, &hTempKey))){
 		
 		while (IS_ES(lResult)) {
@@ -1330,10 +1331,8 @@ void CRegistry::DeleteKey(HKEY hPrimaryKey, LPCTSTR lpszSubKey) {
 			if (lResult == ERROR_SUCCESS) DeleteKey(hTempKey, lpszKey);
 			else if (lResult == ERROR_NO_MORE_ITEMS) {
 
-				/*	*** To Delete a key in either 32 or 64 bit windows registry tree	*/ 
-				RegDeleteKeyEx(hPrimaryKey, lpszSubKey, (Enable64Tree == true ? KEY_WOW64_64KEY : KEY_WOW64_32KEY), 0);
-
-				//RegDeleteKey(hPrimaryKey, lpszSubKey);
+				// *** not useful in case of Registry Redirection
+				RegDeleteKey(hPrimaryKey, lpszSubKey);
 			}
 		}
 		RegCloseKey(hTempKey); hTempKey = NULL;
@@ -1341,6 +1340,45 @@ void CRegistry::DeleteKey(HKEY hPrimaryKey, LPCTSTR lpszSubKey) {
 
 cleanup: delete [] lpszKey;		
 		
+}
+
+
+
+/* ===================================================
+ *	CRegistry::OpenParentnDelete(HKEY Rootkey, LPTSTR SubKEy)
+ *  
+ *	*** newly created function to use keys delete alternatives
+ *      compatible with Win XP that can overcome Registry 
+ *      Redirection problem
+ */
+
+void CRegistry::OpenParentnDelete(HKEY Rootkey, LPTSTR SubKEy) {
+	LPTSTR ParentSubKey = new TCHAR[MAX_REG_KEY];
+	LPTSTR sSubKey = new TCHAR[MAX_REG_KEY];
+
+	Close();
+
+	assert(_tcslen(SubKEy));
+
+	for (int i = _tcslen(SubKEy)-1; i >= 0; i--) {
+		if ( i == 0 ) {
+			_tcscpy(sSubKey, SubKEy);
+			Open(TEXT(""), _hRootKey, KEY_WRITE);
+			SHDeleteKey(hKey, sSubKey);
+			Close();
+			break;
+		}
+		if ( _lpszSubKey[i] == '\\' ) {
+			_tcsncpy(ParentSubKey, SubKEy, i);
+			ParentSubKey[i] = 0;
+			_tcscpy(sSubKey, (SubKEy+i+1));
+			Open(ParentSubKey, _hRootKey, KEY_WRITE);
+			SHDeleteKey(hKey, sSubKey);
+			Close();
+			break;
+		}
+	}
+
 }
 
 

@@ -41,6 +41,7 @@
 #include <string>
 #include <algorithm>		//*** for std::transform
 #include <assert.h>
+#include <Shlwapi.h>		//*** for SHDeleteKey() function
 
 
 
@@ -180,6 +181,9 @@ public:
 	LONG		SubKeyExists(LPCTSTR lpszSub);	
 	
 	void		DeleteKey();
+
+	// *** new added to help delete keys in XP compatibilty
+	void		OpenParentnDelete(HKEY Rootkey, LPTSTR SubKEy);
 
 	/*	***	The next lines ended by //*** has been redefined with explicit data types	*/	
 	__inline	DWORD GetFlags()	{	return __dwFlags; }			//***
