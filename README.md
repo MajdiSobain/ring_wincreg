@@ -1,6 +1,10 @@
 # Ring_WinCReg
 This Ring Extension helps access and edit windows registry entries and values easily from within Ring Programming Language
 
+	Note: RCRegistry Class in Ring_WinCReg Extension is now compatible with Ring 1.1 only. 
+	
+	It will show errors if used with Ring 1.0.
+
 ## How to use in Ring
 
 1- Download this repo project as zip file from the green button on the upper right corner "Clone or download"
@@ -22,7 +26,9 @@ This is a simple ring code that use this extension:
     Reg.OpenKey([HKEY_CURRENT_USER, "Software\MyApplication"]) 
     # This will create the Key "MyApplication" if its not present then it will be Opened
   
-    Reg["AppVersion"].Set("2.3")
+    Reg["AppVersion"].SetValue("2.3")
+	
+	See Reg["AppVersion"].GetValue()
   
     Reg.CloseKey()
   

@@ -38,7 +38,7 @@ We can indirectly create any entry by using those functions that set the values 
 		OpenKey([HKEY_CURRENT_USER, "Software\MyApp"])
 		}
 		
-	Reg["AppStyle"].Set("Normal Style")
+	Reg["AppStyle"].SetValue("Normal Style")
 	
 	Reg["AppOpenCount"].SetDWORD(3)
 	
@@ -189,9 +189,9 @@ We can access the default entry that is present in each key in the registry tree
 	
 	See "Setting the default entry value >>> " + NL
 	
-	Reg[""].Set("default entry value")
+	Reg[""].SetValue("default entry value")
 	
-	See "The value of default entry is : " + Reg[""].Get()
+	See "The value of default entry is : " + Reg[""].GetValue()
 	
 	Reg.CloseKey()
 	
@@ -230,7 +230,7 @@ Here is an example of the second instance of **CopyTo()** function.
 		
 	Reg["AppVersion"].CopyTo(DestReg.Key)
 	
-	See "The value of the copied AppVersion entry is : " + DestReg["AppVersion"].Get()
+	See "The value of the copied AppVersion entry is : " + DestReg["AppVersion"].GetValue()
 	
 	Reg.CloseKey()
 	
@@ -306,7 +306,7 @@ Example:
 	Reg = New RCRegistry { OpenKey([HKEY_CURRENT_USER, "Software\MyApp"]) }
 	
 	If Reg["AppPath"].IsString() = True 
-		See Reg["AppPath"].Get()
+		See Reg["AppPath"].GetValue()
 	Ok
 	
 	Reg.CloseKey()
@@ -375,13 +375,13 @@ We can clear the content of any data type entry by using **Clear()** function as
 	
 	Reg = New RCRegistry { OpenKey([HKEY_CURRENT_USER, "Software\MyApp"]) }
 	
-	See "The old logo is : " + Reg["AppLogo"].Get() + NL
+	See "The old logo is : " + Reg["AppLogo"].GetValue() + NL
 	
 	Reg["AppLogo"].Clear()
 	
-	Reg["AppLogo"].Set("We are in your eye's TRUST")
+	Reg["AppLogo"].SetValue("We are in your eye's TRUST")
 	
-	See "The new logo is : " + Reg["AppLogo"].Get()
+	See "The new logo is : " + Reg["AppLogo"].GetValue()
 	
 	Reg.CloseKey()
 	

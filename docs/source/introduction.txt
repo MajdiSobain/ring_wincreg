@@ -46,9 +46,9 @@ This is a simple ring code that use this extension:
 	Reg.OpenKey([HKEY_CURRENT_USER, "Software\MyApp"]) 
 	# This will create the Key "MyApp" if its not present then it will be Opened
 	
-	Reg["AppVersion"].Set("2.3")
+	Reg["AppVersion"].SetValue("2.3")
 	
-	Reg["AppPath"].Set(exeFolder())
+	Reg["AppPath"].SetValue(exeFolder())
 	
 	Reg.CloseKey()
 

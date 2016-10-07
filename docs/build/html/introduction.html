@@ -65,9 +65,9 @@ Reg = new RCRegistry
 Reg.OpenKey([HKEY_CURRENT_USER, &quot;Software\MyApp&quot;])
 # This will create the Key &quot;MyApp&quot; if its not present then it will be Opened
 
-Reg[&quot;AppVersion&quot;].Set(&quot;2.3&quot;)
+Reg[&quot;AppVersion&quot;].SetValue(&quot;2.3&quot;)
 
-Reg[&quot;AppPath&quot;].Set(exeFolder())
+Reg[&quot;AppPath&quot;].SetValue(exeFolder())
 
 Reg.CloseKey()
 </pre></div>

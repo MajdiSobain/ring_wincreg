@@ -107,9 +107,9 @@ Now we have to apply the previous example using this method to clarify the diffe
 	
 		OpenKey([HKEY_CURRENT_USER, "Software\MyApp"])
 		
-		oReg["version"].Set("4.4")
+		oReg["version"].SetValue("4.4")
 		
-		See "MyApp version is : " + oReg["version"].Get()
+		See "MyApp version is : " + oReg["version"].GetValue()
 		
 		CloseKey()
 		
@@ -129,9 +129,9 @@ As we are really lucky using Ring, we can write the same previous example withou
 	
 		OpenKey([HKEY_CURRENT_USER, :Software\MyApp])
 		
-		Self["version"].Set("4.4")
+		Self["version"].SetValue("4.4")
 		
-		See "MyApp version is : " + Self["version"].Get()
+		See "MyApp version is : " + Self["version"].GetValue()
 		
 		CloseKey()
 		

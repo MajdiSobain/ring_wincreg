@@ -113,9 +113,9 @@ oReg = New RCRegistry {
 
         OpenKey([HKEY_CURRENT_USER, &quot;Software\MyApp&quot;])
 
-        oReg[&quot;version&quot;].Set(&quot;4.4&quot;)
+        oReg[&quot;version&quot;].SetValue(&quot;4.4&quot;)
 
-        See &quot;MyApp version is : &quot; + oReg[&quot;version&quot;].Get()
+        See &quot;MyApp version is : &quot; + oReg[&quot;version&quot;].GetValue()
 
         CloseKey()
 
@@ -133,9 +133,9 @@ New RCRegistry {
 
         OpenKey([HKEY_CURRENT_USER, :Software\MyApp])
 
-        Self[&quot;version&quot;].Set(&quot;4.4&quot;)
+        Self[&quot;version&quot;].SetValue(&quot;4.4&quot;)
 
-        See &quot;MyApp version is : &quot; + Self[&quot;version&quot;].Get()
+        See &quot;MyApp version is : &quot; + Self[&quot;version&quot;].GetValue()
 
         CloseKey()
 

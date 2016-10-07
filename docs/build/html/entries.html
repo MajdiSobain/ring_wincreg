@@ -73,7 +73,7 @@ Reg = New RCRegistry {
         OpenKey([HKEY_CURRENT_USER, &quot;Software\MyApp&quot;])
         }
 
-Reg[&quot;AppStyle&quot;].Set(&quot;Normal Style&quot;)
+Reg[&quot;AppStyle&quot;].SetValue(&quot;Normal Style&quot;)
 
 Reg[&quot;AppOpenCount&quot;].SetDWORD(3)
 
@@ -187,9 +187,9 @@ Reg = New RCRegistry { OpenKey([HKEY_CURRENT_USER, &quot;Software\MyApp&quot;]) 
 
 See &quot;Setting the default entry value &gt;&gt;&gt; &quot; + NL
 
-Reg[&quot;&quot;].Set(&quot;default entry value&quot;)
+Reg[&quot;&quot;].SetValue(&quot;default entry value&quot;)
 
-See &quot;The value of default entry is : &quot; + Reg[&quot;&quot;].Get()
+See &quot;The value of default entry is : &quot; + Reg[&quot;&quot;].GetValue()
 
 Reg.CloseKey()
 </pre></div>
@@ -218,7 +218,7 @@ DestReg = New RCRegistry {
 
 Reg[&quot;AppVersion&quot;].CopyTo(DestReg.Key)
 
-See &quot;The value of the copied AppVersion entry is : &quot; + DestReg[&quot;AppVersion&quot;].Get()
+See &quot;The value of the copied AppVersion entry is : &quot; + DestReg[&quot;AppVersion&quot;].GetValue()
 
 Reg.CloseKey()
 
@@ -280,7 +280,7 @@ Reg.CloseKey()
 Reg = New RCRegistry { OpenKey([HKEY_CURRENT_USER, &quot;Software\MyApp&quot;]) }
 
 If Reg[&quot;AppPath&quot;].IsString() = True
-        See Reg[&quot;AppPath&quot;].Get()
+        See Reg[&quot;AppPath&quot;].GetValue()
 Ok
 
 Reg.CloseKey()
@@ -328,13 +328,13 @@ Reg.CloseKey()
 
 Reg = New RCRegistry { OpenKey([HKEY_CURRENT_USER, &quot;Software\MyApp&quot;]) }
 
-See &quot;The old logo is : &quot; + Reg[&quot;AppLogo&quot;].Get() + NL
+See &quot;The old logo is : &quot; + Reg[&quot;AppLogo&quot;].GetValue() + NL
 
 Reg[&quot;AppLogo&quot;].Clear()
 
-Reg[&quot;AppLogo&quot;].Set(&quot;We are in your eye&#39;s TRUST&quot;)
+Reg[&quot;AppLogo&quot;].SetValue(&quot;We are in your eye&#39;s TRUST&quot;)
 
-See &quot;The new logo is : &quot; + Reg[&quot;AppLogo&quot;].Get()
+See &quot;The new logo is : &quot; + Reg[&quot;AppLogo&quot;].GetValue()
 
 Reg.CloseKey()
 </pre></div>

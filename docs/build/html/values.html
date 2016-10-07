@@ -46,9 +46,9 @@
 <p>Here, we are going to learn how to deal with registry values by using &#8220;ring_wincreg&#8221; extension capabilities through RCRegistry class.</p>
 <div class="section" id="set-value">
 <span id="index-0"></span><span id="id1"></span><h2>Set Value<a class="headerlink" href="#set-value" title="Permalink to this headline">¶</a></h2>
-<p>We can set a value for any specified entry by using set functions for each registry data type. Additionally, two general functions <strong>Set()</strong> and <strong>Set2()</strong> that could set any data type.</p>
-<div class="section" id="set-function">
-<span id="index-1"></span><h3>Set() Function<a class="headerlink" href="#set-function" title="Permalink to this headline">¶</a></h3>
+<p>We can set a value for any specified entry by using set functions for each registry data type. Additionally, two general functions <strong>SetValue()</strong> and <strong>SetValue2()</strong> that could set any data type.</p>
+<div class="section" id="setvalue-function">
+<span id="index-1"></span><h3>SetValue() Function<a class="headerlink" href="#setvalue-function" title="Permalink to this headline">¶</a></h3>
 <p>This general function can set values smartly according to entry existence. If the entry existed it will save the data automatically using entry data type setting function, BUT if it does not exist it will save it according to the following rules:</p>
 <ul class="simple">
 <li>String value will be saved as (REG_SZ) type.</li>
@@ -61,7 +61,7 @@
 
 Reg = New RCRegistry { OpenKey([HKEY_CURRENT_USER, &quot;Software\MyApp&quot;]) }
 
-Reg[&quot;OpenTimes&quot;].Set(12)
+Reg[&quot;OpenTimes&quot;].SetValue(12)
 
 See &quot;The type of OpenTimes entry is : &quot; + Reg[&quot;OpenTimes&quot;].TypeName()
 
@@ -74,20 +74,20 @@ Reg.CloseKey()
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>Setting values to already present (REG_MULTI_SZ) entry using Set() function will be done by using SetMultiList() function which means that we have to pass list to Set() function to set (REG_MULTI_SZ) values.</p>
-<p class="last">This is the same thing with Set2() function.</p>
+<p>Setting values to already present (REG_MULTI_SZ) entry using SetValue() function will be done by using SetMultiList() function which means that we have to pass list to SetValue() function to set (REG_MULTI_SZ) values.</p>
+<p class="last">This is the same thing with SetValue2() function.</p>
 </div>
 </div>
-<div class="section" id="set2-function">
-<span id="index-2"></span><h3>Set2() Function<a class="headerlink" href="#set2-function" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="setvalue2-function">
+<span id="index-2"></span><h3>SetValue2() Function<a class="headerlink" href="#setvalue2-function" title="Permalink to this headline">¶</a></h3>
 <p>This general function can set any data type explicitly by passing the value and its type as parameters as follow:</p>
 <div class="highlight-none"><div class="highlight"><pre><span></span>Load &quot;wincreg.ring&quot;
 
 Reg = New RCRegistry { OpenKey([HKEY_CURRENT_USER, &quot;Software\MyApp&quot;]) }
 
-Reg[&quot;ExplicitValue&quot;].Set2(78232, REG_QWORD)
+Reg[&quot;ExplicitValue&quot;].SetValue2(78232, REG_QWORD)
 
-See &quot;The value is : &quot; + Reg[&quot;ExplicitValue&quot;].Get() + NL
+See &quot;The value is : &quot; + Reg[&quot;ExplicitValue&quot;].GetValue() + NL
 
 See &quot;The value data type is : &quot; + Reg[&quot;ExplicitValue&quot;].TypeName()
 
@@ -98,7 +98,7 @@ Reg.CloseKey()
 </div>
 <div class="section" id="get-value">
 <span id="index-3"></span><span id="id2"></span><h2>Get Value<a class="headerlink" href="#get-value" title="Permalink to this headline">¶</a></h2>
-<p>We can get a value for any specified entry using get functions for each registry type. But there&#8217;s a general <strong>Get()</strong> function that could be used to get values smartly according to their data type as follow:</p>
+<p>We can get a value for any specified entry using get functions for each registry type. But there&#8217;s a general <strong>GetValue()</strong> function that could be used to get values smartly according to their data type as follow:</p>
 <ul class="simple">
 <li>(REG_SZ) values will be returned as string.</li>
 <li>(REG_DWORD) values will be returned as numbers.</li>
@@ -113,11 +113,11 @@ Reg.CloseKey()
 
 Reg = New RCRegistry { OpenKey([HKEY_CURRENT_USER, &quot;Software\MyApp&quot;]) }
 
-See &quot;The path of this application is : &quot; + Reg[&quot;AppPath&quot;].Get() + NL
+See &quot;The path of this application is : &quot; + Reg[&quot;AppPath&quot;].GetValue() + NL
 
-See &quot;The version of this application is : &quot; + Reg[&quot;AppVersion&quot;].Get() + NL
+See &quot;The version of this application is : &quot; + Reg[&quot;AppVersion&quot;].GetValue() + NL
 
-See &quot;This application has been launched &quot; + Reg[&quot;OpenTimes&quot;].Get() + &quot; times&quot;
+See &quot;This application has been launched &quot; + Reg[&quot;OpenTimes&quot;].GetValue() + &quot; times&quot;
 
 Reg.CloseKey()
 </pre></div>
@@ -454,8 +454,8 @@ Class Two
   <ul>
 <li><a class="reference internal" href="#">Dealing with Values</a><ul>
 <li><a class="reference internal" href="#set-value">Set Value</a><ul>
-<li><a class="reference internal" href="#set-function">Set() Function</a></li>
-<li><a class="reference internal" href="#set2-function">Set2() Function</a></li>
+<li><a class="reference internal" href="#setvalue-function">SetValue() Function</a></li>
+<li><a class="reference internal" href="#setvalue2-function">SetValue2() Function</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#get-value">Get Value</a></li>

@@ -202,9 +202,9 @@ Reg = New RCRegistry
 
 Reg.OpenKey2(HKCU, &quot;Software\MyApp&quot;)
 
-Reg[&quot;version&quot;].Set(&quot;4.4&quot;)
+Reg[&quot;version&quot;].SetValue(&quot;4.4&quot;)
 
-See &quot;MyApp version is : &quot; + Reg[&quot;version&quot;].Get()
+See &quot;MyApp version is : &quot; + Reg[&quot;version&quot;].GetValue()
 
 Reg.CloseKey()
 </pre></div>
@@ -225,9 +225,9 @@ Reg = New RCRegistry
 
 Reg.OpenKey3(HKCU, &quot;Software\MyApp&quot;, CREG_CREATE)
 
-Reg[&quot;version&quot;].Set(&quot;4.4&quot;)
+Reg[&quot;version&quot;].SetValue(&quot;4.4&quot;)
 
-See &quot;MyApp version is : &quot; + Reg[&quot;version&quot;].Get()
+See &quot;MyApp version is : &quot; + Reg[&quot;version&quot;].GetValue()
 
 Reg.CloseKey()
 </pre></div>
@@ -249,9 +249,9 @@ Reg = New RCRegistry
 
 Reg.OpenKey4(HKEY_LOCAL_MACHINE, &quot;Software\MyApp&quot;, CREG_CREATE, True)
 
-Reg[&quot;version&quot;].Set(&quot;4.4&quot;)
+Reg[&quot;version&quot;].SetValue(&quot;4.4&quot;)
 
-See &quot;MyApp version is : &quot; + Reg[&quot;version&quot;].Get()
+See &quot;MyApp version is : &quot; + Reg[&quot;version&quot;].GetValue()
 
 Reg.CloseKey()
 </pre></div>
@@ -336,7 +336,7 @@ Reg.OpenKey([HKEY_LOCAL_MACHINE, &quot;Software\MyApp&quot;])
 
 Reg.Access64Tree(False)
 
-Reg[&quot;new value&quot;].Set(&quot;1&quot;)
+Reg[&quot;new value&quot;].SetValue(&quot;1&quot;)
 
 Reg.Access64Tree(False)
 

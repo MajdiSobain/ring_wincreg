@@ -12,13 +12,13 @@ Here, we are going to learn how to deal with registry values by using "ring_winc
 Set Value
 ==========
 
-We can set a value for any specified entry by using set functions for each registry data type. Additionally, two general functions **Set()** and **Set2()** that could set any data type. 
+We can set a value for any specified entry by using set functions for each registry data type. Additionally, two general functions **SetValue()** and **SetValue2()** that could set any data type. 
 
 .. index::
-	pair: Set Value; Set() Function
+	pair: Set Value; SetValue() Function
 	
-Set() Function
----------------
+SetValue() Function
+--------------------
 
 This general function can set values smartly according to entry existence. If the entry existed it will save the data automatically using entry data type setting function, BUT if it does not exist it will save it according to the following rules:
 
@@ -35,7 +35,7 @@ This function has been used in the previous examples to save strings, but now wi
 	
 	Reg = New RCRegistry { OpenKey([HKEY_CURRENT_USER, "Software\MyApp"]) }
 	
-	Reg["OpenTimes"].Set(12)
+	Reg["OpenTimes"].SetValue(12)
 	
 	See "The type of OpenTimes entry is : " + Reg["OpenTimes"].TypeName()
 	
@@ -43,15 +43,15 @@ This function has been used in the previous examples to save strings, but now wi
 	
 .. note:: 5.0000 is considered as not floated value as there's no real value after the point.
 
-.. note:: Setting values to already present (REG_MULTI_SZ) entry using Set() function will be done by using SetMultiList() function which means that we have to pass list to Set() function to set (REG_MULTI_SZ) values.
+.. note:: Setting values to already present (REG_MULTI_SZ) entry using SetValue() function will be done by using SetMultiList() function which means that we have to pass list to SetValue() function to set (REG_MULTI_SZ) values.
    
-   This is the same thing with Set2() function.
+   This is the same thing with SetValue2() function.
 
 .. index::
-	pair: Set Value; Set2() Function
+	pair: Set Value; SetValue2() Function
 	
-Set2() Function
-----------------
+SetValue2() Function
+---------------------
 
 This general function can set any data type explicitly by passing the value and its type as parameters as follow:
 
@@ -61,9 +61,9 @@ This general function can set any data type explicitly by passing the value and 
 	
 	Reg = New RCRegistry { OpenKey([HKEY_CURRENT_USER, "Software\MyApp"]) }
 	
-	Reg["ExplicitValue"].Set2(78232, REG_QWORD)
+	Reg["ExplicitValue"].SetValue2(78232, REG_QWORD)
 	
-	See "The value is : " + Reg["ExplicitValue"].Get() + NL
+	See "The value is : " + Reg["ExplicitValue"].GetValue() + NL
 	
 	See "The value data type is : " + Reg["ExplicitValue"].TypeName()
 	
@@ -77,7 +77,7 @@ This general function can set any data type explicitly by passing the value and 
 Get Value
 ==========
 
-We can get a value for any specified entry using get functions for each registry type. But there's a general **Get()** function that could be used to get values smartly according to their data type as follow:
+We can get a value for any specified entry using get functions for each registry type. But there's a general **GetValue()** function that could be used to get values smartly according to their data type as follow:
 
 * (REG_SZ) values will be returned as string.
 * (REG_DWORD) values will be returned as numbers.
@@ -96,11 +96,11 @@ Here is an example of how to use it.
 	
 	Reg = New RCRegistry { OpenKey([HKEY_CURRENT_USER, "Software\MyApp"]) }
 	
-	See "The path of this application is : " + Reg["AppPath"].Get() + NL
+	See "The path of this application is : " + Reg["AppPath"].GetValue() + NL
 	
-	See "The version of this application is : " + Reg["AppVersion"].Get() + NL
+	See "The version of this application is : " + Reg["AppVersion"].GetValue() + NL
 	
-	See "This application has been launched " + Reg["OpenTimes"].Get() + " times"
+	See "This application has been launched " + Reg["OpenTimes"].GetValue() + " times"
 	
 	Reg.CloseKey()
 	

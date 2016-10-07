@@ -23,8 +23,8 @@ Func cTypeForRCRegEntry para
 
 Class RCRegistry		# Short for Ring CRegistry Class
 
-	Key = 0		# This is the Key Handle
-	RegEntry = New RCRegEntry(0,"")
+	Self.Key = 0		# This is the Key Handle
+	Self.RegEntry = New RCRegEntry(0,"")
 
 	Func operator cOperator,Para
 		Switch cOperator
@@ -32,8 +32,8 @@ Class RCRegistry		# Short for Ring CRegistry Class
 				If IsString(Para) = False
 					Raise("Error : The name of the entry must be string")
 				Ok
-				RegEntry.Init(Key, Para)
-				Return RegEntry
+				Self.RegEntry.Init(Self.Key, Para)
+				Return Self.RegEntry
 			Off
 
 	Func KeyExists HKEY, SubKey
@@ -45,139 +45,139 @@ Class RCRegistry		# Short for Ring CRegistry Class
 		Ok
 		Switch Len(ParaList)
 			On 2 
-				Key = CRegOpenKey(ParaList[1], ParaList[2])
-				Return Key
+				Self.Key = CRegOpenKey(ParaList[1], ParaList[2])
+				Return Self.Key
 			On 3 
-				Key = CRegOpenKey(ParaList[1], ParaList[2], ParaList[3])
-				Return Key
+				Self.Key = CRegOpenKey(ParaList[1], ParaList[2], ParaList[3])
+				Return Self.Key
 			On 4 
-				Key = CRegOpenKey(ParaList[1], ParaList[2], ParaList[3], ParaList[4])
-				Return Key
+				Self.Key = CRegOpenKey(ParaList[1], ParaList[2], ParaList[3], ParaList[4])
+				Return Self.Key
 			Other 
 				Raise("Error : Incorrect Number of Parameters passed" + nl +
 				"          This function expects parameters as a list 'OpenKey([para1,para2])' ")
 			Off 
 
 	Func OpenKey2 HKEY, SubKey
-		Key = CRegOpenKey(HKEY, SubKey)
-		Return Key
+		Self.Key = CRegOpenKey(HKEY, SubKey)
+		Return Self.Key
 
 	Func OpenKey3 HKEY, SubKey, Flags
-		Key = CRegOpenKey(HKEY, SubKey, Flags)
-		Return Key
+		Self.Key = CRegOpenKey(HKEY, SubKey, Flags)
+		Return Self.Key
 
 	Func OpenKey4 HKEY, SubKey, Flags, Access64Tree
-		Key = CRegOpenKey(HKEY, SubKey, Flags, Access64Tree)
-		Return Key
+		Self.Key = CRegOpenKey(HKEY, SubKey, Flags, Access64Tree)
+		Return Self.Key
 
 	Func SetFlags Flags
-		CRegSetFlags(Key, Flags)
+		CRegSetFlags(Self.Key, Flags)
 
 	Func GetFlags 
-		Return CRegGetFlags(Key)
+		Return CRegGetFlags(Self.Key)
 
 	Func Access64Tree choice
-		CRegAccess64Tree(Key, choice)
+		CRegAccess64Tree(Self.Key, choice)
 		
 	Func IsVirtualized
-		Return CRegIsVirtualized(Key)
+		Return CRegIsVirtualized(Self.Key)
 		
 	Func IsVirtualized2
-		Return CRegIsVirtualized(Key, True)
+		Return CRegIsVirtualized(Self.Key, True)
 
 	Func EntryCount
-		Return CRegEntryCount(Key)
+		Return CRegEntryCount(Self.Key)
 
 	Func SubKeyExists SubKey
-		Return CRegSubKeyExists(Key, SubKey)
+		Return CRegSubKeyExists(Self.Key, SubKey)
 
 	Func SubKeysCount
-		Return CRegSubKeysCount(Key)
+		Return CRegSubKeysCount(Self.Key)
 		
 	Func GetSubKeyAt index
-		Return CRegGetSubKeyAt(Key, index)
+		Return CRegGetSubKeyAt(Self.Key, index)
 	
 	Func GetSubKeys
-		SubKeys = []
-		For i = 1 to SubKeysCount()
-			Add(SubKeys, GetSubKeyAt(i))
+		wcrlSubKeys = []
+		For wcrii = 1 to SubKeysCount()
+			Add(wcrlSubKeys, GetSubKeyAt(wcrii))
 		Next
-		Return SubKeys
+		Return wcrlSubKeys
 	
 	Func Refresh
-		CRegRefresh(Key)
+		CRegRefresh(Self.Key)
 
 	Func GetEntryAt index		# Return Entry Handle
-		Return CRegGetAt(Key, index)
+		Return CRegGetAt(Self.Key, index)
 
 	Func GetEntryName entry		# Accepts Entry Handle
 		Return CRegGetName(entry)
 
 	Func GetEntries
-		NamesList = []
-		For i = 1 To EntryCount()
-			Add(NamesList, GetEntryName(GetEntryAt(i)))
+		wcrlNamesList = []
+		For wcrii = 1 To EntryCount()
+			Add(wcrlNamesList, GetEntryName(GetEntryAt(wcrii)))
 		Next
-		Return NamesList
+		Return wcrlNamesList
 		
 	Func CopyTo entryhandle,DestKey
 		CRegCopy(entryhandle, DestKey)
 
 	Func CopyAllTo DestKey
-		For i = 1 to EntryCount()
-			CRegCopy(GetEntryAt(i), DestKey)
+		For wcrii = 1 to EntryCount()
+			CRegCopy(GetEntryAt(wcrii), DestKey)
 		Next
 
 	Func CloseKey
-		CRegCloseKey(Key)
+		CRegCloseKey(Self.Key)
 
 	Func DeleteKey
-		CRegDeleteKey(Key)
+		CRegDeleteKey(Self.Key)
 		
 	Func DeleteKey2 HKEY, SubKey
-		TempKey = Key
+		wcrvTempKey = Self.Key
 		OpenKey([HKEY, SubKey])
 		DeleteKey()
-		Key = TempKey
+		Self.Key = wcrvTempKey
 		
 	Func StringToBinary Str
-		res = ""
+		wcrvres = ""
 		If Len(Str) > 0
-			For i = 1 To Len(Str)
-				tm = Hex(Ascii(Str[i]))
-				If Len(tm) = 1
-					res += "0" + tm
+			For wcrii = 1 To Len(Str)
+				wcrvtm = Hex(Ascii(Str[wcrii]))
+				If Len(wcrvtm) = 1
+					wcrvres += "0" + wcrvtm
 				Else
-					res += tm
+					wcrvres += wcrvtm
 				Ok
-				If i < Len(Str)
-					res += ","
+				If wcrii < Len(Str)
+					wcrvres += ","
 				Ok
 			Next
 		Ok
-		Return res
+		Return wcrvres
 
 	Func BinaryToString Bin
-		res = ""
+		wcrvres = ""
 		If Len(Bin) > 1
 			Bin = SubStr(Bin, ",", NL)
 			Bin = Str2List(Bin)
-			For hx in Bin
-				res += Char(Dec(hx))
+			For wcrihx in Bin
+				wcrvres += Char(Dec(wcrihx))
 			Next
 		Ok
-		Return res
+		Return wcrvres
 		
 		
 	
 Class RCRegEntry			# Short for Ring CRegistry Entry Class
 
-	Key = 0
-	EntryName = ""
+	Self.Key = 0
+	Self.EntryName = ""
 	
 	Func Init passedkey, passedentryName
-		Key = passedkey
-		EntryName = passedentryName
+		Self.Key = passedkey
+		Self.EntryName = passedentryName
 	
 	Func Create type
 		If Exists() = False
@@ -195,36 +195,36 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 				On REG_BINARY
 					SetBinary("")
 				Other
-					If EntryName = "" EntryName = "Default" Ok
-					Raise("Error : Unknown type has been passed to create (" + EntryName + ")")
+					If Self.EntryName = "" Self.EntryName = "Default" Ok
+					Raise("Error : Unknown type has been passed to create (" + Self.EntryName + ")")
 				Off
 		Else
-			If EntryName = "" EntryName = "Default" Ok
-			Raise("Error : Cannot create (" + EntryName + ") because it is already existed")
+			If Self.EntryName = "" Self.EntryName = "Default" Ok
+			Raise("Error : Cannot create (" + Self.EntryName + ") because it is already existed")
 		Ok
 		
-	Func Get
-		value = 0
+	Func GetValue
+		wcrvvalue = 0
 		Switch Type()
 				On REG_SZ
-					value = GetString()
+					wcrvvalue = GetString()
 				On REG_DWORD
-					value = GetDWORD()
+					wcrvvalue = GetDWORD()
 				On REG_MULTI_SZ
-					value = GetMultiList()
+					wcrvvalue = GetMultiList()
 				On REG_QWORD
-					value = GetQWORD()
+					wcrvvalue = GetQWORD()
 				On REG_EXPAND_SZ
-					value = GetExpandSZ()
+					wcrvvalue = GetExpandSZ()
 				On REG_BINARY
-					value = GetBinary()
+					wcrvvalue = GetBinary()
 				Other
-					If EntryName = "" EntryName = "Default" Ok
-					Raise("Error : Unknown type of (" + EntryName + ") to be retrieved")
+					If Self.EntryName = "" Self.EntryName = "Default" Ok
+					Raise("Error : Unknown type of (" + Self.EntryName + ") to be retrieved")
 				Off
-		Return value
+		Return wcrvvalue
 
-	Func Set value
+	Func SetValue value
 		If Exists() = True
 			Switch Type()
 				On REG_SZ
@@ -240,21 +240,21 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 				On REG_BINARY
 					SetBinary(value)
 				Other
-					If EntryName = "" EntryName = "Default" Ok
-					Raise("Error : Unknown type of (" + EntryName + ") to be set")
+					If Self.EntryName = "" Self.EntryName = "Default" Ok
+					Raise("Error : Unknown type of (" + Self.EntryName + ") to be set")
 				Off
 		Else
 			Switch cTypeForRCRegEntry(value)
 				On "STRING"
-					CRegSetValue(Key, EntryName, value)
+					CRegSetValue(Self.Key, Self.EntryName, value)
 				On "NUMBER"
-					CRegSetValue(Key, EntryName, value)
+					CRegSetValue(Self.Key, Self.EntryName, value)
 				Other
-					Raise("Error : Set() function could just set String or Numbers to newly created entries")
+					Raise("Error : SetValue() function could just set String or Numbers to newly created entries")
 				Off	
 		Ok
 
-	Func Set2 value, type
+	Func SetValue2 value, type
 		Switch type
 			On REG_SZ
 				SetString(value)
@@ -269,24 +269,24 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 			On REG_BINARY
 				SetBinary(value)
 			Other
-				If EntryName = "" EntryName = "Default" Ok
-				Raise("Error : Unknown type of (" + EntryName + ") to be set")
+				If Self.EntryName = "" Self.EntryName = "Default" Ok
+				Raise("Error : Unknown type of (" + Self.EntryName + ") to be set")
 			Off
 		
 	Func SetString value
 		If cTypeForRCRegEntry(value) != "STRING"
 			Raise ("Error : SetString() could just accept strings")
 		Ok
-		CRegSetValue(Key, EntryName, value)
+		CRegSetValue(Self.Key, Self.EntryName, value)
 	
 	Func GetString
-		value = ""
+		wcrvvalue = ""
 		If Type() = REG_SZ
-			value = CRegGetValue(Key, EntryName)
+			wcrvvalue = CRegGetValue(Self.Key, Self.EntryName)
 		Else
 			Raise ("Error : GetString() could just return strings (REG_SZ)")
 		Ok
-		Return value
+		Return wcrvvalue
 		
 	Func SetDWORD value
 		If IsNumber(value) = False
@@ -300,41 +300,41 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 				Ok
 			Ok
 		Ok
-		CRegSetValue(Key, EntryName, value)
+		CRegSetValue(Self.Key, Self.EntryName, value)
 				
 	Func GetDWORD
-		value = 0
+		wcrvvalue = 0
 		If Type() = REG_DWORD
-			value = floor(CRegGetValue(Key, EntryName))	# To retrieve integer number
+			wcrvvalue = floor(CRegGetValue(Self.Key, Self.EntryName))	# To retrieve integer number
 		Else
 			Raise ("Error : GetDWORD() could just return DWORD numbers")
 		Ok
-		Return value
+		Return wcrvvalue
 
 	Func SetMulti value
-		CRegSetMulti(Key, EntryName, value)
+		CRegSetMulti(Self.Key, Self.EntryName, value)
 
 	Func MultiAdd newValue
 		If Exists() = True And IsMultiString() = True And MultiCount() > 0
-			CRegMultiAdd(Key, EntryName, newValue)
+			CRegMultiAdd(Self.Key, Self.EntryName, newValue)
 		Else
 			SetMulti(newValue)
 		Ok
 
 	Func MultiSetAt index, newValue
-		CRegMultiSetAt(Key, EntryName, index, newValue)
+		CRegMultiSetAt(Self.Key, Self.EntryName, index, newValue)
 
 	Func MultiGetAt index
-		Return CRegMultiGetAt(Key, EntryName, index)
+		Return CRegMultiGetAt(Self.Key, Self.EntryName, index)
 
 	Func MultiRemoveAt index
-		CRegMultiRemoveAt(Key, EntryName, index)
+		CRegMultiRemoveAt(Self.Key, Self.EntryName, index)
 
 	Func MultiCount
-		Return CRegMultiCount(Key, EntryName)
+		Return CRegMultiCount(Self.Key, Self.EntryName)
 
 	Func MultiClear
-		CRegMultiClear(Key, EntryName)
+		CRegMultiClear(Self.Key, Self.EntryName)
 
 	Func SetMultiList valuesList
 		If IsList(valuesList) = False 
@@ -342,12 +342,12 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 		Ok
 		If Len(valuesList) > 0 
 			If Exists() And IsMultiString() MultiClear() Ok
-			For v in valuesList
-				Switch cTypeForRCRegEntry(v)
+			For wcriv in valuesList
+				Switch cTypeForRCRegEntry(wcriv)
 					On "STRING"
-						MultiAdd(v) 
+						MultiAdd(wcriv) 
 					ON "NUMBER"
-						MultiAdd(String(v)) 
+						MultiAdd(String(wcriv)) 
 					Other
 						Raise ("Error : MultiString could just accept strings or numerical strings")
 					Off
@@ -355,61 +355,61 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 		Ok
 
 	Func GetMultiList
-		MultiList = []
+		wcrlMultiList = []
 		If MultiCount() > 0
-			For i = 1 to MultiCount()
-				Add(MultiList, MultiGetAt(i))
+			For wcrii = 1 to MultiCount()
+				Add(wcrlMultiList, MultiGetAt(wcrii))
 			Next
 		Ok
-		Return MultiList
+		Return wcrlMultiList
 		
 	Func GetExpandSZ
-		Return CRegGetExpandSZ(Key, EntryName)
+		Return CRegGetExpandSZ(Self.Key, Self.EntryName)
 		
 	Func SetExpandSZ value
-		Return CRegSetExpandSZ(Key, EntryName, value)
+		Return CRegSetExpandSZ(Self.Key, Self.EntryName, value)
 		
 	Func GetExpandedSZ
-		Return CRegGetExpandedSZ(Key, EntryName)
+		Return CRegGetExpandedSZ(Self.Key, Self.EntryName)
 		
 	Func GetQWORD
-		Return CRegGetQWORD(Key, EntryName)
+		Return CRegGetQWORD(Self.Key, Self.EntryName)
 		
 	Func GetQWORDs
-		v = CRegGetQWORD(Key, EntryName)
-		If IsNumber(v)
-			v = String(v)
+		wcrvv = CRegGetQWORD(Self.Key, Self.EntryName)
+		If IsNumber(wcrvv)
+			wcrvv = String(wcrvv)
 		Ok
-		Return v
+		Return wcrvv
 		
 	Func SetQWORD value
-		Return CRegSetQWORD(Key, EntryName, value)
+		Return CRegSetQWORD(Self.Key, Self.EntryName, value)
 		
 	Func GetBinary
-		Return CRegGetBinary(Key, EntryName)
+		Return CRegGetBinary(Self.Key, Self.EntryName)
 		
 	Func SetBinary value
-		Return CRegSetBinary(Key, EntryName, value)
+		Return CRegSetBinary(Self.Key, Self.EntryName, value)
 		
 	Func BinaryLength
-		Return CRegBinaryLength(Key, EntryName)
+		Return CRegBinaryLength(Self.Key, Self.EntryName)
 		
 	Func Exists
-		Return CRegExists(Key, EntryName)
+		Return CRegExists(Self.Key, Self.EntryName)
 
 	Func Rename newName
-		CRegRename(Key, EntryName, newName)
+		CRegRename(Self.Key, Self.EntryName, newName)
 
 	Func CopyTo newKeyHandle
-		CRegCopy(Key, EntryName, newKeyHandle)
+		CRegCopy(Self.Key, Self.EntryName, newKeyHandle)
 		
 	Func Clear
 		If Exists() = True
 			Switch Type()
 				On REG_SZ
-					Set("")
+					SetValue("")
 				On REG_DWORD
-					Set(0)
+					SetValue(0)
 				On REG_MULTI_SZ
 					SetMulti("")
 				On REG_QWORD
@@ -419,125 +419,125 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 				On REG_BINARY
 					SetBinary("")
 				Other
-					If EntryName = "" EntryName = "Default" Ok
-					Raise("Error : Unknown type has been passed to create (" + EntryName + ")")
+					If Self.EntryName = "" Self.EntryName = "Default" Ok
+					Raise("Error : Unknown type has been passed to create (" + Self.EntryName + ")")
 				Off
 		Else
-			If EntryName = "" EntryName = "Default" Ok
-			Raise("Error : Cannot clear (" + EntryName + ") because it is not existed")
+			If Self.EntryName = "" Self.EntryName = "Default" Ok
+			Raise("Error : Cannot clear (" + Self.EntryName + ") because it is not existed")
 		Ok
 
 	Func Delete
-		CRegDelete(Key, EntryName)
+		CRegDelete(Self.Key, Self.EntryName)
 
 	Func IsString
-		Return CRegIsString(Key, EntryName)
+		Return CRegIsString(Self.Key, Self.EntryName)
 
 	Func IsDWORD
-		Return CRegIsDword(Key, EntryName)
+		Return CRegIsDword(Self.Key, Self.EntryName)
 
 	Func IsMultiString
-		Return CRegIsMultiString(Key, EntryName)
+		Return CRegIsMultiString(Self.Key, Self.EntryName)
 
 	Func IsBinary
-		Return CRegIsBinary(Key, EntryName)
+		Return CRegIsBinary(Self.Key, Self.EntryName)
 		
 	Func IsExpandSZ
-		Return CRegIsExpandSZ(Key, EntryName)
+		Return CRegIsExpandSZ(Self.Key, Self.EntryName)
 		
 	Func IsQWORD
-		Return CRegIsQWORD(Key, EntryName)
+		Return CRegIsQWORD(Self.Key, Self.EntryName)
 		
 	Func Type
-		Return CRegType(Key, EntryName)
+		Return CRegType(Self.Key, Self.EntryName)
 
 	Func TypeName
-		aList = ["REG_NONE", "REG_SZ", "REG_EXPAND_SZ", "REG_BINARY", "REG_DWORD", "REG_DWORD_BIG_ENDIAN", "REG_LINK", "REG_MULTI_SZ",
+		wcrlaList = ["REG_NONE", "REG_SZ", "REG_EXPAND_SZ", "REG_BINARY", "REG_DWORD", "REG_DWORD_BIG_ENDIAN", "REG_LINK", "REG_MULTI_SZ",
 				 "REG_RESOURCE_LIST", "REG_FULL_RESOURCE_DESCRIPTOR", "REG_RESOURCE_REQUIREMENTS_LIST", "REG_QWORD"]
-		return aList[Type() + 1]   # increment by 1 is due to list index that starts with one
+		return wcrlaList[Type() + 1]   # increment by 1 is due to list index that starts with one
 
 	Func SetObject obj
-		O4R = New Objects2Reg(Self)
-		O4R.SetObject(obj)
+		wcroO2R = New Objects2Reg(Self)
+		wcroO2R.SetObject(obj)
 			
 	Func GetObject
-		O4R = New Objects2Reg(Self)
-		Return O4R.GetObject()
+		wcroO2R = New Objects2Reg(Self)
+		Return wcroO2R.GetObject()
 
 		
 Class Objects2Reg
-	EntryObj = NULL
-	CollecterList = []
+	Self.EntryObj = NULL
+	Self.CollecterList = []
 
 	Func init EntObj
-		EntryObj = EntObj
+		Self.EntryObj = EntObj
 	
 	Func SetObject obj		# From Collector to Registry
-		ConfObject(obj, EntryObj.EntryName /*ObjectName*/)		# From Input to Collector
-		TempD = List2Str(CollecterList)
-		oReg = New RCRegistry
-		EntryObj.SetBinary(oReg.StringToBinary(TempD))
+		ConfObject(obj, Self.EntryObj.EntryName /*ObjectName*/)		# From Input to Collector
+		wcrvTempD = List2Str(Self.CollecterList)
+		wcroReg = New RCRegistry
+		Self.EntryObj.SetBinary(wcroReg.StringToBinary(wcrvTempD))
 		
 	Func ConfObject obj, objectName
-		ResList = ["--RING--OBJECT--"]
+		wcrlResList = ["--RING--OBJECT--"]
 		If IsObject(obj) = False 
 			Raise("Error : ConfObject() can just accept objects, and their names")
 		Ok
-		Add(ResList, "-CName--" + ClassName(obj))
-		Add(ResList, "........")
-		oList = Attributes(obj)
-		ObjNum = 1
-		For o in oList
-			v = 0
-			eval("v = obj." + o)
-			Switch cTypeForRCRegEntry(v)
+		Add(wcrlResList, "-CName--" + ClassName(obj))
+		Add(wcrlResList, "........")
+		wcrlaList = Attributes(obj)
+		wcrvObjNum = 1
+		For wcrva in wcrlaList
+			wcrvv = 0
+			eval("wcrvv = obj." + wcrva)
+			Switch cTypeForRCRegEntry(wcrvv)
 				On "STRING"
-					Add(ResList, "-S--" + o + " = '" + v + "'")
+					Add(wcrlResList, "-S--" + wcrva + " = '" + wcrvv + "'")
 				On "NUMBER"
-					Add(ResList, "-N--" + o + " = " + String(v))
+					Add(wcrlResList, "-N--" + wcrva + " = " + String(wcrvv))
 				On "LIST"
-					Add(ResList, "-L--" + o)
-					AddToInputList(ResList, v, "-L--", obj, objectName)
+					Add(wcrlResList, "-L--" + wcrva)
+					AddToInputList(wcrlResList, wcrvv, "-L--", obj, objectName)
 				On "OBJECT"
-					If ClassName(v) = ClassName(obj) 
+					If ClassName(wcrvv) = ClassName(obj) 
 						See "Warning : Theres ignored object recursion. Object Recursion will end in overflow problems"
 					Ok
-					nObjEntName = objectName + "-o" + ObjNum
-					Add(ResList, "-O--" + o + " = '" + nObjEntName + "'" )
-					ConfObject(v, nObjEntName)
-					ObjNum += 1
+					wcrvnObjEntName = objectName + "-o" + wcrvObjNum
+					Add(wcrlResList, "-O--" + wcrva + " = '" + wcrvnObjEntName + "'" )
+					ConfObject(wcrvv, wcrvnObjEntName)
+					wcrvObjNum += 1
 				Other
 				
 				Off
 			
-			Add(ResList, "........")
+			Add(wcrlResList, "........")
 		Next
-		ToCollector(ResList, objectName)
+		ToCollector(wcrlResList, objectName)
 		
 	Func ToCollector srcList, objectName
-		FinalRes = List2Str(srcList)
-		FinalRes = SubStr(FinalRes, NL, "@!^")
-		Add(CollecterList, objectName)
-		Add(CollecterList, FinalRes)
+		wcrlFinalRes = List2Str(srcList)
+		wcrlFinalRes = SubStr(wcrlFinalRes, NL, "@!^")
+		Add(Self.CollecterList, objectName)
+		Add(Self.CollecterList, wcrlFinalRes)
 	
 	Func AddToInputList ResLst, currentlist, prefix, CurrObj, ObName
-		ObjNum = 1
-		For i = 1 To Len(currentlist)
-			Switch cTypeForRCRegEntry(currentlist[i])
+		wcrvObjNum = 1
+		For wcrii = 1 To Len(currentlist)
+			Switch cTypeForRCRegEntry(currentlist[wcrii])
 				On "STRING"
-					Add(ResLst, prefix + "-S--" + currentlist[i] )
+					Add(ResLst, prefix + "-S--" + currentlist[wcrii] )
 				On "NUMBER"
-					Add(ResLst, prefix + "-N--" + currentlist[i])
+					Add(ResLst, prefix + "-N--" + currentlist[wcrii])
 				On "LIST"
-					AddToInputList(ResLst, currentlist[i], prefix + "-L--", CurrObj, ObName) 
+					AddToInputList(ResLst, currentlist[wcrii], prefix + "-L--", CurrObj, ObName) 
 				On "OBJECT"
-					If ClassName(currentlist[i]) = ClassName(CurrObj) 
+					If ClassName(currentlist[wcrii]) = ClassName(CurrObj) 
 						See "Warning : Theres ignored object recursion. Object Recursion will end in overflow problems" 
 					Ok
-					nObjEntName = ObName + "-l" + String(Len(prefix)/4) + "o" + ObjNum
-					Add(ResLst, prefix + "-O--" + nObjEntName )
-					ConfObject(currentlist[i], nObjEntName)
-					ObjNum += 1
+					wcrvnObjEntName = ObName + "-l" + String(Len(prefix)/4) + "o" + wcrvObjNum
+					Add(ResLst, prefix + "-O--" + wcrvnObjEntName )
+					ConfObject(currentlist[wcrii], wcrvnObjEntName)
+					wcrvObjNum += 1
 				Other
 					
 				Off
@@ -545,133 +545,132 @@ Class Objects2Reg
 		Next
 
 	Func GetObject		# From Registry to Collector + Request Retrieving The Main Object
-		If EntryObj.IsBinary() = False
-			Raise("Error : Unknown Object saving type entry")
+		If Self.EntryObj.IsBinary() = False
+			Raise("Error : Unknown Object saving type entry (Entry Is not Binary)")
 		Ok
-		oReg = New RCRegistry
-		RwaData = oReg.BinaryToString(EntryObj.GetBinary())
-		CollecterList = Str2List(RwaData)
+		wcroReg = New RCRegistry
+		wcrvRwaData = wcroReg.BinaryToString(Self.EntryObj.GetBinary())
+		Self.CollecterList = Str2List(wcrvRwaData)
 		
-		Return RetObject(FromCollector(EntryObj.EntryName))	# The main object
+		Return RetObject(FromCollector(Self.EntryObj.EntryName))	# The main object
 			
 	Func FromCollector Objname
-		ObjIndex = Find(CollecterList, Objname)
-		TempLst = SubStr(CollecterList[ObjIndex +1], "@!^", NL)
-		TempLst = Str2List(TempLst)
-		Return TempLst
+		wcrvObjIndex = Find(Self.CollecterList, Objname)
+		wcrlTempLst = SubStr(Self.CollecterList[wcrvObjIndex +1], "@!^", NL)
+		wcrlTempLst = Str2List(wcrlTempLst)
+		Return wcrlTempLst
 	
 	Func RetObject objList		# Return Objects from Collector
-		resList = []
-		LocRetObj = NULL
+		wcrvLocRetObj = NULL
 		If Len(objList) > 0 
 			If objList[1] != "--RING--OBJECT--"
-				Raise("Error : Unknown Ring Object saving format")
+				Raise("Error : Unknown Ring Object saving format at (--RING--OBJECT--)")
 			Ok
 			If Left(objList[2], 8) = "-CName--"
 				If Find(Classes(), SubStr(objList[2], 9)) = 0
 					Raise("Error : Cannot return Ring Object because it's class is not in the available classes list")
 				Ok
-				Eval("LocRetObj = New " + SubStr(objList[2], 9))
+				Eval("wcrvLocRetObj = New " + SubStr(objList[2], 9))
 			Else
-				Raise("Error : Unknown Ring Object saving format")
+				Raise("Error : Unknown Ring Object saving format at (-CName--)")
 			Ok
-			For o = 1 to Len(objList)
-				attlst = []
-				chvalue = Left(objList[o], 4)
-				Switch chvalue
+			For wcrio = 1 to Len(objList)
+				wcrlattlst = []
+				wcrvchvalue = Left(objList[wcrio], 4)
+				Switch wcrvchvalue
 					On "...."
 						Loop
 					On "-S--"
-						Eval("Add(attlst, :" + SubStr(objList[o], 5) + ")")
-						If Find(Attributes(LocRetObj), attlst[1][1])
-							Eval("LocRetObj." + attlst[1][1] + " = '" + attlst[1][2] + "'")
+						Eval("Add(wcrlattlst, :" + SubStr(objList[wcrio], 5) + ")")
+						If Find(Attributes(wcrvLocRetObj), wcrlattlst[1][1])
+							Eval("wcrvLocRetObj." + wcrlattlst[1][1] + " = '" + wcrlattlst[1][2] + "'")
 						Else
-							AddAttribute(LocRetObj, attlst[1][1])
-							Eval("LocRetObj." + attlst[1][1] + " = '" + attlst[1][2] + "'")
+							AddAttribute(wcrvLocRetObj, wcrlattlst[1][1])
+							Eval("wcrvLocRetObj." + wcrlattlst[1][1] + " = '" + wcrlattlst[1][2] + "'")
 						Ok
 					On "-N--"
-						Eval("Add(attlst, :" + SubStr(objList[o], 5) + ")")
-						If Find(Attributes(LocRetObj), attlst[1][1])
-							Eval("LocRetObj." + attlst[1][1] + " = " + attlst[1][2])
+						Eval("Add(wcrlattlst, :" + SubStr(objList[wcrio], 5) + ")")
+						If Find(Attributes(wcrvLocRetObj), wcrlattlst[1][1])
+							Eval("wcrvLocRetObj." + wcrlattlst[1][1] + " = " + wcrlattlst[1][2])
 						Else
-							AddAttribute(LocRetObj, attlst[1][1])
-							Eval("LocRetObj." + attlst[1][1] + " = " + attlst[1][2])
+							AddAttribute(wcrvLocRetObj, wcrlattlst[1][1])
+							Eval("wcrvLocRetObj." + wcrlattlst[1][1] + " = " + wcrlattlst[1][2])
 						Ok
 					On "-L--"
 						lstname = ""
-						Eval("lstname = '" + SubStr(objList[o], 5) + "'")
-						If Find(Attributes(LocRetObj), lstname)
-							lst = AddToOutputList(objList, o + 1, "-L--") 
-							Eval("LocRetObj." + lstname + " = lst")
+						Eval("lstname = '" + SubStr(objList[wcrio], 5) + "'")
+						If Find(Attributes(wcrvLocRetObj), lstname)
+							lst = AddToOutputList(objList, wcrio + 1, "-L--") 
+							Eval("wcrvLocRetObj." + lstname + " = lst")
 						Else
-							AddAttribute(LocRetObj, lstname)
-							lst = AddToOutputList(objList, o + 1, "-L--") 
-							Eval("LocRetObj." + lstname + " = lst")
+							AddAttribute(wcrvLocRetObj, lstname)
+							lst = AddToOutputList(objList, wcrio + 1, "-L--") 
+							Eval("wcrvLocRetObj." + lstname + " = lst")
 						Ok
 												
-						For i = o to Len(objList)		# this loop to help jump already added list
-							If objList[i] = "........"
-								o = i
+						For wcrii = wcrio to Len(objList)		# this loop to help jump already added list
+							If objList[wcrii] = "........"
+								wcrio = wcrii
 								Exit
 							Ok
 						Next
 					On "-O--"
-						Eval("Add(attlst, :" + SubStr(objList[o], 5) + ")")
-						If Find(Attributes(LocRetObj), attlst[1][1])
-							TempLst = FromCollector(attlst[1][2])
-							ob = RetObject(TempLst)
-							Eval("LocRetObj." + attlst[1][1] + " = ob")
+						Eval("Add(wcrlattlst, :" + SubStr(objList[wcrio], 5) + ")")
+						If Find(Attributes(wcrvLocRetObj), wcrlattlst[1][1])
+							wcrlTempLst = FromCollector(wcrlattlst[1][2])
+							wcrvob = RetObject(wcrlTempLst)
+							Eval("wcrvLocRetObj." + wcrlattlst[1][1] + " = wcrvob")
 						Else
-							AddAttribute(LocRetObj, attlst[1][1])
-							TempLst = FromCollector(attlst[1][2])
-							ob = RetObject(TempLst)
-							Eval("LocRetObj." + attlst[1][1] + " = ob")
+							AddAttribute(wcrvLocRetObj, wcrlattlst[1][1])
+							wcrlTempLst = FromCollector(wcrlattlst[1][2])
+							wcrvob = RetObject(wcrlTempLst)
+							Eval("wcrvLocRetObj." + wcrlattlst[1][1] + " = wcrvob")
 						Ok
 					Other
 					
 					Off
-				attlst = []
+				wcrlattlst = []
 			Next
 		Ok
-		RCRegRetObj = LocRetObj
+		RCRegRetObj = wcrvLocRetObj
 		Return RCRegRetObj
 
 		
 	Func AddToOutputList srcObjList, currentIndex, prefix
-		opList = []
-		lastindex = 0
-		For j = currentIndex To Len(srcObjList)
-			If srcObjList[j] = SubStr(prefix, 5) + "........"
-				lastindex = j
+		wcrlopList = []
+		wcrvlastindex = 0
+		For wcrij = currentIndex To Len(srcObjList)
+			If srcObjList[wcrij] = SubStr(prefix, 5) + "........"
+				wcrvlastindex = wcrij
 				Exit
 			Ok
 		Next
-		For k = currentIndex To lastindex
-			chkvalue = SubStr(srcObjList[k], Len(prefix) +1 , 4)
-			Switch chkvalue
+		For wcrik = currentIndex To wcrvlastindex
+			wcrvchkvalue = SubStr(srcObjList[wcrik], Len(prefix) +1 , 4)
+			Switch wcrvchkvalue
 				On "...."
 					Loop
 				On "-S--"
-					Add(opList, SubStr(srcObjList[k], Len(prefix) + 5))
+					Add(wcrlopList, SubStr(srcObjList[wcrik], Len(prefix) + 5))
 				On "-N--"
-					Add(opList, Number(SubStr(srcObjList[k], Len(prefix) + 5)))
+					Add(wcrlopList, Number(SubStr(srcObjList[wcrik], Len(prefix) + 5)))
 				On "-L--"
-					nlist = AddToOutputList(srcObjList, k, prefix + "-L--")
-					Add(opList, nlist)
-					For i = k to Len(srcObjList)	# this loop to help jump already added list
-						If srcObjList[i] = prefix + "........"
-							k = i 
+					wcrlnlist = AddToOutputList(srcObjList, wcrik, prefix + "-L--")
+					Add(wcrlopList, wcrlnlist)
+					For wcrii = wcrik to Len(srcObjList)	# this loop to help jump already added list
+						If srcObjList[wcrii] = prefix + "........"
+							wcrik = wcrii 
 							Exit
 						Ok
 					Next
 				On "-O--"
-					TempLst = FromCollector(SubStr(srcObjList[k], Len(prefix) + 5))
-					ob = RetObject(TempLst)
-					Add(opList, ob)
+					wcrlTempLst = FromCollector(SubStr(srcObjList[wcrik], Len(prefix) + 5))
+					wcrvob = RetObject(wcrlTempLst)
+					Add(wcrlopList, wcrvob)
 				Other
 				
 				Off
 		Next
 		
-		Return opList
+		Return wcrlopList
 		

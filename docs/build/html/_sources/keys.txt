@@ -146,9 +146,9 @@ Example
 	
 	Reg.OpenKey2(HKCU, "Software\MyApp")
 	
-	Reg["version"].Set("4.4")
+	Reg["version"].SetValue("4.4")
 	
-	See "MyApp version is : " + Reg["version"].Get()
+	See "MyApp version is : " + Reg["version"].GetValue()
 	
 	Reg.CloseKey()
 	
@@ -174,9 +174,9 @@ Example
 	
 	Reg.OpenKey3(HKCU, "Software\MyApp", CREG_CREATE)
 	
-	Reg["version"].Set("4.4")
+	Reg["version"].SetValue("4.4")
 	
-	See "MyApp version is : " + Reg["version"].Get()
+	See "MyApp version is : " + Reg["version"].GetValue()
 	
 	Reg.CloseKey()
 
@@ -203,9 +203,9 @@ Example
 	
 	Reg.OpenKey4(HKEY_LOCAL_MACHINE, "Software\MyApp", CREG_CREATE, True)
 	
-	Reg["version"].Set("4.4")
+	Reg["version"].SetValue("4.4")
 	
-	See "MyApp version is : " + Reg["version"].Get()
+	See "MyApp version is : " + Reg["version"].GetValue()
 	
 	Reg.CloseKey()
 
@@ -313,7 +313,7 @@ This could be done by using **Access64Tree()** function as follow:
 	
 	Reg.Access64Tree(False)
 	
-	Reg["new value"].Set("1")
+	Reg["new value"].SetValue("1")
 	
 	Reg.Access64Tree(False)
 	
