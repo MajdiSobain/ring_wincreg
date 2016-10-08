@@ -1,11 +1,8 @@
 # Ring_WinCReg
-This Ring Extension helps access and edit windows registry entries and values easily from within Ring Programming Language
-
-## Ring_WinCReg Extension
 
 Ring WinCReg extension is a very light, easy, and powerful extension for Ring Programming Language that has been made to bring all means of easiness in the dealing with Windows Registry. It gives you the ability to do from minor registry needs like saving or restoring settings to more superior goals like reaching and controlling every single key or value in the whole registry tree.
 
-This extension has been made on top of previously created C++ language class called “Registry Wrapper Class(CRegisry Class)” that has been published on CodeProject in this article.
+This extension has been made on top of previously created C++ language class called “Registry Wrapper Class(CRegisry Class)” that has been published on CodeProject in [this article](http://www.codeproject.com/Articles/8953/Registry-Wrapper-Class-CRegistry).
 
 ## RCRegistry Class
 
@@ -25,7 +22,7 @@ RCRegistry class, stands for Ring CRegistry Class or CRegistry Class for Ring, i
 
 4- Load the "wincreg.ring" file as it loads all of the extension and its associated library features
 
-5- For more information on how to use the extension and the associated library functions use visit [this documentation website](http://ring-wincreg.sourceforge.net/) or use the documentation attached(Documentation)
+5- For more information on how to use the extension and the associated library functions use visit [this documentation website](http://ring-wincreg.sourceforge.net/) or use the documentation attached(Documentation.html)
 
 ## Example
 
