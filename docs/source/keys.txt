@@ -85,7 +85,7 @@ This Function accepts parameters as a list so we should pass one list parameter 
 4. The option to access Wow64 tree. It could be true for access or false for opposite.
 
 .. hint::
-   Wow64 tree is an automatically created tree of keys inside windows registry for 32 bit applications that run on an 64 bit windows. So opening\creating "Software\MyApp" under the HKEY_LOCAL_MACHINE root will not open\create it as expected but it will be opened\created as "Software\Wow6432Node\MyApp". `(Registry Redirection) <https://msdn.microsoft.com/en-us/library/windows/desktop/ms724072%28v=vs.85%29.aspx>`_
+   Wow64 tree is an automatically created tree of keys inside windows registry for 32 bit applications that run on an 64 bit windows. So opening/creating "Software\\MyApp" under the HKEY_LOCAL_MACHINE root will not open/create it as expected but it will be opened/created as "Software\\Wow6432Node\\MyApp". `(Registry Redirection) <https://msdn.microsoft.com/en-us/library/windows/desktop/ms724072%28v=vs.85%29.aspx>`_
 
 Now lets have some examples for how to use **OpenKey()** function.
 

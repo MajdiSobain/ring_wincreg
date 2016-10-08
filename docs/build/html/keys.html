@@ -8,7 +8,7 @@
     
     <title>Dealing with Keys &#8212; Ring_WinCReg 1.0 documentation</title>
     
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pyramid.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -26,15 +26,30 @@
     <link rel="top" title="Ring_WinCReg 1.0 documentation" href="index.html" />
     <link rel="next" title="Dealing with Entries" href="entries.html" />
     <link rel="prev" title="Implementation and Usage" href="implementation&amp;usage.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
+<![endif]-->
 
   </head>
   <body role="document">
-  
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="entries.html" title="Dealing with Entries"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="implementation&usage.html" title="Implementation and Usage"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Ring_WinCReg 1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
@@ -151,7 +166,7 @@ New RCRegistry {
 </ol>
 <div class="admonition hint">
 <p class="first admonition-title">Hint</p>
-<p class="last">Wow64 tree is an automatically created tree of keys inside windows registry for 32 bit applications that run on an 64 bit windows. So openingcreating &#8220;SoftwareMyApp&#8221; under the HKEY_LOCAL_MACHINE root will not opencreate it as expected but it will be openedcreated as &#8220;SoftwareWow6432NodeMyApp&#8221;. <a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms724072%28v=vs.85%29.aspx">(Registry Redirection)</a></p>
+<p class="last">Wow64 tree is an automatically created tree of keys inside windows registry for 32 bit applications that run on an 64 bit windows. So opening/creating &#8220;Software\MyApp&#8221; under the HKEY_LOCAL_MACHINE root will not open/create it as expected but it will be opened/created as &#8220;Software\Wow6432Node\MyApp&#8221;. <a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms724072%28v=vs.85%29.aspx">(Registry Redirection)</a></p>
 </div>
 <p>Now lets have some examples for how to use <strong>OpenKey()</strong> function.</p>
 <p>Example 1</p>
@@ -595,22 +610,13 @@ New RCRegistry {
 </ul>
 </li>
 </ul>
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="implementation&amp;usage.html" title="previous chapter">Implementation and Usage</a></li>
-      <li>Next: <a href="entries.html" title="next chapter">Dealing with Entries</a></li>
-  </ul></li>
-</ul>
-</div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/keys.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="implementation&amp;usage.html"
+                        title="previous chapter">Implementation and Usage</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="entries.html"
+                        title="next chapter">Dealing with Entries</a></p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
@@ -625,20 +631,24 @@ New RCRegistry {
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2016, Majdi Sobain.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
-      
-      |
-      <a href="_sources/keys.txt"
-          rel="nofollow">Page source</a>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="entries.html" title="Dealing with Entries"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="implementation&usage.html" title="Implementation and Usage"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Ring_WinCReg 1.0 documentation</a> &#187;</li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Majdi Sobain.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
+    </div>
   </body>
 </html>
