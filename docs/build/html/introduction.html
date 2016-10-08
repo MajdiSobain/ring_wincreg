@@ -58,7 +58,7 @@
             
   <div class="section" id="introduction">
 <span id="index-0"></span><h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
-<p>Creating a new programming language doesn&#8217;t mean that it should support Windows Registry by default specially if that language gives the chance to others for its extension. This is the exact situation of Ring Programming language. So that, This awesome Ring_WinCReg extension has been made to give a nice support of Windows Registry from within Ring Programming Language.</p>
+<p>Creating a new programming language doesn&#8217;t mean that it should support Windows Registry by default specially if that language gives the chance to others for its extension. This is the exact situation of Ring Programming language. So that, This awesome Ring_WinCReg extension has been made to give a nice support of Windows Registry access and editing from within Ring Programming Language.</p>
 <p>Absolutely, Supporting Windows Registry will give a big chance for the all community of Ring programmers and developers who like to use Windows Registry for a reason or another.</p>
 <p><strong>Windows Registry</strong> is a place where, in addition to save your application settings in it, you can find all of windows and other applications/programms settings that help in their operation, so manipulating in a such place may be the demand for some applications like those controlling Windows Startup Programs.</p>
 <div class="section" id="ring-wincreg-extension">
@@ -83,6 +83,10 @@ Reg.OpenKey([HKEY_CURRENT_USER, &quot;Software\MyApp&quot;])
 Reg[&quot;AppVersion&quot;].SetValue(&quot;2.3&quot;)
 
 Reg[&quot;AppPath&quot;].SetValue(exeFolder())
+
+See &quot;AppVersion is : &quot; + Reg[&quot;AppVersion&quot;].GetValue() + NL
+
+See &quot;App Path is : &quot; + Reg[&quot;AppPath&quot;].GetValue()
 
 Reg.CloseKey()
 </pre></div>
