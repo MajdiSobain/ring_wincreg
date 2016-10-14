@@ -32,8 +32,8 @@ Class RCRegistry		# Short for Ring CRegistry Class
 				If IsString(Para) = False
 					Raise("Error : The name of the entry must be string")
 				Ok
-				Self.RegEntry.Init(Self.Key, Para)
-				Return Self.RegEntry
+				RegEntry.Init(Key, Para)
+				Return RegEntry
 			Off
 
 	Func KeyExists HKEY, SubKey
@@ -45,57 +45,57 @@ Class RCRegistry		# Short for Ring CRegistry Class
 		Ok
 		Switch Len(ParaList)
 			On 2 
-				Self.Key = CRegOpenKey(ParaList[1], ParaList[2])
-				Return Self.Key
+				Key = CRegOpenKey(ParaList[1], ParaList[2])
+				Return Key
 			On 3 
-				Self.Key = CRegOpenKey(ParaList[1], ParaList[2], ParaList[3])
-				Return Self.Key
+				Key = CRegOpenKey(ParaList[1], ParaList[2], ParaList[3])
+				Return Key
 			On 4 
-				Self.Key = CRegOpenKey(ParaList[1], ParaList[2], ParaList[3], ParaList[4])
-				Return Self.Key
+				Key = CRegOpenKey(ParaList[1], ParaList[2], ParaList[3], ParaList[4])
+				Return Key
 			Other 
 				Raise("Error : Incorrect Number of Parameters passed" + nl +
 				"          This function expects parameters as a list 'OpenKey([para1,para2])' ")
 			Off 
 
 	Func OpenKey2 HKEY, SubKey
-		Self.Key = CRegOpenKey(HKEY, SubKey)
-		Return Self.Key
+		Key = CRegOpenKey(HKEY, SubKey)
+		Return Key
 
 	Func OpenKey3 HKEY, SubKey, Flags
-		Self.Key = CRegOpenKey(HKEY, SubKey, Flags)
-		Return Self.Key
+		Key = CRegOpenKey(HKEY, SubKey, Flags)
+		Return Key
 
 	Func OpenKey4 HKEY, SubKey, Flags, Access64Tree
-		Self.Key = CRegOpenKey(HKEY, SubKey, Flags, Access64Tree)
-		Return Self.Key
+		Key = CRegOpenKey(HKEY, SubKey, Flags, Access64Tree)
+		Return Key
 
 	Func SetFlags Flags
-		CRegSetFlags(Self.Key, Flags)
+		CRegSetFlags(Key, Flags)
 
 	Func GetFlags 
-		Return CRegGetFlags(Self.Key)
+		Return CRegGetFlags(Key)
 
 	Func Access64Tree choice
-		CRegAccess64Tree(Self.Key, choice)
+		CRegAccess64Tree(Key, choice)
 		
 	Func IsVirtualized
-		Return CRegIsVirtualized(Self.Key)
+		Return CRegIsVirtualized(Key)
 		
 	Func IsVirtualized2
-		Return CRegIsVirtualized(Self.Key, True)
+		Return CRegIsVirtualized(Key, True)
 
 	Func EntryCount
-		Return CRegEntryCount(Self.Key)
+		Return CRegEntryCount(Key)
 
 	Func SubKeyExists SubKey
-		Return CRegSubKeyExists(Self.Key, SubKey)
+		Return CRegSubKeyExists(Key, SubKey)
 
 	Func SubKeysCount
-		Return CRegSubKeysCount(Self.Key)
+		Return CRegSubKeysCount(Key)
 		
 	Func GetSubKeyAt index
-		Return CRegGetSubKeyAt(Self.Key, index)
+		Return CRegGetSubKeyAt(Key, index)
 	
 	Func GetSubKeys
 		wcrlSubKeys = []
@@ -105,10 +105,10 @@ Class RCRegistry		# Short for Ring CRegistry Class
 		Return wcrlSubKeys
 	
 	Func Refresh
-		CRegRefresh(Self.Key)
+		CRegRefresh(Key)
 
 	Func GetEntryAt index		# Return Entry Handle
-		Return CRegGetAt(Self.Key, index)
+		Return CRegGetAt(Key, index)
 
 	Func GetEntryName entry		# Accepts Entry Handle
 		Return CRegGetName(entry)
@@ -129,16 +129,16 @@ Class RCRegistry		# Short for Ring CRegistry Class
 		Next
 
 	Func CloseKey
-		CRegCloseKey(Self.Key)
+		CRegCloseKey(Key)
 
 	Func DeleteKey
-		CRegDeleteKey(Self.Key)
+		CRegDeleteKey(Key)
 		
 	Func DeleteKey2 HKEY, SubKey
-		wcrvTempKey = Self.Key
+		wcrvTempKey = Key
 		OpenKey([HKEY, SubKey])
 		DeleteKey()
-		Self.Key = wcrvTempKey
+		Key = wcrvTempKey
 		
 	Func StringToBinary Str
 		wcrvres = ""
@@ -176,8 +176,8 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 	Self.EntryName = ""
 	
 	Func Init passedkey, passedentryName
-		Self.Key = passedkey
-		Self.EntryName = passedentryName
+		Key = passedkey
+		EntryName = passedentryName
 	
 	Func Create type
 		If Exists() = False
@@ -195,12 +195,12 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 				On REG_BINARY
 					SetBinary("")
 				Other
-					If Self.EntryName = "" Self.EntryName = "Default" Ok
-					Raise("Error : Unknown type has been passed to create (" + Self.EntryName + ")")
+					If EntryName = "" EntryName = "Default" Ok
+					Raise("Error : Unknown type has been passed to create (" + EntryName + ")")
 				Off
 		Else
-			If Self.EntryName = "" Self.EntryName = "Default" Ok
-			Raise("Error : Cannot create (" + Self.EntryName + ") because it is already existed")
+			If EntryName = "" EntryName = "Default" Ok
+			Raise("Error : Cannot create (" + EntryName + ") because it is already existed")
 		Ok
 		
 	Func GetValue
@@ -219,8 +219,8 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 				On REG_BINARY
 					wcrvvalue = GetBinary()
 				Other
-					If Self.EntryName = "" Self.EntryName = "Default" Ok
-					Raise("Error : Unknown type of (" + Self.EntryName + ") to be retrieved")
+					If EntryName = "" EntryName = "Default" Ok
+					Raise("Error : Unknown type of (" + EntryName + ") to be retrieved")
 				Off
 		Return wcrvvalue
 
@@ -240,15 +240,15 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 				On REG_BINARY
 					SetBinary(value)
 				Other
-					If Self.EntryName = "" Self.EntryName = "Default" Ok
-					Raise("Error : Unknown type of (" + Self.EntryName + ") to be set")
+					If EntryName = "" EntryName = "Default" Ok
+					Raise("Error : Unknown type of (" + EntryName + ") to be set")
 				Off
 		Else
 			Switch cTypeForRCRegEntry(value)
 				On "STRING"
-					CRegSetValue(Self.Key, Self.EntryName, value)
+					CRegSetValue(Key, EntryName, value)
 				On "NUMBER"
-					CRegSetValue(Self.Key, Self.EntryName, value)
+					CRegSetValue(Key, EntryName, value)
 				Other
 					Raise("Error : SetValue() function could just set String or Numbers to newly created entries")
 				Off	
@@ -269,20 +269,20 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 			On REG_BINARY
 				SetBinary(value)
 			Other
-				If Self.EntryName = "" Self.EntryName = "Default" Ok
-				Raise("Error : Unknown type of (" + Self.EntryName + ") to be set")
+				If EntryName = "" EntryName = "Default" Ok
+				Raise("Error : Unknown type of (" + EntryName + ") to be set")
 			Off
 		
 	Func SetString value
 		If cTypeForRCRegEntry(value) != "STRING"
 			Raise ("Error : SetString() could just accept strings")
 		Ok
-		CRegSetValue(Self.Key, Self.EntryName, value)
+		CRegSetValue(Key, EntryName, value)
 	
 	Func GetString
 		wcrvvalue = ""
 		If Type() = REG_SZ
-			wcrvvalue = CRegGetValue(Self.Key, Self.EntryName)
+			wcrvvalue = CRegGetValue(Key, EntryName)
 		Else
 			Raise ("Error : GetString() could just return strings (REG_SZ)")
 		Ok
@@ -300,41 +300,41 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 				Ok
 			Ok
 		Ok
-		CRegSetValue(Self.Key, Self.EntryName, value)
+		CRegSetValue(Key, EntryName, value)
 				
 	Func GetDWORD
 		wcrvvalue = 0
 		If Type() = REG_DWORD
-			wcrvvalue = floor(CRegGetValue(Self.Key, Self.EntryName))	# To retrieve integer number
+			wcrvvalue = floor(CRegGetValue(Key, EntryName))	# To retrieve integer number
 		Else
 			Raise ("Error : GetDWORD() could just return DWORD numbers")
 		Ok
 		Return wcrvvalue
 
 	Func SetMulti value
-		CRegSetMulti(Self.Key, Self.EntryName, value)
+		CRegSetMulti(Key, EntryName, value)
 
 	Func MultiAdd newValue
 		If Exists() = True And IsMultiString() = True And MultiCount() > 0
-			CRegMultiAdd(Self.Key, Self.EntryName, newValue)
+			CRegMultiAdd(Key, EntryName, newValue)
 		Else
 			SetMulti(newValue)
 		Ok
 
 	Func MultiSetAt index, newValue
-		CRegMultiSetAt(Self.Key, Self.EntryName, index, newValue)
+		CRegMultiSetAt(Key, EntryName, index, newValue)
 
 	Func MultiGetAt index
-		Return CRegMultiGetAt(Self.Key, Self.EntryName, index)
+		Return CRegMultiGetAt(Key, EntryName, index)
 
 	Func MultiRemoveAt index
-		CRegMultiRemoveAt(Self.Key, Self.EntryName, index)
+		CRegMultiRemoveAt(Key, EntryName, index)
 
 	Func MultiCount
-		Return CRegMultiCount(Self.Key, Self.EntryName)
+		Return CRegMultiCount(Key, EntryName)
 
 	Func MultiClear
-		CRegMultiClear(Self.Key, Self.EntryName)
+		CRegMultiClear(Key, EntryName)
 
 	Func SetMultiList valuesList
 		If IsList(valuesList) = False 
@@ -364,44 +364,44 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 		Return wcrlMultiList
 		
 	Func GetExpandSZ
-		Return CRegGetExpandSZ(Self.Key, Self.EntryName)
+		Return CRegGetExpandSZ(Key, EntryName)
 		
 	Func SetExpandSZ value
-		Return CRegSetExpandSZ(Self.Key, Self.EntryName, value)
+		Return CRegSetExpandSZ(Key, EntryName, value)
 		
 	Func GetExpandedSZ
-		Return CRegGetExpandedSZ(Self.Key, Self.EntryName)
+		Return CRegGetExpandedSZ(Key, EntryName)
 		
 	Func GetQWORD
-		Return CRegGetQWORD(Self.Key, Self.EntryName)
+		Return CRegGetQWORD(Key, EntryName)
 		
 	Func GetQWORDs
-		wcrvv = CRegGetQWORD(Self.Key, Self.EntryName)
+		wcrvv = CRegGetQWORD(Key, EntryName)
 		If IsNumber(wcrvv)
 			wcrvv = String(wcrvv)
 		Ok
 		Return wcrvv
 		
 	Func SetQWORD value
-		Return CRegSetQWORD(Self.Key, Self.EntryName, value)
+		Return CRegSetQWORD(Key, EntryName, value)
 		
 	Func GetBinary
-		Return CRegGetBinary(Self.Key, Self.EntryName)
+		Return CRegGetBinary(Key, EntryName)
 		
 	Func SetBinary value
-		Return CRegSetBinary(Self.Key, Self.EntryName, value)
+		Return CRegSetBinary(Key, EntryName, value)
 		
 	Func BinaryLength
-		Return CRegBinaryLength(Self.Key, Self.EntryName)
+		Return CRegBinaryLength(Key, EntryName)
 		
 	Func Exists
-		Return CRegExists(Self.Key, Self.EntryName)
+		Return CRegExists(Key, EntryName)
 
 	Func Rename newName
-		CRegRename(Self.Key, Self.EntryName, newName)
+		CRegRename(Key, EntryName, newName)
 
 	Func CopyTo newKeyHandle
-		CRegCopy(Self.Key, Self.EntryName, newKeyHandle)
+		CRegCopy(Key, EntryName, newKeyHandle)
 		
 	Func Clear
 		If Exists() = True
@@ -419,37 +419,37 @@ Class RCRegEntry			# Short for Ring CRegistry Entry Class
 				On REG_BINARY
 					SetBinary("")
 				Other
-					If Self.EntryName = "" Self.EntryName = "Default" Ok
-					Raise("Error : Unknown type has been passed to create (" + Self.EntryName + ")")
+					If EntryName = "" EntryName = "Default" Ok
+					Raise("Error : Unknown type has been passed to create (" + EntryName + ")")
 				Off
 		Else
-			If Self.EntryName = "" Self.EntryName = "Default" Ok
-			Raise("Error : Cannot clear (" + Self.EntryName + ") because it is not existed")
+			If EntryName = "" EntryName = "Default" Ok
+			Raise("Error : Cannot clear (" + EntryName + ") because it is not existed")
 		Ok
 
 	Func Delete
-		CRegDelete(Self.Key, Self.EntryName)
+		CRegDelete(Key, EntryName)
 
 	Func IsString
-		Return CRegIsString(Self.Key, Self.EntryName)
+		Return CRegIsString(Key, EntryName)
 
 	Func IsDWORD
-		Return CRegIsDword(Self.Key, Self.EntryName)
+		Return CRegIsDword(Key, EntryName)
 
 	Func IsMultiString
-		Return CRegIsMultiString(Self.Key, Self.EntryName)
+		Return CRegIsMultiString(Key, EntryName)
 
 	Func IsBinary
-		Return CRegIsBinary(Self.Key, Self.EntryName)
+		Return CRegIsBinary(Key, EntryName)
 		
 	Func IsExpandSZ
-		Return CRegIsExpandSZ(Self.Key, Self.EntryName)
+		Return CRegIsExpandSZ(Key, EntryName)
 		
 	Func IsQWORD
-		Return CRegIsQWORD(Self.Key, Self.EntryName)
+		Return CRegIsQWORD(Key, EntryName)
 		
 	Func Type
-		Return CRegType(Self.Key, Self.EntryName)
+		Return CRegType(Key, EntryName)
 
 	Func TypeName
 		wcrlaList = ["REG_NONE", "REG_SZ", "REG_EXPAND_SZ", "REG_BINARY", "REG_DWORD", "REG_DWORD_BIG_ENDIAN", "REG_LINK", "REG_MULTI_SZ",
@@ -470,13 +470,13 @@ Class Objects2Reg
 	Self.CollecterList = []
 
 	Func init EntObj
-		Self.EntryObj = EntObj
+		EntryObj = EntObj
 	
 	Func SetObject obj		# From Collector to Registry
-		ConfObject(obj, Self.EntryObj.EntryName /*ObjectName*/)		# From Input to Collector
-		wcrvTempD = List2Str(Self.CollecterList)
+		ConfObject(obj, EntryObj.EntryName /*ObjectName*/)		# From Input to Collector
+		wcrvTempD = List2Str(CollecterList)
 		wcroReg = New RCRegistry
-		Self.EntryObj.SetBinary(wcroReg.StringToBinary(wcrvTempD))
+		EntryObj.SetBinary(wcroReg.StringToBinary(wcrvTempD))
 		
 	Func ConfObject obj, objectName
 		wcrlResList = ["--RING--OBJECT--"]
@@ -517,8 +517,8 @@ Class Objects2Reg
 	Func ToCollector srcList, objectName
 		wcrlFinalRes = List2Str(srcList)
 		wcrlFinalRes = SubStr(wcrlFinalRes, NL, "@!^")
-		Add(Self.CollecterList, objectName)
-		Add(Self.CollecterList, wcrlFinalRes)
+		Add(CollecterList, objectName)
+		Add(CollecterList, wcrlFinalRes)
 	
 	Func AddToInputList ResLst, currentlist, prefix, CurrObj, ObName
 		wcrvObjNum = 1
@@ -545,18 +545,18 @@ Class Objects2Reg
 		Next
 
 	Func GetObject		# From Registry to Collector + Request Retrieving The Main Object
-		If Self.EntryObj.IsBinary() = False
+		If EntryObj.IsBinary() = False
 			Raise("Error : Unknown Object saving type entry (Entry Is not Binary)")
 		Ok
 		wcroReg = New RCRegistry
-		wcrvRwaData = wcroReg.BinaryToString(Self.EntryObj.GetBinary())
-		Self.CollecterList = Str2List(wcrvRwaData)
+		wcrvRwaData = wcroReg.BinaryToString(EntryObj.GetBinary())
+		CollecterList = Str2List(wcrvRwaData)
 		
-		Return RetObject(FromCollector(Self.EntryObj.EntryName))	# The main object
+		Return RetObject(FromCollector(EntryObj.EntryName))	# The main object
 			
 	Func FromCollector Objname
-		wcrvObjIndex = Find(Self.CollecterList, Objname)
-		wcrlTempLst = SubStr(Self.CollecterList[wcrvObjIndex +1], "@!^", NL)
+		wcrvObjIndex = Find(CollecterList, Objname)
+		wcrlTempLst = SubStr(CollecterList[wcrvObjIndex +1], "@!^", NL)
 		wcrlTempLst = Str2List(wcrlTempLst)
 		Return wcrlTempLst
 	
