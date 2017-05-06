@@ -196,6 +196,9 @@ public:
 
 	/*	***	This method has been added to be able to reset flags even after object definition	*/
 	void SetFlags(DWORD flags);	
+	
+	// *** newly added function to check acceptance of entered flags
+	bool AcceptedFlags(DWORD Flags);
 
 	// *** used to get Root hKey from out side the class
 	__inline	HKEY GetHRoot() { return _hRootKey; }

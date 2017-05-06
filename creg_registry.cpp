@@ -1072,6 +1072,24 @@ void CRegistry::SetFlags(DWORD flags){
 
 
 /* ===================================================
+ *  *** newly added function 
+ *
+ *  bool CRegistry::AcceptedFlags(DWORD flags)
+ *
+ *	This function to check acceptance of entered flags and returns True or False
+ *
+ */
+
+bool CRegistry::AcceptedFlags(DWORD flags){
+	if (  (flags == 0) || (flags == CREG_CREATE) || (flags == CREG_AUTOOPEN) || (flags == CREG_NOCACHE) || (flags == (CREG_CREATE | CREG_AUTOOPEN)) || (flags == (CREG_CREATE | CREG_NOCACHE)) || (flags == (CREG_AUTOOPEN | CREG_NOCACHE)) || (flags == (CREG_CREATE | CREG_AUTOOPEN | CREG_NOCACHE))  )
+	{ return true; }
+	else
+	{ return false; }
+}
+
+
+
+/* ===================================================
  *  CRegistry::Open(LPCTSTR lpszRegPath, HKEY hRootKey, bool bAuto)
  *
  *  Opens the key in which values will be read and stored, if the key

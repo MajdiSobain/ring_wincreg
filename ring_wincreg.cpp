@@ -104,7 +104,9 @@ void ring_vm_creg_cregopenkey(void *pPointer){
 		break;
 	case 3:
 		if ( RING_API_ISSTRING(2) && RING_API_ISNUMBER(3) ) {
-			pCR->SetFlags((int) RING_API_GETNUMBER(3));
+			if ( pCR->AcceptedFlags((int) RING_API_GETNUMBER(3)) ) {
+				pCR->SetFlags((int) RING_API_GETNUMBER(3));
+			} else RING_API_ERROR("Error : Bad flags configuration");
 		} else {
 			RING_API_ERROR("Error : Bad sub key path or bad flag type");
 			return ;
@@ -112,7 +114,9 @@ void ring_vm_creg_cregopenkey(void *pPointer){
 		break;
 	case 4:
 		if ( RING_API_ISSTRING(2) && RING_API_ISNUMBER(3)  && RING_API_ISNUMBER(4) ) {
-			pCR->SetFlags((int) RING_API_GETNUMBER(3));
+			if ( pCR->AcceptedFlags((int) RING_API_GETNUMBER(3)) ) {
+				pCR->SetFlags((int) RING_API_GETNUMBER(3));
+			} else RING_API_ERROR("Error : Bad flags configuration");
 			pCR->Access64Tree((int) RING_API_GETNUMBER(4));
 		} else {
 			RING_API_ERROR("Error : Bad sub key path, bad flag type, or bad Wow64 True/False value");
@@ -248,7 +252,9 @@ void ring_vm_creg_cregsetflags( void *pPointer) {
 	if ( RING_API_ISPOINTER(1) && RING_API_ISNUMBER(2) ) {
 		CRegistry *p = (CRegistry *) RING_API_GETCPOINTER(1, "CRegistry") ;
 		if ( (p) && AUTOOPEN_CHECK ) {
-			p->SetFlags((int) RING_API_GETNUMBER(2));
+			if ( p->AcceptedFlags((int) RING_API_GETNUMBER(2)) ) {
+				p->SetFlags((int) RING_API_GETNUMBER(2));
+			} else RING_API_ERROR("Error : Bad flags configuration");
 		} else RING_API_ERROR("Error : invalid CRegistry key handle");
 	} else {
 		RING_API_ERROR("Error : invalid CRegistry key handle or bad flag type");
