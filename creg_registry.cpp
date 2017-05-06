@@ -1051,6 +1051,27 @@ LONG CRegistry::SubKeyExists(LPCTSTR lpszSub) {
 
 
 /* ===================================================
+ *  *** newly added function 
+ *
+ *  void CRegistry::SetFlags(DWORD flags)
+ *
+ *	This method has been added to be able to reset flags even after object definition
+ *
+ */
+
+void CRegistry::SetFlags(DWORD flags){
+	if ( (__dwFlags & ~CREG_AUTOOPEN) == flags ) {
+		__dwFlags = flags; 
+		Open(_lpszSubKey,_hRootKey); // Open the key if there's switch from auto open
+	} else {
+		__dwFlags = flags; 
+		if(hKey) Open(_lpszSubKey,_hRootKey); // ReOpen the key with these new flags if it is already opened
+	}
+}	
+
+
+
+/* ===================================================
  *  CRegistry::Open(LPCTSTR lpszRegPath, HKEY hRootKey, bool bAuto)
  *
  *  Opens the key in which values will be read and stored, if the key

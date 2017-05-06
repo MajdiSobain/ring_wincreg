@@ -195,7 +195,7 @@ public:
 	void		ClearUnsaved() { for (int x =_reEntries.size() -1; x >= 0; x--) { if(!_reEntries.at(x)->IsStored()) _reEntries.erase(_reEntries.begin()+x); } }
 
 	/*	***	This method has been added to be able to reset flags even after object definition	*/
-	__inline	void SetFlags(DWORD flags)	 {	__dwFlags = flags; if(hKey) Open(_lpszSubKey,_hRootKey); }	
+	void SetFlags(DWORD flags);	
 
 	// *** used to get Root hKey from out side the class
 	__inline	HKEY GetHRoot() { return _hRootKey; }
