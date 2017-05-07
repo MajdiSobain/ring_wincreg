@@ -23,7 +23,7 @@ Func cTypeForRCRegEntry para
 
 Class RCRegistry		# Short for Ring CRegistry Class
 
-	Self.Key = 0		# This is the Key Handle
+	Self.Key = NULL		# This is the Key Handle
 	Self.RegEntry = New RCRegEntry(0,"")
 
 	Func operator cOperator,Para
@@ -32,6 +32,7 @@ Class RCRegistry		# Short for Ring CRegistry Class
 				If IsString(Para) = False
 					Raise("Error : The name of the entry must be string")
 				Ok
+				If IsNULL(Key) Raise("Error : There is no opened key") Ok
 				RegEntry.Init(Key, Para)
 				Return RegEntry
 			Off
@@ -71,30 +72,39 @@ Class RCRegistry		# Short for Ring CRegistry Class
 		Return Key
 
 	Func SetFlags Flags
+		If IsNULL(Key) Raise("Error : There is no opened key") Ok
 		CRegSetFlags(Key, Flags)
 
 	Func GetFlags 
+		If IsNULL(Key) Raise("Error : There is no opened key") Ok
 		Return CRegGetFlags(Key)
 
 	Func Access64Tree choice
+		If IsNULL(Key) Raise("Error : There is no opened key") Ok
 		CRegAccess64Tree(Key, choice)
 		
 	Func IsVirtualized
+		If IsNULL(Key) Raise("Error : There is no opened key") Ok
 		Return CRegIsVirtualized(Key)
 		
 	Func IsVirtualized2
+		If IsNULL(Key) Raise("Error : There is no opened key") Ok
 		Return CRegIsVirtualized(Key, True)
 
 	Func EntryCount
+		If IsNULL(Key) Raise("Error : There is no opened key") Ok
 		Return CRegEntryCount(Key)
 
 	Func SubKeyExists SubKey
+		If IsNULL(Key) Raise("Error : There is no opened key") Ok
 		Return CRegSubKeyExists(Key, SubKey)
 
 	Func SubKeysCount
+		If IsNULL(Key) Raise("Error : There is no opened key") Ok
 		Return CRegSubKeysCount(Key)
 		
 	Func GetSubKeyAt index
+		If IsNULL(Key) Raise("Error : There is no opened key") Ok
 		Return CRegGetSubKeyAt(Key, index)
 	
 	Func GetSubKeys
@@ -105,9 +115,11 @@ Class RCRegistry		# Short for Ring CRegistry Class
 		Return wcrlSubKeys
 	
 	Func Refresh
+		If IsNULL(Key) Raise("Error : There is no opened key") Ok
 		CRegRefresh(Key)
 
 	Func GetEntryAt index		# Return Entry Handle
+		If IsNULL(Key) Raise("Error : There is no opened key") Ok
 		Return CRegGetAt(Key, index)
 
 	Func GetEntryName entry		# Accepts Entry Handle
@@ -129,10 +141,15 @@ Class RCRegistry		# Short for Ring CRegistry Class
 		Next
 
 	Func CloseKey
-		CRegCloseKey(Key)
+		If IsNULL(Key) = False 
+			CRegCloseKey(Key)
+			Key = NULL
+		Ok
 
 	Func DeleteKey
+		If IsNULL(Key) Raise("Error : There is no opened key") Ok
 		CRegDeleteKey(Key)
+		Key = NULL
 		
 	Func DeleteKey2 HKEY, SubKey
 		wcrvTempKey = Key
