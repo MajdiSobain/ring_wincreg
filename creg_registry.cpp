@@ -1164,14 +1164,14 @@ LONG CRegistry::Open(LPCTSTR lpszRegPath, HKEY hRootKey, DWORD dwAccess, bool bA
 	set the appropriate access rights */
 
 	if (__dwFlags & CREG_AUTOOPEN && !bAuto) {
-		dwAccess = CREG_CREATE ? KEY_CREATE_SUB_KEY | KEY_QUERY_VALUE : KEY_QUERY_VALUE;
+		dwAccess = __dwFlags & CREG_CREATE ? KEY_CREATE_SUB_KEY | KEY_QUERY_VALUE : KEY_QUERY_VALUE;
 	}
 
 
 	/* When key creation is enabled and auto opening is disabled,
 	include key creation in the access rights */
 
-	else if (__dwFlags & ~CREG_AUTOOPEN && __dwFlags & CREG_CREATE)
+	else if ( !(__dwFlags & CREG_AUTOOPEN) && __dwFlags & CREG_CREATE)
 		dwAccess |= KEY_CREATE_SUB_KEY;
 
 	/*	*** To Access alternative 64 bit windows registry tree as All ring applications are of 32 bit	*/ 
