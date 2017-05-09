@@ -474,7 +474,7 @@ void CRegEntry::SetBinary(LPBYTE lpbValue, size_t nLen) {
  */
 
 DWORD CRegEntry::Exists () {
-
+	DWORD Res;
 	assert( REGENTRY_KEYVALID ( KEY_QUERY_VALUE ) );
 
 	/* This piece of code used if we want to return ONLY (True) or (False)
@@ -486,7 +486,10 @@ DWORD CRegEntry::Exists () {
 		return false; 
 	} */
 	
-	return (__cregOwner->AutoClose(), RegQueryValueEx(__cregOwner->hKey, lpszName, NULL, NULL, NULL, NULL));
+	Res = RegQueryValueEx(__cregOwner->hKey, lpszName, NULL, NULL, NULL, NULL);
+	__cregOwner->AutoClose();
+
+	return Res;
 	
 }
 
@@ -916,9 +919,11 @@ bool CRegEntry::Delete() {
 
 	__bStored = false;
 
-	if (REGENTRY_KEYVALID (KEY_SET_VALUE) )
-		return (__cregOwner->AutoClose(), IS_ES(RegDeleteValue(__cregOwner->hKey, lpszName)));
-	
+	if (REGENTRY_KEYVALID (KEY_SET_VALUE) ) {
+		RegDeleteValue(__cregOwner->hKey, lpszName) ;
+		__cregOwner->AutoClose();
+		return true;
+	}
 	return false;
 }
 
