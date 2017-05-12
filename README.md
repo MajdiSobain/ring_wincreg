@@ -44,15 +44,17 @@ This is a simple ring code that use this extension:
 
 ## Other resources
 
-1- [The article of this extension in the ring forum](https://groups.google.com/forum/#!topic/ring-lang/YwHmR79_Fsc)
+1- [The extension homepage](http://ring-wincreg.sourceforge.net/)
+
+2- [The article of this extension in the ring forum](https://groups.google.com/forum/#!topic/ring-lang/YwHmR79_Fsc)
   
-2- [The project SourceForge page](https://sourceforge.net/projects/ring-wincreg/)
+3- [The project SourceForge page](https://sourceforge.net/projects/ring-wincreg/)
 
-3- [The documentation website](http://ring-wincreg.sourceforge.net/)
+4- [The documentation website](http://ring-wincreg.sourceforge.net/docs/)
 
-4- [The Ring Programming Language](http://ring-lang.net/)
+5- [The Ring Programming Language](http://ring-lang.net/)
 
-5- [The article of the original C++ Class (CRegistry Wrapper)](http://www.codeproject.com/Articles/8953/Registry-Wrapper-Class-CRegistry)
+6- [The article of the original C++ Class (CRegistry Wrapper)](http://www.codeproject.com/Articles/8953/Registry-Wrapper-Class-CRegistry)
 	
 
 ## How to Compile
