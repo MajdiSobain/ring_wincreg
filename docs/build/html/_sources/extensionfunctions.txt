@@ -77,6 +77,8 @@ Here we are going to know the whole list of functions that could be called direc
 
 	void cregsetexpandsz( CRegistry* keyhandle , string valuename , string value )
 
+	string creggetexpandedsz( CRegistry* keyhandle , string valuename )
+
 	void cregsetqword( CRegistry* keyhandle , string valuename , number\string value )
 
 	string creggetqword( CRegistry* keyhandle , string valuename )

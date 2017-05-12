@@ -2,7 +2,7 @@
 Dealing with Entries
 =====================
 
-Here, we are going to learn how to deal with registry entries by using "ring_wincreg" extension capabilities through RCRegistry class.
+Here, we are going to learn how to deal with registry entries by using "ring_wincreg" extension capabilities through RCRegistry class library.
 
 .. index::
 	pair: Dealing with Entries; Create Entry

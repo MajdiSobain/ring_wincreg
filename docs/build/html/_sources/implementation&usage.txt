@@ -8,12 +8,11 @@ Implementation and Usage
 Download and Implementation
 ============================
 
-To use this extension you have to start with downloading it from GitHub following next steps:
+To use this extension you have to start with downloading it following next steps:
 
-1. Go to `the extension GitHub project <https://github.com/MajdiSobain/ring_wincreg>`_ page.
-2. Download the project using the green button on the right upper corner of the page as a ZIP file.
-3. Extract the contents of the bin folder and copy them to the bin folder that is present in the ring language folder ( where the "ring.exe" file is located ).
-4. Load the extension and its features in the ring code by using load command as:
+1. Download the extension from `GitHub <https://github.com/MajdiSobain/ring_wincreg/releases>`_ or `Sourceforge <https://sourceforge.net/projects/ring-wincreg>`_ pages.
+2. Extract the contents of the bin folder and copy them to the bin folder that is present in the ring language folder ( where the "ring.exe" file is located ).
+3. Load the extension and its features in the ring code by using load command as:
 
 .. code-block:: none
 
@@ -29,9 +28,9 @@ In order to use "ring_wincreg" extension you have two options to start with:
 
 * Using the functions of the extension directly
 
-* Using the extension through RCRegistry Class
+* Using the extension through RCRegistry Class Library
 
-I would prefer to use the second option as you can read in RCRegistry Class section :ref:`RCRegistry-class-usage` and because I have added some other nice features using Ring that can be used only with RCRegistry class.
+I would prefer to use the second option as you can read in (:ref:`RCRegistry-class-library-usage`) section and because I have added some other nice features using Ring that can be used only with RCRegistry class library.
 
 .. index::
 	pair: Implementation and Usage; Direct extension's functions usage
@@ -72,14 +71,14 @@ This example does the following:
 * Close the key "oKey".
 
 .. index::
-	pair: Implementation and Usage; RCRegistry class usage
+	pair: Implementation and Usage; RCRegistry class library usage
 
-.. _RCRegistry-class-usage:
+.. _RCRegistry-class-library-usage:
 
-RCRegistry class usage
-=======================
+RCRegistry class library usage
+===============================
 
-RCRegistry class has been made to simplify using "ring_wincreg" extension by avoid using its long function's names and give a nice template for dealing with entries. 
+RCRegistry class library has been made to simplify using "ring_wincreg" extension by avoid using its long function's names and introduce a nice template for dealing with entries. 
 
 .. code-block:: none
 
@@ -87,11 +86,11 @@ RCRegistry class has been made to simplify using "ring_wincreg" extension by avo
 
 Also it reduces the pain of repeatedly mentioning the key handle and typing other parameters with each function call of this extension. 
 
-In a nutshell, this class brings a special, readable and nice coding experience throughout "ring_wincreg" extension usage.
+In a nutshell, this class library brings a special, readable and nice coding experience throughout "ring_wincreg" extension usage.
 
-It has been written in a ring library file called "wincreg.ring" which contains also another class named "RCRegEntry" class that is needed by RCRegistry class to deal with entries.
+It has been written in a ring file called "wincreg.ring" which contains also another class named "RCRegEntry" that is needed by RCRegistry class to deal with entries.
 
-To use "ring_wincreg" extension using this method you have to load "wincreg.ring" file. Because this file will load "ring_wincreg.dll" extension file and "wincreg.rh" file that it needs.
+To use "ring_wincreg" extension using this library you have to load "wincreg.ring" file to your code, because this file will load "ring_wincreg.dll" extension file and "wincreg.rh" header file that it needs.
 
 .. code-block:: none
 
@@ -117,7 +116,7 @@ Now we have to apply the previous example using this method to clarify the diffe
 
 .. note::
 
-	RCRegistry class can represent and deal with one open key. So in case of dealing with more than one key at the same time we should define a separate RCRegistry Object for each key.
+	RCRegistry class can represent and deal with one opened key. So in case of dealing with more than one key at the same time we should define a separate RCRegistry Object for each key.
 	
 As we are really lucky using Ring, we can write the same previous example without creating any object like this:
 
@@ -137,4 +136,4 @@ As we are really lucky using Ring, we can write the same previous example withou
 		
 		}
 
-In the next sections I'm going to explain how to use "ring_wincreg" extension using RCRegistry class but I should also list all of the extension functions later on.
+In the next sections I'm going to explain how to use "ring_wincreg" extension using RCRegistry class library but I should also list all of the extension functions later on.

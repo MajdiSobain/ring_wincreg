@@ -1,14 +1,14 @@
 # Ring_WinCReg
 
-Ring WinCReg extension is a very light, easy, and powerful extension for Ring Programming Language that has been made to bring all means of easiness in the dealing with Windows Registry. It gives you the ability to do from minor registry needs like saving or restoring settings to more superior goals like reaching and controlling every single key or value in the whole registry tree.
+Ring WinCReg extension is a very light, easy, and powerful extension for Ring Programming Language that has been made to bring all means of easiness in the dealing with Windows Registry. It gives you the ability to do from minor registry needs like saving or restoring settings to more superior goals like reaching and manipulating every single key or value in the whole registry tree.
 
 This extension has been made on top of previously created C++ language class called “Registry Wrapper Class(CRegisry Class)” that has been published on CodeProject in [this article](http://www.codeproject.com/Articles/8953/Registry-Wrapper-Class-CRegistry).
 
-## RCRegistry Class
+## RCRegistry Class Library
 
 RCRegistry class, stands for Ring CRegistry Class or CRegistry Class for Ring, is a Ring Class that has been made to make using ring_wincreg extension functions easier by using the style of using “Registry Wrapper Class” in C++. I found this style is reasonable and readable better than just using the ring_wincreg original functions. It can be used by loading the file that contain it (wincreg.ring).
 
-	Note: RCRegistry Class in Ring_WinCReg Extension is now compatible with Ring 1.1 only. 
+	Note: RCRegistry Class in Ring_WinCReg Extension is now compatible with Ring 1.1 and above. 
 	
 	It will show errors if used with Ring 1.0.
 
@@ -50,7 +50,9 @@ This is a simple ring code that use this extension:
 
 3- [The documentation website](http://ring-wincreg.sourceforge.net/)
 
-4- [The article of the original C++ Class (CRegistry Wrapper)](http://www.codeproject.com/Articles/8953/Registry-Wrapper-Class-CRegistry)
+4- [The Ring Programming Language](http://ring-lang.net/)
+
+5- [The article of the original C++ Class (CRegistry Wrapper)](http://www.codeproject.com/Articles/8953/Registry-Wrapper-Class-CRegistry)
 	
 
 ## How to Compile

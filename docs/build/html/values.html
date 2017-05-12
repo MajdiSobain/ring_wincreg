@@ -1,40 +1,42 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+<!doctype html>
 
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Dealing with Values &#8212; Ring_WinCReg 1.0 documentation</title>
+    <title>Dealing with Values &#8212; Ring_WinCReg 1.1 documentation</title>
     
-    <link rel="stylesheet" href="_static/pyramid.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.0',
+        VERSION:     '1.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Ring_WinCReg 1.0 documentation" href="index.html" />
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Extension functions list" href="extensionfunctions.html" />
     <link rel="prev" title="Dealing with Entries" href="entries.html" />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
-<!--[if lte IE 6]>
-<link rel="stylesheet" href="_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
-<![endif]-->
-
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
   </head>
   <body role="document">
-
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -47,9 +49,73 @@
         <li class="right" >
           <a href="entries.html" title="Dealing with Entries"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Ring_WinCReg 1.0 documentation</a> &#187;</li> 
+  <li><a href="http://ring-wincreg.sf.net/">Home</a> &#187;</li>
+  
+        <li class="nav-item nav-item-0"><a href="index.html">Ring_WinCReg 1.1 documentation</a> &#187;</li>  
+ 
       </ul>
-    </div>  
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<a href="http://ring-wincreg.sf.net/"><img src="logo.png" border="0"
+alt="Home"/></a>
+
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Dealing with Values</a><ul>
+<li><a class="reference internal" href="#set-value">Set Value</a><ul>
+<li><a class="reference internal" href="#setvalue-function">SetValue() Function</a></li>
+<li><a class="reference internal" href="#setvalue2-function">SetValue2() Function</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#get-value">Get Value</a></li>
+<li><a class="reference internal" href="#string-values">String Values</a></li>
+<li><a class="reference internal" href="#dword-numerical-values">DWORD Numerical Values</a></li>
+<li><a class="reference internal" href="#multi-string-values">Multi String Values</a><ul>
+<li><a class="reference internal" href="#setmulti-function">SetMulti() Function</a></li>
+<li><a class="reference internal" href="#multisetat-function">MultiSetAt() Function</a></li>
+<li><a class="reference internal" href="#multiadd-function">MultiAdd() Function</a></li>
+<li><a class="reference internal" href="#multigetat-function">MultiGetAt() Function</a></li>
+<li><a class="reference internal" href="#multiremoveat-function">MultiRemoveAt() Function</a></li>
+<li><a class="reference internal" href="#multicount-function">MultiCount() Function</a></li>
+<li><a class="reference internal" href="#multiclear-function">MultiClear() Function</a></li>
+<li><a class="reference internal" href="#setmultilist-function">SetMultiList() Function</a></li>
+<li><a class="reference internal" href="#getmultilist-function">GetMultiList() Function</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#qword-numerical-values">QWORD Numerical Values</a></li>
+<li><a class="reference internal" href="#expandable-string-values">Expandable String Values</a></li>
+<li><a class="reference internal" href="#binary-values">Binary Values</a></li>
+<li><a class="reference internal" href="#set-and-get-ring-objects">Set and Get Ring Objects</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="entries.html"
+                        title="previous chapter">Dealing with Entries</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="extensionfunctions.html"
+                        title="next chapter">Extension functions list</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/values.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
 
     <div class="document">
       <div class="documentwrapper">
@@ -58,7 +124,7 @@
             
   <div class="section" id="dealing-with-values">
 <h1>Dealing with Values<a class="headerlink" href="#dealing-with-values" title="Permalink to this headline">¶</a></h1>
-<p>Here, we are going to learn how to deal with registry values by using &#8220;ring_wincreg&#8221; extension capabilities through RCRegistry class.</p>
+<p>Here, we are going to learn how to deal with registry values by using &#8220;ring_wincreg&#8221; extension capabilities through RCRegistry class library.</p>
 <div class="section" id="set-value">
 <span id="index-0"></span><span id="id1"></span><h2>Set Value<a class="headerlink" href="#set-value" title="Permalink to this headline">¶</a></h2>
 <p>We can set a value for any specified entry by using set functions for each registry data type. Additionally, two general functions <strong>SetValue()</strong> and <strong>SetValue2()</strong> that could set any data type.</p>
@@ -71,6 +137,10 @@
 <li>Numbers not in the range of DWORD will be converted to string then saved as (REG_SZ).</li>
 <li>Floated numbers will automatically be converted to string and saved as (REG_SZ).</li>
 </ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Setting new value to a previously existed entry with different data type will give error message because this function automatically use data type specific function of the already existed entry type for setting new values.</p>
+</div>
 <p>This function has been used in the previous examples to save strings, but now will try to save DWORD value.</p>
 <div class="highlight-none"><div class="highlight"><pre><span></span>Load &quot;wincreg.ring&quot;
 
@@ -212,7 +282,7 @@ Reg.CloseKey()
 </div>
 <div class="section" id="multiadd-function">
 <span id="index-9"></span><h3>MultiAdd() Function<a class="headerlink" href="#multiadd-function" title="Permalink to this headline">¶</a></h3>
-<p>This function can add a value to a list pre existed multi string value or can establish a new multi string value list with help of SetMulti() function.</p>
+<p>This function can add a value as new item to pre existed multi string value list or can establish a new multi string value list with help of SetMulti() function.</p>
 <div class="highlight-none"><div class="highlight"><pre><span></span>Load &quot;wincreg.ring&quot;
 
 Reg = New RCRegistry { OpenKey([HKEY_CURRENT_USER, &quot;Software\MyApp&quot;]) }
@@ -449,8 +519,8 @@ Class Two
 </div>
 <p>This example show the power of these functions in dealing with Ring Objects. But there are some points that we should know about:</p>
 <ol class="arabic simple">
-<li>We can save objects by saving their attributes and their values.</li>
-<li>These two functions can smartly save attribute that are lists and objects.</li>
+<li>These functions save and retrieve objects by saving their attributes and their values.</li>
+<li>They can smartly save attributes that are lists and objects.</li>
 <li>They take dynamic nature of Ring Language in account so that new created attributes are also saved and retrieved correctly.</li>
 <li>Attributes that are not strings, numbers, lists, or objects will be ignored.</li>
 <li>Objects are saved in registry as a binary values.</li>
@@ -461,57 +531,6 @@ Class Two
 
 
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Dealing with Values</a><ul>
-<li><a class="reference internal" href="#set-value">Set Value</a><ul>
-<li><a class="reference internal" href="#setvalue-function">SetValue() Function</a></li>
-<li><a class="reference internal" href="#setvalue2-function">SetValue2() Function</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#get-value">Get Value</a></li>
-<li><a class="reference internal" href="#string-values">String Values</a></li>
-<li><a class="reference internal" href="#dword-numerical-values">DWORD Numerical Values</a></li>
-<li><a class="reference internal" href="#multi-string-values">Multi String Values</a><ul>
-<li><a class="reference internal" href="#setmulti-function">SetMulti() Function</a></li>
-<li><a class="reference internal" href="#multisetat-function">MultiSetAt() Function</a></li>
-<li><a class="reference internal" href="#multiadd-function">MultiAdd() Function</a></li>
-<li><a class="reference internal" href="#multigetat-function">MultiGetAt() Function</a></li>
-<li><a class="reference internal" href="#multiremoveat-function">MultiRemoveAt() Function</a></li>
-<li><a class="reference internal" href="#multicount-function">MultiCount() Function</a></li>
-<li><a class="reference internal" href="#multiclear-function">MultiClear() Function</a></li>
-<li><a class="reference internal" href="#setmultilist-function">SetMultiList() Function</a></li>
-<li><a class="reference internal" href="#getmultilist-function">GetMultiList() Function</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#qword-numerical-values">QWORD Numerical Values</a></li>
-<li><a class="reference internal" href="#expandable-string-values">Expandable String Values</a></li>
-<li><a class="reference internal" href="#binary-values">Binary Values</a></li>
-<li><a class="reference internal" href="#set-and-get-ring-objects">Set and Get Ring Objects</a></li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="entries.html"
-                        title="previous chapter">Dealing with Entries</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="extensionfunctions.html"
-                        title="next chapter">Extension functions list</a></p>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -528,12 +547,15 @@ Class Two
         <li class="right" >
           <a href="entries.html" title="Dealing with Entries"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Ring_WinCReg 1.0 documentation</a> &#187;</li> 
+  <li><a href="http://ring-wincreg.sf.net/">Home</a> &#187;</li>
+  
+        <li class="nav-item nav-item-0"><a href="index.html">Ring_WinCReg 1.1 documentation</a> &#187;</li>  
+ 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Majdi Sobain.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
+        &#169; Copyright 2016-2017, Majdi Sobain.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.5.
     </div>
   </body>
 </html>

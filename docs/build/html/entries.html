@@ -1,40 +1,42 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+<!doctype html>
 
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Dealing with Entries &#8212; Ring_WinCReg 1.0 documentation</title>
+    <title>Dealing with Entries &#8212; Ring_WinCReg 1.1 documentation</title>
     
-    <link rel="stylesheet" href="_static/pyramid.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.0',
+        VERSION:     '1.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Ring_WinCReg 1.0 documentation" href="index.html" />
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Dealing with Values" href="values.html" />
     <link rel="prev" title="Dealing with Keys" href="keys.html" />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
-<!--[if lte IE 6]>
-<link rel="stylesheet" href="_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
-<![endif]-->
-
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
   </head>
   <body role="document">
-
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -47,9 +49,73 @@
         <li class="right" >
           <a href="keys.html" title="Dealing with Keys"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Ring_WinCReg 1.0 documentation</a> &#187;</li> 
+  <li><a href="http://ring-wincreg.sf.net/">Home</a> &#187;</li>
+  
+        <li class="nav-item nav-item-0"><a href="index.html">Ring_WinCReg 1.1 documentation</a> &#187;</li>  
+ 
       </ul>
-    </div>  
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<a href="http://ring-wincreg.sf.net/"><img src="logo.png" border="0"
+alt="Home"/></a>
+
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Dealing with Entries</a><ul>
+<li><a class="reference internal" href="#create-entry">Create Entry</a></li>
+<li><a class="reference internal" href="#entry-existence">Entry Existence</a></li>
+<li><a class="reference internal" href="#get-entry">Get Entry</a><ul>
+<li><a class="reference internal" href="#getentryat-function">GetEntryAt() Function</a></li>
+<li><a class="reference internal" href="#getentryname-function">GetEntryName() Function</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entries-count">Entries Count</a></li>
+<li><a class="reference internal" href="#get-all-entries">Get All Entries</a></li>
+<li><a class="reference internal" href="#access-the-default-entry">Access the default entry</a></li>
+<li><a class="reference internal" href="#copy-entries">Copy Entries</a><ul>
+<li><a class="reference internal" href="#copyto-function">CopyTo() Function</a></li>
+<li><a class="reference internal" href="#copyallto-function">CopyAllTo() Function</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rename-entry">Rename Entry</a></li>
+<li><a class="reference internal" href="#checking-entry-type">Checking Entry Type</a></li>
+<li><a class="reference internal" href="#get-entry-type">Get Entry Type</a><ul>
+<li><a class="reference internal" href="#type-function">Type() Function</a></li>
+<li><a class="reference internal" href="#typename-function">TypeName() Function</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#clear-entry">Clear Entry</a></li>
+<li><a class="reference internal" href="#delete-entry">Delete Entry</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="keys.html"
+                        title="previous chapter">Dealing with Keys</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="values.html"
+                        title="next chapter">Dealing with Values</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/entries.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
 
     <div class="document">
       <div class="documentwrapper">
@@ -58,7 +124,7 @@
             
   <div class="section" id="dealing-with-entries">
 <h1>Dealing with Entries<a class="headerlink" href="#dealing-with-entries" title="Permalink to this headline">¶</a></h1>
-<p>Here, we are going to learn how to deal with registry entries by using &#8220;ring_wincreg&#8221; extension capabilities through RCRegistry class.</p>
+<p>Here, we are going to learn how to deal with registry entries by using &#8220;ring_wincreg&#8221; extension capabilities through RCRegistry class library.</p>
 <div class="section" id="create-entry">
 <span id="index-0"></span><h2>Create Entry<a class="headerlink" href="#create-entry" title="Permalink to this headline">¶</a></h2>
 <p>We can create an empty entry using <strong>Create()</strong> function. This function accepts one parameter which is the type of entry to be created. If the entry is already existed this function will return error message.</p>
@@ -384,57 +450,6 @@ Reg.CloseKey()
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Dealing with Entries</a><ul>
-<li><a class="reference internal" href="#create-entry">Create Entry</a></li>
-<li><a class="reference internal" href="#entry-existence">Entry Existence</a></li>
-<li><a class="reference internal" href="#get-entry">Get Entry</a><ul>
-<li><a class="reference internal" href="#getentryat-function">GetEntryAt() Function</a></li>
-<li><a class="reference internal" href="#getentryname-function">GetEntryName() Function</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#entries-count">Entries Count</a></li>
-<li><a class="reference internal" href="#get-all-entries">Get All Entries</a></li>
-<li><a class="reference internal" href="#access-the-default-entry">Access the default entry</a></li>
-<li><a class="reference internal" href="#copy-entries">Copy Entries</a><ul>
-<li><a class="reference internal" href="#copyto-function">CopyTo() Function</a></li>
-<li><a class="reference internal" href="#copyallto-function">CopyAllTo() Function</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#rename-entry">Rename Entry</a></li>
-<li><a class="reference internal" href="#checking-entry-type">Checking Entry Type</a></li>
-<li><a class="reference internal" href="#get-entry-type">Get Entry Type</a><ul>
-<li><a class="reference internal" href="#type-function">Type() Function</a></li>
-<li><a class="reference internal" href="#typename-function">TypeName() Function</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#clear-entry">Clear Entry</a></li>
-<li><a class="reference internal" href="#delete-entry">Delete Entry</a></li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="keys.html"
-                        title="previous chapter">Dealing with Keys</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="values.html"
-                        title="next chapter">Dealing with Values</a></p>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
       <div class="clearer"></div>
     </div>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -449,12 +464,15 @@ Reg.CloseKey()
         <li class="right" >
           <a href="keys.html" title="Dealing with Keys"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Ring_WinCReg 1.0 documentation</a> &#187;</li> 
+  <li><a href="http://ring-wincreg.sf.net/">Home</a> &#187;</li>
+  
+        <li class="nav-item nav-item-0"><a href="index.html">Ring_WinCReg 1.1 documentation</a> &#187;</li>  
+ 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Majdi Sobain.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
+        &#169; Copyright 2016-2017, Majdi Sobain.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.5.
     </div>
   </body>
 </html>

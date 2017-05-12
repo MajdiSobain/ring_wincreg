@@ -2,7 +2,7 @@
 Dealing with Values
 =====================
 
-Here, we are going to learn how to deal with registry values by using "ring_wincreg" extension capabilities through RCRegistry class.
+Here, we are going to learn how to deal with registry values by using "ring_wincreg" extension capabilities through RCRegistry class library.
 
 .. index::
 	pair: Dealing with Values; Set Value
@@ -26,6 +26,9 @@ This general function can set values smartly according to entry existence. If th
 * Numbers in the range of DWORD will be saved as (REG_DWORD).
 * Numbers not in the range of DWORD will be converted to string then saved as (REG_SZ).
 * Floated numbers will automatically be converted to string and saved as (REG_SZ).
+
+.. note:: 
+   Setting new value to a previously existed entry with different data type will give error message because this function automatically use data type specific function of the already existed entry type for setting new values.
 
 This function has been used in the previous examples to save strings, but now will try to save DWORD value.
 
@@ -208,7 +211,7 @@ This function can set(substitute) any item of the list with any given value.
 MultiAdd() Function
 --------------------
 
-This function can add a value to a list pre existed multi string value or can establish a new multi string value list with help of SetMulti() function.
+This function can add a value as new item to pre existed multi string value list or can establish a new multi string value list with help of SetMulti() function.
 
 .. code-block:: none
 
@@ -505,8 +508,8 @@ Here is an example that will clarify all of what we said.
 		
 This example show the power of these functions in dealing with Ring Objects. But there are some points that we should know about:
 
-1. We can save objects by saving their attributes and their values.
-2. These two functions can smartly save attribute that are lists and objects.
+1. These functions save and retrieve objects by saving their attributes and their values.
+2. They can smartly save attributes that are lists and objects.
 3. They take dynamic nature of Ring Language in account so that new created attributes are also saved and retrieved correctly.
 4. Attributes that are not strings, numbers, lists, or objects will be ignored.
 5. Objects are saved in registry as a binary values. 
