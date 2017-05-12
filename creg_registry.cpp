@@ -1407,7 +1407,7 @@ void CRegistry::OpenParentnDelete(HKEY Rootkey, LPTSTR SubKEy) {
 	for (int i = _tcslen(SubKEy)-1; i >= 0; i--) {
 		if ( i == 0 ) {
 			_tcscpy(sSubKey, SubKEy);
-			Open(TEXT(""), _hRootKey, KEY_WRITE);
+			Open(TEXT(""), _hRootKey, KEY_WRITE, true); // *** true added to avoid reset access rights in case of CREG_AUTOOPEN flag usage
 			SHDeleteKey(hKey, sSubKey);
 			Close();
 			break;
@@ -1416,7 +1416,7 @@ void CRegistry::OpenParentnDelete(HKEY Rootkey, LPTSTR SubKEy) {
 			_tcsncpy(ParentSubKey, SubKEy, i);
 			ParentSubKey[i] = 0;
 			_tcscpy(sSubKey, (SubKEy+i+1));
-			Open(ParentSubKey, _hRootKey, KEY_WRITE);
+			Open(ParentSubKey, _hRootKey, KEY_WRITE, true); // *** true added to avoid reset access rights in case of CREG_AUTOOPEN flag usage
 			SHDeleteKey(hKey, sSubKey);
 			Close();
 			break;
