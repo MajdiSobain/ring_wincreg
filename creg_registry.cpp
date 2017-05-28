@@ -1065,7 +1065,7 @@ LONG CRegistry::SubKeyExists(LPCTSTR lpszSub) {
  */
 
 void CRegistry::SetFlags(DWORD flags){
-	if ( (__dwFlags & ~CREG_AUTOOPEN) == flags ) {
+	if ( __dwFlags >= CREG_AUTOOPEN && (__dwFlags & ~CREG_AUTOOPEN) == flags ) {
 		__dwFlags = flags; 
 		Open(_lpszSubKey,_hRootKey); // Open the key if there's switch from auto open
 	} else {
