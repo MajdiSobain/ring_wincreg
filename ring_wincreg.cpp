@@ -20,7 +20,7 @@ RING_API void ringlib_init ( RingState *pRingState )
 	ring_vm_funcregister("cregkeyexists",ring_vm_creg_cregkeyexists);
 	ring_vm_funcregister("cregsubkeyexists",ring_vm_creg_cregsubkeyexists);
 	ring_vm_funcregister("cregsetflags",ring_vm_creg_cregsetflags);
-	ring_vm_funcregister("cregentrycount",ring_vm_creg_cregentrycount);
+	ring_vm_funcregister("cregentriescount",ring_vm_creg_cregentriescount);
 	ring_vm_funcregister("creggetflags",ring_vm_creg_creggetflags);
 	ring_vm_funcregister("cregaccess64tree",ring_vm_creg_cregaccess64tree);
 	ring_vm_funcregister("cregisvirtualized",ring_vm_creg_cregisvirtualized);
@@ -261,8 +261,8 @@ void ring_vm_creg_cregsetflags( void *pPointer) {
 	}
 }
 
-// int cregentrycount ( CRegistry keyhandle )
-void ring_vm_creg_cregentrycount( void *pPointer) {
+// int cregentriescount ( CRegistry keyhandle )
+void ring_vm_creg_cregentriescount( void *pPointer) {
 	if ( RING_API_PARACOUNT != 1 ) {
 		RING_API_ERROR(RING_API_MISS1PARA);
 		return ;

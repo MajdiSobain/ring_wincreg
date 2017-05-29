@@ -91,9 +91,9 @@ Class RCRegistry		# Short for Ring CRegistry Class
 		If IsNULL(Key) Raise("Error : There is no opened key") Ok
 		Return CRegIsVirtualized(Key, True)
 
-	Func EntryCount
+	Func EntriesCount
 		If IsNULL(Key) Raise("Error : There is no opened key") Ok
-		Return CRegEntryCount(Key)
+		Return CRegEntriesCount(Key)
 
 	Func SubKeyExists SubKey
 		If IsNULL(Key) Raise("Error : There is no opened key") Ok
@@ -127,7 +127,7 @@ Class RCRegistry		# Short for Ring CRegistry Class
 
 	Func GetEntries
 		wcrlNamesList = []
-		For wcrii = 1 To EntryCount()
+		For wcrii = 1 To EntriesCount()
 			Add(wcrlNamesList, GetEntryName(GetEntryAt(wcrii)))
 		Next
 		Return wcrlNamesList
@@ -136,7 +136,7 @@ Class RCRegistry		# Short for Ring CRegistry Class
 		CRegCopy(entryhandle, DestKey)
 
 	Func CopyAllTo DestKey
-		For wcrii = 1 to EntryCount()
+		For wcrii = 1 to EntriesCount()
 			CRegCopy(GetEntryAt(wcrii), DestKey)
 		Next
 

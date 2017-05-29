@@ -136,7 +136,7 @@ This function is used to get the name of an entry handle that could be retrieved
 Entries Count
 ==============
 
-We may need to know the total number of values/entries within the opened key. This could be done by using **EntryCount()** function.
+We may need to know the total number of values/entries within the opened key. This could be done by using **EntriesCount()** function.
 
 .. code-block:: none
 
@@ -146,7 +146,7 @@ We may need to know the total number of values/entries within the opened key. Th
 	
 	Reg.OpenKey([HKEY_CURRENT_USER, "Software\MyApp"])
 	
-	See "The total number of entries are : " + Reg.EntryCount()
+	See "The total number of entries are : " + Reg.EntriesCount()
 	
 	Reg.CloseKey()
 	

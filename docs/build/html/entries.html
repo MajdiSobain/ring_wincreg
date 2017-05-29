@@ -228,14 +228,14 @@ Reg.CloseKey()
 </div>
 <div class="section" id="entries-count">
 <span id="index-5"></span><h2>Entries Count<a class="headerlink" href="#entries-count" title="Permalink to this headline">¶</a></h2>
-<p>We may need to know the total number of values/entries within the opened key. This could be done by using <strong>EntryCount()</strong> function.</p>
+<p>We may need to know the total number of values/entries within the opened key. This could be done by using <strong>EntriesCount()</strong> function.</p>
 <div class="highlight-none"><div class="highlight"><pre><span></span>Load &quot;wincreg.ring&quot;
 
 Reg = New RCRegistry
 
 Reg.OpenKey([HKEY_CURRENT_USER, &quot;Software\MyApp&quot;])
 
-See &quot;The total number of entries are : &quot; + Reg.EntryCount()
+See &quot;The total number of entries are : &quot; + Reg.EntriesCount()
 
 Reg.CloseKey()
 </pre></div>

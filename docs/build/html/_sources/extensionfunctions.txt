@@ -29,7 +29,7 @@ Here we are going to know the whole list of functions that could be called direc
 
 	void cregsetflags ( CRegistry* keyhandle , int flags )
 
-	int cregentrycount ( CRegistry* keyhandle )
+	int cregentriescount ( CRegistry* keyhandle )
 
 	int creggetflags ( CRegistry* keyhandle )
 

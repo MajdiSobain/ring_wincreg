@@ -23,7 +23,7 @@ void ring_vm_creg_cregsubkeyexists( void *pPointer) ;
 
 void ring_vm_creg_cregsetflags( void *pPointer) ;
 
-void ring_vm_creg_cregentrycount( void *pPointer) ;
+void ring_vm_creg_cregentriescount( void *pPointer) ;
 
 void ring_vm_creg_creggetflags( void *pPointer) ;
 
